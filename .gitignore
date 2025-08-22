@@ -1,0 +1,44 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.cache
+*.ncb
+*.log
+*.ide
+*.dbmdl
+
+# Build results
+bin/
+obj/
+out/
+TestResults/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+*.pidb
+*.dll
+*.exe
+*.pdb
+*.mdb
+
+# Angular / Node.js
+node_modules/
+dist/
+tmp/
+.env
+npm-debug.log
+package-lock.json
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Others
+*.vscode/
+*.coverage/
+*.publish/
