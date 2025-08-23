@@ -1,5 +1,6 @@
 ﻿using DataBaseFirst.Models;
 using DataBaseFirst.Repository;
+using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
 using Microsoft.Data.SqlClient;
 using System.Text.RegularExpressions;
@@ -15,6 +16,15 @@ namespace DataBaseFirst.Services
         {
             _transportistaRepository = transportistaRepository;
         }
+
+        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
+
+        /*readonly ITransportistaRepository _transportistaRepository;
+
+        public TransportistaService(ITransportistaRepository transportistaRepository)
+        {
+            _transportistaRepository = transportistaRepository;
+        }*/
 
         public async Task<ApiResponse<List<Transportistum>>> ListarTransportistasAsync()
         {

@@ -1,5 +1,6 @@
 ﻿using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository;
+using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
 using System.Text.RegularExpressions;
 using Utilities.Shared;
@@ -16,6 +17,15 @@ namespace DataBaseFirst.Services
         {
             _compraRepository = compraRepository;
         }
+
+        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
+
+        /*readonly ICompraRepository _compraRepository;
+
+        public CompraService(ICompraRepository compraRepository)
+        {
+            _compraRepository = compraRepository;
+        }*/
 
         public async Task<ApiResponse<string>> ObtenerNumeroDocumentoAsync()
         {
@@ -53,18 +63,6 @@ namespace DataBaseFirst.Services
             var regexSoloLetras = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
             if (!regexSoloLetras.IsMatch(compraDto.Tipo_Documento))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El tipo de documento solo pueden contener letras." };
-
-            /*var usuarioExiste = await _context.Usuario.AnyAsync(u => u.Id_Usuario == compraDto.Id_Usuario);
-            if (!usuarioExiste)
-                return new ApiResponse { IsSuccess = false, Message = "El usuario no existe." };
-
-            var proveedorExiste = await _context.Proveedor.AnyAsync(p => p.Id_Proveedor == compraDto.Id_Proveedor);
-            if (!proveedorExiste)
-                return new ApiResponse { IsSuccess = false, Message = "El proveedor no existe." };
-
-            var transportistaExiste = await _context.Transportista.AnyAsync(t => t.Id_Transportista == compraDto.Id_Transportista);
-            if (!transportistaExiste)
-                return new ApiResponse { IsSuccess = false, Message = "El transportista no existe." };*/
 
             var registrado = await _compraRepository.RegistrarCompraAsync(compraDto);
             if (registrado)

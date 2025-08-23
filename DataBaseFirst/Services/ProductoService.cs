@@ -1,6 +1,7 @@
 ﻿using DataBaseFirst.Models;
 using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository;
+using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
 using Microsoft.Data.SqlClient;
 using System.Text.RegularExpressions;
@@ -16,6 +17,15 @@ namespace DataBaseFirst.Services
         {
             _productoRepository = productoRepository;
         }
+
+        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
+
+        /*readonly IProductoRepository _productoRepository;
+
+        public ProductoService(IProductoRepository productoRepository)
+        {
+            _productoRepository = productoRepository;
+        }*/
 
         public async Task<ApiResponse<List<ProductoCategoria>>> ListarProductosAsync()
         {

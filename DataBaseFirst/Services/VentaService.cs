@@ -1,5 +1,6 @@
 ﻿using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository;
+using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
 using System.Text.RegularExpressions;
 using Utilities.Shared;
@@ -14,6 +15,15 @@ namespace DataBaseFirst.Services
         {
             _ventaRepository = ventaRepository;
         }
+
+        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
+
+        /*readonly IVentaRepository _ventaRepository;
+
+        public VentaService(IVentaRepository ventaRepository)
+        {
+            _ventaRepository = ventaRepository;
+        }*/
 
         public async Task<ApiResponse<string>> ObtenerNumeroDocumentoAsync()
         {
@@ -64,6 +74,5 @@ namespace DataBaseFirst.Services
 
             return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_REGISTER_FAILLED };
         }
-
     }
 }

@@ -16,6 +16,15 @@ namespace DataBaseFirst.Services
             _sucursalRepository = sucursalRepository;
         }
 
+        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
+
+        /*readonly ISucursalRepository _sucursalRepository;
+
+        public SucursalService(ISucursalRepository sucursalRepository)
+        {
+            _sucursalRepository = sucursalRepository;
+        }*/
+
         public async Task<ApiResponse<List<Sucursal>>> ListarSucursalesAsync()
         {
             var listaSucursales = await _sucursalRepository.ListarSucursalesAsync();

@@ -1,6 +1,7 @@
 ﻿using DataBaseFirst.Models;
 using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository;
+using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
 using System.Text.RegularExpressions;
 using Utilities.Shared;
@@ -16,6 +17,15 @@ namespace DataBaseFirst.Services
         {
             _negocioRepository = negocioRepository;
         }
+
+        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
+
+        /*readonly INegocioRepository _negocioRepository;
+
+        public NegocioService(INegocioRepository negocioRepository)
+        {
+            _negocioRepository = negocioRepository;
+        }*/
 
         public async Task<ApiResponse<Negocio>> ObtenerNegocioAsync(int idNegocio)
         {

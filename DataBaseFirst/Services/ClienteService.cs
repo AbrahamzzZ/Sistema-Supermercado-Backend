@@ -1,5 +1,6 @@
 ﻿using DataBaseFirst.Models;
 using DataBaseFirst.Repository;
+using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
 using Microsoft.Data.SqlClient;
 using System.Text.RegularExpressions;
@@ -15,6 +16,16 @@ namespace DataBaseFirst.Services
         {
             _clienteRepository = clienteRepository;
         }
+
+
+        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
+
+        /*readonly IClienteRepository _clienteRepository;
+
+        public ClienteService(IClienteRepository clienteRepository)
+        {
+            _clienteRepository = clienteRepository;
+        }*/
 
         public async Task<ApiResponse<List<Cliente>>> ListarClientesAsync()
         {
@@ -127,7 +138,6 @@ namespace DataBaseFirst.Services
 
             return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_UPDATE_FAILLED };
         }
-
 
         public async Task<ApiResponse<int>> EliminarClienteAsync(int id)
         {

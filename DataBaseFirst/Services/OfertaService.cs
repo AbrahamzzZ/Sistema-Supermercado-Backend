@@ -1,6 +1,7 @@
 ﻿using DataBaseFirst.Models;
 using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository;
+using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
 using Microsoft.Data.SqlClient;
 using Utilities.Shared;
@@ -15,6 +16,15 @@ namespace DataBaseFirst.Services
         {
             _ofertaRepository = ofertaRepository;
         }
+
+        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
+
+        /*readonly IOfertaRepository _ofertaRepository;
+
+        public OfertaService(IOfertaRepository ofertaRepository)
+        {
+            _ofertaRepository = ofertaRepository;
+        }*/
 
         public async Task<ApiResponse<List<OfertaProducto>>> ListarOfertasAsync()
         {
