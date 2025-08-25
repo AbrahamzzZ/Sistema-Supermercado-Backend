@@ -18,6 +18,15 @@ namespace APIRestSistemaVentas.Controllers
             _ofertaService = ofertaService;
         }
 
+        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
+
+        /*private readonly IOfertaService _ofertaService;
+
+        public OfertaController(IOfertaService ofertaService)
+        {
+            _ofertaService = ofertaService;
+        }*/
+
         // GET: api/oferta
         [HttpGet]
         public async Task<ActionResult<ApiResponse<OfertaProducto>>> GetOfertas()

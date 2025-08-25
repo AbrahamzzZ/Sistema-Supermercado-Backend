@@ -1,5 +1,6 @@
 ﻿using DataBaseFirst.Models;
 using DataBaseFirst.Models.Dto;
+using DataBaseFirst.Repository.InterfacesServices;
 using DataBaseFirst.Services;
 using Microsoft.AspNetCore.Mvc;
 using Utilities.Shared;
@@ -17,6 +18,15 @@ namespace APIRestSistemaVentas.Controllers
         {
             _negocioService = negocioService;
         }
+
+        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
+
+        /*private readonly INegocioService _negocioService;
+
+        public NegocioController(INegocioService negocioService)
+        {
+            _negocioService = negocioService;
+        }*/
 
         // GET: api/negocio/1
         [HttpGet("{id}")]

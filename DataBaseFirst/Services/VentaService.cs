@@ -1,4 +1,5 @@
-﻿using DataBaseFirst.Models.Dto;
+﻿using DataBaseFirst.Models;
+using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository;
 using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
@@ -40,9 +41,14 @@ namespace DataBaseFirst.Services
             return new ApiResponse<VentaRespuesta> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = numero };
         }
 
-        public async Task<List<DetalleVentasRepuesta>> ObtenerDetallesVentaAsync(int idVenta)
+        public async Task<ApiResponse<List<DetalleVentasRepuesta>>> ObtenerDetallesVentaAsync(int idVenta)
         {
-            return await _ventaRepository.ObtenerDetallesVentaAsync(idVenta);
+            var detalleVenta = await _ventaRepository.ObtenerDetallesVentaAsync(idVenta);
+
+            if(detalleVenta == null || detalleVenta.Count == 0)
+                return new ApiResponse<List<DetalleVentasRepuesta>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = detalleVenta };
+
+            return new ApiResponse<List<DetalleVentasRepuesta>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = detalleVenta };
         }
 
         public async Task<ApiResponse<object>> RegistrarVentaAsync(Ventas ventaDto)

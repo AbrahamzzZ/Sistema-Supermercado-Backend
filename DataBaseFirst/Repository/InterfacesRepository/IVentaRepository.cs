@@ -1,4 +1,5 @@
 ﻿using DataBaseFirst.Models.Dto;
+using Utilities.Shared;
 
 namespace DataBaseFirst.Repository.InterfacesRepository
 {
