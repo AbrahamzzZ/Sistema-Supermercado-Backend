@@ -17,6 +17,15 @@ namespace APIRestSistemaVentas.Controllers
             _proveedorService = proveedorService;
         }
 
+        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
+
+        /*private readonly IProveedorService _proveedorService;
+
+        public ProveedorController(IProveedorService proveedorService)
+        {
+            _proveedorService = proveedorService;
+        }*/
+
         // GET: api/proveedor
         [HttpGet]
         public async Task<ActionResult<ApiResponse<Proveedor>>> GetProveedores()

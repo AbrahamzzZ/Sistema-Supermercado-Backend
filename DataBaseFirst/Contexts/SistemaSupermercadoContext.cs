@@ -623,23 +623,108 @@ public partial class SistemaSupermercadoContext : DbContext
         //Clases serializadas
         modelBuilder.Entity<UsuarioRol>().HasNoKey().ToView(null);
 
-        modelBuilder.Entity<ProductoCategoria>().HasNoKey().ToView(null);
+        modelBuilder.Entity<ProductoCategoria>(entity =>
+        {
+            entity.HasNoKey()
+                  .ToView(null);
+
+            entity.Property(c => c.Precio_Compra)
+                  .HasPrecision(18, 2);
+
+            entity.Property(c => c.Precio_Venta)
+                  .HasPrecision(18, 2);
+        }); 
 
         modelBuilder.Entity<ProductoRespuesta>().HasNoKey().ToView(null);
 
-        modelBuilder.Entity<OfertaProducto>().HasNoKey().ToView(null);
+        modelBuilder.Entity<OfertaProducto>().HasNoKey()
+            .ToView(null)
+            .Property(c => c.Descuento)
+            .HasPrecision(18, 2);
 
-        modelBuilder.Entity<CompraRespuesta>().HasNoKey().ToView(null);
+        modelBuilder.Entity<CompraRespuesta>().HasNoKey()
+            .ToView(null)
+            .Property(c => c.Monto_Total)
+            .HasPrecision(18, 2);
 
-        modelBuilder.Entity<DetalleCompras>().HasNoKey().ToView(null);
+        modelBuilder.Entity<DetalleCompras>(entity =>
+        {
+            entity.HasNoKey()
+                  .ToView(null);
 
-        modelBuilder.Entity<DetalleComprasRepuesta>().HasNoKey().ToView(null);
+            entity.Property(e => e.Precio_Compra)
+                  .HasPrecision(18, 2);
 
-        modelBuilder.Entity<VentaRespuesta>().HasNoKey().ToView(null);
+            entity.Property(e => e.Precio_Venta)
+                  .HasPrecision(18, 2);
 
-        modelBuilder.Entity<DetalleVentas>().HasNoKey().ToView(null);
+            entity.Property(e => e.SubTotal)
+                  .HasPrecision(18, 2);
+        });
 
-        modelBuilder.Entity<DetalleVentasRepuesta>().HasNoKey().ToView(null);
+        modelBuilder.Entity<DetalleComprasRepuesta>(entity =>
+        {
+            entity.HasNoKey()
+                  .ToView(null);
+
+            entity.Property(e => e.Precio_Compra)
+                   .HasPrecision(18, 2);
+
+            entity.Property(e => e.Precio_Venta)
+                  .HasPrecision(18, 2);
+
+            entity.Property(e => e.SubTotal)
+                  .HasPrecision(18, 2);
+        });
+
+        modelBuilder.Entity<VentaRespuesta>(entity =>
+        {
+            entity.HasNoKey()
+                  .ToView(null);
+
+            entity.Property(e => e.Monto_Cambio)
+                  .HasPrecision(18, 2);
+
+            entity.Property(e => e.Monto_Pago)
+                  .HasPrecision(18, 2);
+
+            entity.Property(e => e.Monto_Total)
+                  .HasPrecision(18, 2);
+
+            entity.Property(c => c.Descuento)
+                  .HasPrecision(18, 2);
+        });
+
+        modelBuilder.Entity<DetalleVentas>(entity =>
+        {
+            entity.HasNoKey()
+            .ToView(null);
+
+            entity.Property(c => c.Descuento)
+                  .HasPrecision(18, 2);
+
+            entity.Property(e => e.Precio_Venta)
+                  .HasPrecision(18, 2);
+
+            entity.Property(e => e.SubTotal)
+                  .HasPrecision(18, 2);
+
+        });
+
+        modelBuilder.Entity<DetalleVentasRepuesta>(entity =>
+        {
+            entity.HasNoKey()
+                  .ToView(null);
+
+            entity.Property(e => e.Precio_Venta)
+                  .HasPrecision(18, 2);
+
+            entity.Property(e => e.SubTotal)
+                  .HasPrecision(18, 2);
+
+            entity.Property(e => e.Descuento)
+                  .HasPrecision(18, 2);
+        });
 
         modelBuilder.Entity<ProductoMasComprado>().HasNoKey().ToView(null);
 

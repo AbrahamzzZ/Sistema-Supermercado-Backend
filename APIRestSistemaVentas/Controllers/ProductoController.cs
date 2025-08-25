@@ -19,6 +19,15 @@ namespace APIRestSistemaVentas.Controllers
             _productoService = productoService;
         }
 
+        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
+
+        /*private readonly IProductoService _productoService;
+
+        public ProductoController(IProductoService productoService)
+        {
+            _productoService = productoService;
+        }*/
+
         // GET: api/producto
         [HttpGet]
         public async Task<ActionResult<ApiResponse<ProductoCategoria>>> GetProductos()

@@ -7,7 +7,7 @@ namespace DataBaseFirst.Repository.InterfacesServices
     {
         Task<ApiResponse<string>> ObtenerNumeroDocumentoAsync();
         Task<ApiResponse<CompraRespuesta>> ObtenerCompraAsync(string numeroDocumento);
-        Task<List<DetalleComprasRepuesta>> ObtenerDetallesCompraAsync(int idCompra);
+        Task<ApiResponse<List<DetalleComprasRepuesta>>> ObtenerDetallesCompraAsync(int idCompra);
         Task<ApiResponse<object>> RegistrarCompraAsync(Compras compraDto);
     }
 }

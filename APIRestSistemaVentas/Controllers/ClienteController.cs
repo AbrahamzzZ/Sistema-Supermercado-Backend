@@ -17,6 +17,15 @@ namespace APIRestSistemaVentas.Controllers
             _clienteService = clienteService;
         }
 
+        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
+
+        /*private readonly IClienteService _clienteService;
+
+        public ClienteController(IClienteService clienteService)
+        {
+            _clienteService = clienteService;
+        }*/
+
         // GET: api/cliente
         [HttpGet]
         public async Task<ActionResult<ApiResponse<Cliente>>> GetClientes()
