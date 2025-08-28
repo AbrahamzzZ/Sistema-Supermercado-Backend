@@ -1,11 +1,11 @@
 using DataBaseFirst.Contexts;
+using DataBaseFirst.Helpers;
 using DataBaseFirst.Repository;
 using DataBaseFirst.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,8 +108,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("NuevaPolitica");
 
-app.UseAuthorization();
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
