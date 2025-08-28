@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Utilities
+namespace DataBaseFirst.Helpers
 {
     public class Token
     {
