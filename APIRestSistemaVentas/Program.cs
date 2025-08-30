@@ -1,12 +1,8 @@
 using DataBaseFirst.Contexts;
+using DataBaseFirst.Extensions;
 using DataBaseFirst.Helpers;
-using DataBaseFirst.Models;
-using DataBaseFirst.Models.Dto;
-using DataBaseFirst.Repository;
-using DataBaseFirst.Services;
-using DataBaseFirst.Services.Validators;
-using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -22,56 +18,10 @@ builder.Services.AddDbContext<SistemaSupermercadoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CadenaSQL"))
 );
 
-// Registrar el servicio para inyección de dependencias
-builder.Services.AddScoped<CategoriaRepository>();
-builder.Services.AddScoped<CategoriaService>();
-builder.Services.AddScoped<IValidator<Categorium>, CategoriaValidator>();
-
-builder.Services.AddScoped<ClienteRepository>();
-builder.Services.AddScoped<ClienteService>();
-builder.Services.AddScoped<IValidator<Cliente>, ClienteValidator>();
-
-builder.Services.AddScoped<ProveedorRepository>();
-builder.Services.AddScoped<ProveedorService>();
-builder.Services.AddScoped<IValidator<Proveedor>, ProveedorValidator>();
-
-builder.Services.AddScoped<MenuService>();
-
-builder.Services.AddScoped<RolRepository>();
-builder.Services.AddScoped<RolService>();
-
-builder.Services.AddScoped<TransportistaRepository>();
-builder.Services.AddScoped<TransportistaService>();
-builder.Services.AddScoped<IValidator<Transportistum>, TransportistaValidator>();
-
-builder.Services.AddScoped<UsuarioRepository>();
-builder.Services.AddScoped<UsuarioService>();
-builder.Services.AddScoped<IValidator<Usuario>, UsuarioValidator>();
-
-builder.Services.AddScoped<NegocioRepository>();
-builder.Services.AddScoped<NegocioService>();
-builder.Services.AddScoped<IValidator<Negocio>, NegocioValidator>();
-
-builder.Services.AddScoped<ProductoRepository>();
-builder.Services.AddScoped<ProductoService>();
-builder.Services.AddScoped<IValidator<Producto>, ProductoValidator>();
-
-builder.Services.AddScoped<OfertaRepository>();
-builder.Services.AddScoped<OfertaService>();
-builder.Services.AddScoped<IValidator<Ofertum>, OfertaValidator>();
-
-builder.Services.AddScoped<SucursalRepository>();
-builder.Services.AddScoped<SucursalService>();
-builder.Services.AddScoped<IValidator<Sucursal>, SucursalValidator>();
-
-builder.Services.AddScoped<CompraRepository>();
-builder.Services.AddScoped<CompraService>();
-builder.Services.AddScoped<IValidator<Compras>, CompraValidator>();
-
-builder.Services.AddScoped<VentaRepository>();
-builder.Services.AddScoped<VentaService>();
-builder.Services.AddScoped<IValidator<Ventas>, VentaValidator>();
-
+// Inyección de dependencias separada en métodos de extensión
+builder.Services.AddRepositories();
+builder.Services.AddServices();
+builder.Services.AddValidators();
 builder.Services.AddSingleton<Token>();
 
 // JWT Auth
@@ -94,6 +44,21 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(claveSecreta))
     };
+});
+
+// Configuración de Rate Limiting
+builder.Services.AddRateLimiter(option =>
+{
+    option.RejectionStatusCode = 
+    StatusCodes.Status429TooManyRequests;
+
+    option.AddFixedWindowLimiter("fijo", opt =>
+    {
+        opt.PermitLimit = 15;
+        opt.Window = TimeSpan.FromSeconds(30);
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 2;
+    });
 });
 
 // Agregar servicios para controladores
@@ -125,8 +90,10 @@ app.UseCors("NuevaPolitica");
 
 app.UseRouting();
 
+app.UseRateLimiter();
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
+app.MapControllers().RequireRateLimiting("fijo");
 
 app.Run();
