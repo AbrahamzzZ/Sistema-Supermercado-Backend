@@ -3,8 +3,8 @@ using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository;
 using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
+using FluentValidation;
 using Microsoft.Data.SqlClient;
-using System.Text.RegularExpressions;
 using Utilities.Shared;
 
 namespace DataBaseFirst.Services
@@ -12,10 +12,12 @@ namespace DataBaseFirst.Services
     public class ProductoService : IProductoService
     {
         private readonly ProductoRepository _productoRepository;
+        private readonly IValidator<Producto> _validator;
 
-        public ProductoService(ProductoRepository productoRepository)
+        public ProductoService(ProductoRepository productoRepository, IValidator<Producto> validator)
         {
             _productoRepository = productoRepository;
+            _validator = validator;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -63,24 +65,16 @@ namespace DataBaseFirst.Services
 
         public async Task<ApiResponse<object>> RegistrarProductoAsync(Producto producto)
         {
-            if (producto == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_VALIDATE };
+            var validationResult = await _validator.ValidateAsync(producto);
 
-            if (producto.Id_Categoria <= 0 || string.IsNullOrWhiteSpace(producto.Nombre_Producto) || string.IsNullOrWhiteSpace(producto.Descripcion) || string.IsNullOrWhiteSpace(producto.Pais_Origen))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_EMPTY };
-
-            var regex = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
-            if (!regex.IsMatch(producto.Nombre_Producto))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El nombre solo puede contener letras y espacios." };
-
-            if (!regex.IsMatch(producto.Pais_Origen))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El país de origen solo puede contener letras y espacios." };
+            if (!validationResult.IsValid)
+                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
 
             var productos = await _productoRepository.ListarProductosAsync();
             if (productos.Any(c => c.Codigo == producto.Codigo))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El código ya existe" };
 
-            if (productos.Any(c => c.Nombre_Producto?.ToLower() == producto.Nombre_Producto.ToLower()))
+            if (productos.Any(c => c.Nombre_Producto?.ToLower() == producto.Nombre_Producto?.ToLower()))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe" };
 
             var result = await _productoRepository.RegistrarProductoAsync(producto);
@@ -93,24 +87,18 @@ namespace DataBaseFirst.Services
         public async Task<ApiResponse<object>> EditarProductoAsync(Producto producto)
         {
             if (producto == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_VALIDATE };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
 
-            if (producto.Id_Categoria <= 0 || string.IsNullOrWhiteSpace(producto.Nombre_Producto) || string.IsNullOrWhiteSpace(producto.Descripcion) || string.IsNullOrWhiteSpace(producto.Pais_Origen))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_EMPTY };
+            var validationResult = await _validator.ValidateAsync(producto);
+            if (!validationResult.IsValid)
+                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
 
-            var categoriaExistente = await _productoRepository.ObtenerProductoAsync(producto.Id_Producto);
-            if (categoriaExistente == null)
+            var productoExistente = await _productoRepository.ObtenerProductoAsync(producto.Id_Producto);
+            if (productoExistente == null)
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
 
-            var regex = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
-            if (!regex.IsMatch(producto.Nombre_Producto))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El nombre solo puede contener letras y espacios." };
-
-            if (!regex.IsMatch(producto.Pais_Origen))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El país de origen solo puede contener letras y espacios." };
-
             var productos = await _productoRepository.ListarProductosAsync();
-            if (productos.Any(c => c.Nombre_Producto?.ToLower() == producto.Nombre_Producto.ToLower() && c.Id_Producto != producto.Id_Producto))
+            if (productos.Any(c => c.Nombre_Producto?.ToLower() == producto.Nombre_Producto?.ToLower() && c.Id_Producto != producto.Id_Producto))
             {
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe." };
             }

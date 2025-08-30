@@ -2,8 +2,8 @@
 using DataBaseFirst.Repository;
 using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
+using FluentValidation;
 using Microsoft.Data.SqlClient;
-using System.Text.RegularExpressions;
 using Utilities.Shared;
 
 namespace DataBaseFirst.Services
@@ -11,10 +11,12 @@ namespace DataBaseFirst.Services
     public class TransportistaService : ITransportistaService
     {
         private readonly TransportistaRepository _transportistaRepository;
+        private readonly IValidator<Transportistum> _validator;
 
-        public TransportistaService(TransportistaRepository transportistaRepository)
+        public TransportistaService(TransportistaRepository transportistaRepository, IValidator<Transportistum> validator)
         {
             _transportistaRepository = transportistaRepository;
+            _validator = validator;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -62,32 +64,19 @@ namespace DataBaseFirst.Services
 
         public async Task<ApiResponse<object>> RegistrarTransportistaAsync(Transportistum transportista)
         {
-            if (transportista == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_VALIDATE };
+            var validationResult = await _validator.ValidateAsync(transportista);
 
-            if (string.IsNullOrWhiteSpace(transportista.Codigo) || string.IsNullOrWhiteSpace(transportista.Nombres) || string.IsNullOrWhiteSpace(transportista.Apellidos) || string.IsNullOrWhiteSpace(transportista.Cedula) || string.IsNullOrWhiteSpace(transportista.Telefono) || string.IsNullOrWhiteSpace(transportista.Correo_Electronico))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_EMPTY };
+            if (!validationResult.IsValid)
+                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
 
-            var regex = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
-            if (!regex.IsMatch(transportista.Nombres) || !regex.IsMatch(transportista.Apellidos))
-                return new ApiResponse<object> { IsSuccess = false, Message = "Los nombres y apellidos solo puede contener letras y espacios" };
-
-            var regexCedula = new Regex(@"^\d{10}$");
-            if (!regexCedula.IsMatch(transportista.Cedula) || !regexCedula.IsMatch(transportista.Telefono))
-                return new ApiResponse<object> { IsSuccess = false, Message = "La cédula y el teléfono deben contener exactamente 10 dígitos numéricos" };
-
-            var regexCorreo = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-            if (!regexCorreo.IsMatch(transportista.Correo_Electronico))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El correo electrónico no tiene un formato válido" };
-
-            var categorias = await _transportistaRepository.ListarTransportistasAsync();
-            if (categorias.Any(c => c.Codigo == transportista.Codigo))
+            var transportistas = await _transportistaRepository.ListarTransportistasAsync();
+            if (transportistas.Any(c => c.Codigo == transportista.Codigo))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El código ya existe" };
 
-            if (categorias.Any(c => c.Cedula?.ToLower() == transportista.Cedula.ToLower()))
+            if (transportistas.Any(c => c.Cedula == transportista.Cedula))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El cédula ya existe" };
 
-            if (categorias.Any(c => c.Telefono?.ToLower() == transportista.Telefono.ToLower()))
+            if (transportistas.Any(c => c.Telefono == transportista.Telefono))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El télefono ya existe" };
 
             var result = await _transportistaRepository.RegistrarTransportistaAsync(transportista);
@@ -100,33 +89,22 @@ namespace DataBaseFirst.Services
         public async Task<ApiResponse<object>> EditarTransportistaAsync(Transportistum transportista)
         {
             if (transportista == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_VALIDATE };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
 
-            if (string.IsNullOrWhiteSpace(transportista.Nombres) || string.IsNullOrWhiteSpace(transportista.Apellidos) || string.IsNullOrWhiteSpace(transportista.Cedula) || string.IsNullOrWhiteSpace(transportista.Telefono) || string.IsNullOrWhiteSpace(transportista.Correo_Electronico))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_EMPTY };
+            var validationResult = await _validator.ValidateAsync(transportista);
+            if (!validationResult.IsValid)
+                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
 
-            var clienteExistente = await _transportistaRepository.ObtenerTransportistaAsync(transportista.Id_Transportista);
-            if (clienteExistente == null)
+            var transportistaExistente = await _transportistaRepository.ObtenerTransportistaAsync(transportista.Id_Transportista);
+            if (transportistaExistente == null)
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
 
-            var regex = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
-            if (!regex.IsMatch(transportista.Nombres) || !regex.IsMatch(transportista.Apellidos))
-                return new ApiResponse<object> { IsSuccess = false, Message = "Los nombres y apellidos solo puede contener letras y espacios" };
-
-            var regexCedula = new Regex(@"^\d{10}$");
-            if (!regexCedula.IsMatch(transportista.Cedula) || !regexCedula.IsMatch(transportista.Telefono))
-                return new ApiResponse<object> { IsSuccess = false, Message = "La cédula y el teléfono deben contener exactamente 10 dígitos numéricos" };
-
-            var regexCorreo = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-            if (!regexCorreo.IsMatch(transportista.Correo_Electronico))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El correo electrónico no tiene un formato válido" };
-
-            var clientes = await _transportistaRepository.ListarTransportistasAsync();
-            if (clientes.Any(c => c.Cedula == transportista.Cedula && c.Id_Transportista != transportista.Id_Transportista) || clientes.Any(c => c.Telefono == transportista.Telefono && c.Id_Transportista != transportista.Id_Transportista))
+            var transportistas = await _transportistaRepository.ListarTransportistasAsync();
+            if (transportistas.Any(c => c.Cedula == transportista.Cedula && c.Id_Transportista != transportista.Id_Transportista))
             {
                 return new ApiResponse<object> { IsSuccess = false, Message = "El cédula ya existe." };
             }
-            else if (clientes.Any(c => c.Telefono == transportista.Telefono && c.Id_Transportista != transportista.Id_Transportista))
+            else if (transportistas.Any(c => c.Telefono == transportista.Telefono && c.Id_Transportista != transportista.Id_Transportista))
             {
                 return new ApiResponse<object> { IsSuccess = false, Message = "El teléfono ya existe." };
             }

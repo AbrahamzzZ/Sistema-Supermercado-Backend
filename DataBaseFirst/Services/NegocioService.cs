@@ -3,7 +3,7 @@ using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository;
 using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
-using System.Text.RegularExpressions;
+using FluentValidation;
 using Utilities.Shared;
 using WebApiRest.Dto;
 
@@ -12,10 +12,12 @@ namespace DataBaseFirst.Services
     public class NegocioService : INegocioService
     {
         private readonly NegocioRepository _negocioRepository;
+        private readonly IValidator<Negocio> _validator;
 
-        public NegocioService(NegocioRepository negocioRepository)
+        public NegocioService(NegocioRepository negocioRepository, IValidator<Negocio> validator)
         {
             _negocioRepository = negocioRepository;
+            _validator = validator;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -39,26 +41,15 @@ namespace DataBaseFirst.Services
         public async Task<ApiResponse<object>> EditarNegocioAsync(Negocio negocio)
         {
             if (negocio == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_VALIDATE };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
 
-            if (string.IsNullOrWhiteSpace(negocio.Nombre) || string.IsNullOrWhiteSpace(negocio.Telefono) || string.IsNullOrWhiteSpace(negocio.Ruc) || string.IsNullOrWhiteSpace(negocio.Direccion) || string.IsNullOrWhiteSpace(negocio.Correo_Electronico))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_EMPTY };
+            var validationResult = await _validator.ValidateAsync(negocio);
+            if (!validationResult.IsValid)
+                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
 
             var negocioExistente = await _negocioRepository.ObtenerNegocioAsync(negocio.Id_Negocio);
             if (negocioExistente == null)
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
-
-            var regexCedula = new Regex(@"^\d{10}$");
-            if (!regexCedula.IsMatch(negocio.Telefono))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El teléfono deben contener exactamente 10 dígitos numéricos" };
-
-            var regexRuc = new Regex(@"^\d{13}$");
-            if (!regexRuc.IsMatch(negocio.Ruc))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El RUC deben contener exactamente 13 dígitos numéricos" };
-
-            var regexCorreo = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-            if (!regexCorreo.IsMatch(negocio.Correo_Electronico))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El correo electrónico no tiene un formato válido" };
 
             var result = await _negocioRepository.EditarNegocioAsync(negocio);
             if (result > 0)
