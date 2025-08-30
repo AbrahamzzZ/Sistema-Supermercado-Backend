@@ -3,6 +3,7 @@ using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository;
 using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
+using FluentValidation;
 using Microsoft.Data.SqlClient;
 using Utilities.Shared;
 
@@ -11,10 +12,12 @@ namespace DataBaseFirst.Services
     public class OfertaService : IOfertaService
     {
         private readonly OfertaRepository _ofertaRepository;
+        private readonly IValidator<Ofertum> _validator;
 
-        public OfertaService(OfertaRepository ofertaRepository)
+        public OfertaService(OfertaRepository ofertaRepository, IValidator<Ofertum> validator)
         {
             _ofertaRepository = ofertaRepository;
+            _validator = validator;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -62,23 +65,16 @@ namespace DataBaseFirst.Services
 
         public async Task<ApiResponse<object>> RegistrarOfertaAsync(Ofertum oferta)
         {
-            if (oferta == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_VALIDATE };
+            var validationResult = await _validator.ValidateAsync(oferta);
 
-            if (oferta.Id_Producto <= 0 || string.IsNullOrWhiteSpace(oferta.Codigo) || string.IsNullOrWhiteSpace(oferta.Nombre_Oferta) || string.IsNullOrWhiteSpace(oferta.Descripcion))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_EMPTY };
-
-            if (oferta.Descuento < 0 || oferta.Descuento > 100)
-                return new ApiResponse<object> { IsSuccess = false, Message = "El descuento debe estar entre 0 y 100" };
-
-            if (oferta.Fecha_Fin < DateOnly.FromDateTime(DateTime.Now))
-                return new ApiResponse<object> { IsSuccess = false, Message = "La fecha de fin debe ser una fecha futura" };
+            if (!validationResult.IsValid)
+                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
 
             var ofertas = await _ofertaRepository.ListarOfertasAsync();
             if (ofertas.Any(c => c.Codigo == oferta.Codigo))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El código ya existe" };
 
-            if (ofertas.Any(c => c.Nombre_Oferta?.ToLower() == oferta.Nombre_Oferta.ToLower()))
+            if (ofertas.Any(c => c.Nombre_Oferta?.ToLower() == oferta.Nombre_Oferta?.ToLower()))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe" };
 
             var result = await _ofertaRepository.RegistrarOfertaAsync(oferta);
@@ -91,20 +87,11 @@ namespace DataBaseFirst.Services
         public async Task<ApiResponse<object>> EditarOfertaAsync(Ofertum oferta)
         {
             if (oferta == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_VALIDATE };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
 
-            if (oferta.Id_Producto <= 0 || string.IsNullOrWhiteSpace(oferta.Nombre_Oferta) || string.IsNullOrWhiteSpace(oferta.Descripcion))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_EMPTY };
-
-            var ofertaExistente = await _ofertaRepository.ObtenerOfertaAsync(oferta.Id_Oferta);
-            if (ofertaExistente == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
-
-            if (oferta.Descuento < 0 || oferta.Descuento > 100)
-                return new ApiResponse<object> { IsSuccess = false, Message = "El descuento debe estar entre 0 y 100" };
-
-            if (oferta.Fecha_Fin < DateOnly.FromDateTime(DateTime.Now))
-                return new ApiResponse<object> { IsSuccess = false, Message = "La fecha de fin debe ser una fecha futura" };
+            var validationResult = await _validator.ValidateAsync(oferta);
+            if (!validationResult.IsValid)
+                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
 
             var ofertas = await _ofertaRepository.ListarOfertasAsync();
             if (ofertas.Any(c => c.Nombre_Oferta == oferta.Nombre_Oferta && c.Id_Oferta != oferta.Id_Oferta))

@@ -50,7 +50,7 @@ public class TestNegocioService
         var result = await _service.EditarNegocioAsync(null);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual(Mensajes.MESSAGE_VALIDATE, result.Message);
+        Assert.AreEqual(Mensajes.MESSAGE_NULL, result.Message);
     }
 
     [TestMethod]

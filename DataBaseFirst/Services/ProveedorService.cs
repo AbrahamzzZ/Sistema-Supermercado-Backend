@@ -2,8 +2,8 @@
 using DataBaseFirst.Repository;
 using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
+using FluentValidation;
 using Microsoft.Data.SqlClient;
-using System.Text.RegularExpressions;
 using Utilities.Shared;
 
 namespace DataBaseFirst.Services
@@ -11,10 +11,12 @@ namespace DataBaseFirst.Services
     public class ProveedorService : IProveedorService
     {
         private readonly ProveedorRepository _proveedorRepository;
+        private readonly IValidator<Proveedor> _validator;
 
-        public ProveedorService(ProveedorRepository proveedorRepository)
+        public ProveedorService(ProveedorRepository proveedorRepository, IValidator<Proveedor> validator)
         {
             _proveedorRepository = proveedorRepository;
+            _validator = validator;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -62,32 +64,19 @@ namespace DataBaseFirst.Services
 
         public async Task<ApiResponse<object>> RegistrarProveedorAsync(Proveedor proveedor)
         {
-            if (proveedor == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_VALIDATE };
+            var validationResult = await _validator.ValidateAsync(proveedor);
 
-            if (string.IsNullOrWhiteSpace(proveedor.Codigo) || string.IsNullOrWhiteSpace(proveedor.Nombres) || string.IsNullOrWhiteSpace(proveedor.Apellidos) || string.IsNullOrWhiteSpace(proveedor.Cedula) || string.IsNullOrWhiteSpace(proveedor.Telefono) || string.IsNullOrWhiteSpace(proveedor.Correo_Electronico))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_EMPTY };
-
-            var regex = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
-            if (!regex.IsMatch(proveedor.Nombres) || !regex.IsMatch(proveedor.Apellidos))
-                return new ApiResponse<object> { IsSuccess = false, Message = "Los nombres y apellidos solo puede contener letras y espacios" };
-
-            var regexCedula = new Regex(@"^\d{10}$");
-            if (!regexCedula.IsMatch(proveedor.Cedula) || !regexCedula.IsMatch(proveedor.Telefono))
-                return new ApiResponse<object> { IsSuccess = false, Message = "La cédula y el teléfono deben contener exactamente 10 dígitos numéricos" };
-
-            var regexCorreo = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-            if (!regexCorreo.IsMatch(proveedor.Correo_Electronico))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El correo electrónico no tiene un formato válido" };
+            if (!validationResult.IsValid)
+                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
 
             var categorias = await _proveedorRepository.ListarProveedoresAsync();
             if (categorias.Any(c => c.Codigo == proveedor.Codigo))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El código ya existe" };
 
-            if (categorias.Any(c => c.Cedula?.ToLower() == proveedor.Cedula.ToLower()))
+            if (categorias.Any(c => c.Cedula == proveedor.Cedula))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El cédula ya existe" };
 
-            if (categorias.Any(c => c.Telefono?.ToLower() == proveedor.Telefono.ToLower()))
+            if (categorias.Any(c => c.Telefono == proveedor.Telefono))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El télefono ya existe" };
 
             var result = await _proveedorRepository.RegistrarProveedorAsync(proveedor);
@@ -101,29 +90,18 @@ namespace DataBaseFirst.Services
         public async Task<ApiResponse<object>> EditarProveedorAsync(Proveedor proveedor)
         {
             if (proveedor == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_VALIDATE };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
 
-            if (string.IsNullOrWhiteSpace(proveedor.Nombres) || string.IsNullOrWhiteSpace(proveedor.Apellidos) || string.IsNullOrWhiteSpace(proveedor.Cedula) || string.IsNullOrWhiteSpace(proveedor.Telefono) || string.IsNullOrWhiteSpace(proveedor.Correo_Electronico))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_EMPTY };
+            var validationResult = await _validator.ValidateAsync(proveedor);
+            if (!validationResult.IsValid)
+                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
 
-            var clienteExistente = await _proveedorRepository.ObtenerProveedorAsync(proveedor.Id_Proveedor);
-            if (clienteExistente == null)
+            var proveedorExistente = await _proveedorRepository.ObtenerProveedorAsync(proveedor.Id_Proveedor);
+            if (proveedorExistente == null)
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
 
-            var regex = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
-            if (!regex.IsMatch(proveedor.Nombres) || !regex.IsMatch(proveedor.Apellidos))
-                return new ApiResponse<object> { IsSuccess = false, Message = "Los nombres y apellidos solo puede contener letras y espacios" };
-
-            var regexCedula = new Regex(@"^\d{10}$");
-            if (!regexCedula.IsMatch(proveedor.Cedula) || !regexCedula.IsMatch(proveedor.Telefono))
-                return new ApiResponse<object> { IsSuccess = false, Message = "La cédula y el teléfono deben contener exactamente 10 dígitos numéricos" };
-
-            var regexCorreo = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-            if (!regexCorreo.IsMatch(proveedor.Correo_Electronico))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El correo electrónico no tiene un formato válido" };
-
             var clientes = await _proveedorRepository.ListarProveedoresAsync();
-            if (clientes.Any(c => c.Cedula == proveedor.Cedula && c.Id_Proveedor != proveedor.Id_Proveedor) || clientes.Any(c => c.Telefono == proveedor.Telefono && c.Id_Proveedor != proveedor.Id_Proveedor))
+            if (clientes.Any(c => c.Cedula == proveedor.Cedula && c.Id_Proveedor != proveedor.Id_Proveedor))
             {
                 return new ApiResponse<object> { IsSuccess = false, Message = "El cédula ya existe." };
             }

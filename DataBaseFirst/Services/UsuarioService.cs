@@ -3,8 +3,8 @@ using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository;
 using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
+using FluentValidation;
 using Microsoft.Data.SqlClient;
-using System.Text.RegularExpressions;
 using Utilities.Shared;
 
 namespace DataBaseFirst.Services
@@ -12,10 +12,12 @@ namespace DataBaseFirst.Services
     public class UsuarioService : IUsuarioService
     {
         private readonly UsuarioRepository _usuarioRepository;
+        private readonly IValidator<Usuario> _validator;
 
-        public UsuarioService(UsuarioRepository usuarioRepository)
+        public UsuarioService(UsuarioRepository usuarioRepository, IValidator<Usuario> validator)
         {
             _usuarioRepository = usuarioRepository;
+            _validator = validator;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -86,29 +88,16 @@ namespace DataBaseFirst.Services
 
         public async Task<ApiResponse<object>> RegistrarUsuarioAsync(Usuario usuario)
         {
-            if (usuario == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_VALIDATE };
+            var validationResult = await _validator.ValidateAsync(usuario);
 
-            if (string.IsNullOrWhiteSpace(usuario.Nombre_Completo) || string.IsNullOrWhiteSpace(usuario.Correo_Electronico) || string.IsNullOrWhiteSpace(usuario.Clave))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_EMPTY };
+            if (!validationResult.IsValid)
+                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
 
-            var regex = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
-            if (!regex.IsMatch(usuario.Nombre_Completo))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El nombre completo solo puede contener letras y espacios." };
-
-            var regexClave = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).{10,}$");
-            if (!regexClave.IsMatch(usuario.Clave!))
-                return new ApiResponse<object> { IsSuccess = false, Message = "La clave debe tener al menos 10 caracteres, incluyendo letras, números y caracteres especiales." };
-
-            var regexCorreo = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-            if (!regexCorreo.IsMatch(usuario.Correo_Electronico))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El correo electrónico no tiene un formato válido" };
-
-            var categorias = await _usuarioRepository.ListarUsuariosAsync();
-            if (categorias.Any(c => c.Codigo == usuario.Codigo))
+            var usuarios = await _usuarioRepository.ListarUsuariosAsync();
+            if (usuarios.Any(c => c.Codigo == usuario.Codigo))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El código ya existe" };
 
-            if (categorias.Any(c => c.Nombre_Completo == usuario.Nombre_Completo))
+            if (usuarios.Any(c => c.Nombre_Completo == usuario.Nombre_Completo))
                 return new ApiResponse<object> { IsSuccess = false, Message = "Ese nombre ya existe" };
 
             var result = await _usuarioRepository.RegistrarUsuarioAsync(usuario);
@@ -121,10 +110,11 @@ namespace DataBaseFirst.Services
         public async Task<ApiResponse<object>> EditarUsuarioAsync(Usuario usuario)
         {
             if (usuario == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_VALIDATE };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
 
-            if (string.IsNullOrWhiteSpace(usuario.Nombre_Completo) || string.IsNullOrWhiteSpace(usuario.Correo_Electronico))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_EMPTY };
+            var validationResult = await _validator.ValidateAsync(usuario);
+            if (!validationResult.IsValid)
+                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
 
             var usuarioActual = await _usuarioRepository.ObtenerUsuarioAsync(usuario.Id_Usuario);
             if (usuarioActual == null)
@@ -141,14 +131,6 @@ namespace DataBaseFirst.Services
                     return new ApiResponse<object> { IsSuccess = false, Message = "No se puede modificar el rol al único administrador activo." };
                 }
             }
-
-            var regex = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
-            if (!regex.IsMatch(usuario.Nombre_Completo))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El nombre completo solo puede contener letras y espacios." };
-
-            var regexCorreo = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-            if (!regexCorreo.IsMatch(usuario.Correo_Electronico))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El correo electrónico no tiene un formato válido" };
 
             var usuarios = await _usuarioRepository.ListarUsuariosAsync();
             if (usuarios.Any(c => c.Nombre_Completo == usuario.Nombre_Completo && c.Id_Usuario != usuario.Id_Usuario))

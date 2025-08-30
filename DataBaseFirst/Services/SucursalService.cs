@@ -2,7 +2,7 @@
 using DataBaseFirst.Repository;
 using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
-using System.Text.RegularExpressions;
+using FluentValidation;
 using Utilities.Shared;
 
 namespace DataBaseFirst.Services
@@ -10,10 +10,12 @@ namespace DataBaseFirst.Services
     public class SucursalService : ISucursalService
     {
         private readonly SucursalRepository _sucursalRepository;
+        private readonly IValidator<Sucursal> _validator;
 
-        public SucursalService(SucursalRepository sucursalRepository)
+        public SucursalService(SucursalRepository sucursalRepository, IValidator<Sucursal> validator)
         {
             _sucursalRepository = sucursalRepository;
+            _validator = validator;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -61,28 +63,16 @@ namespace DataBaseFirst.Services
 
         public async Task<ApiResponse<object>> RegistrarSucursalAsync(Sucursal sucursal)
         {
-            if (sucursal == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_VALIDATE };
+            var validationResult = await _validator.ValidateAsync(sucursal);
 
-            if (string.IsNullOrWhiteSpace(sucursal.Nombre_Sucursal) || string.IsNullOrWhiteSpace(sucursal.Direccion_Sucursal) || string.IsNullOrWhiteSpace(sucursal.Ciudad_Sucursal))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_EMPTY };
+            if (!validationResult.IsValid)
+                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
 
-            var regex = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
-            if (!regex.IsMatch(sucursal.Ciudad_Sucursal))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El nombre de la ciudad solo puede contener letras y espacios." };
-
-            if (sucursal.Latitud < -180 || sucursal.Latitud > 180)
-                return new ApiResponse<object> { IsSuccess = false, Message = "Ingrese una latitud válida (ej: -2.224610)." };
-
-            if (sucursal.Longitud < -180 || sucursal.Longitud > 180)
-                return new ApiResponse<object> { IsSuccess = false, Message = "Ingrese una longitud válida (ej: -79.897900)." };
-
-
-            var ofertas = await _sucursalRepository.ListarSucursalesAsync();
-            if (ofertas.Any(c => c.Codigo == sucursal.Codigo))
+            var sucursales = await _sucursalRepository.ListarSucursalesAsync();
+            if (sucursales.Any(c => c.Codigo == sucursal.Codigo))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El código ya existe" };
 
-            if (ofertas.Any(c => c.Nombre_Sucursal?.ToLower() == sucursal.Nombre_Sucursal.ToLower()))
+            if (sucursales.Any(c => c.Nombre_Sucursal?.ToLower() == sucursal.Nombre_Sucursal?.ToLower()))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe" };
 
             var result = await _sucursalRepository.RegistrarSucursalAsync(sucursal);
@@ -95,28 +85,19 @@ namespace DataBaseFirst.Services
         public async Task<ApiResponse<object>> EditarSucursalAsync(Sucursal sucursal)
         {
             if (sucursal == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_VALIDATE };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
 
-            if (string.IsNullOrWhiteSpace(sucursal.Nombre_Sucursal) || string.IsNullOrWhiteSpace(sucursal.Direccion_Sucursal) || string.IsNullOrWhiteSpace(sucursal.Ciudad_Sucursal))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_EMPTY };
+            var validationResult = await _validator.ValidateAsync(sucursal);
+            if (!validationResult.IsValid)
+                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
 
-            var categoriaExistente = await _sucursalRepository.ObtenerSucursalAsync(sucursal.Id_Sucursal);
-            if (categoriaExistente == null)
+            var sucursalExistente = await _sucursalRepository.ObtenerSucursalAsync(sucursal.Id_Sucursal);
+            if (sucursalExistente == null)
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
-
-            var regex = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
-            if (!regex.IsMatch(sucursal.Ciudad_Sucursal))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El nombre de la ciudad solo puede contener letras y espacios." };
-
-            if (sucursal.Latitud < -180 || sucursal.Latitud > 180)
-                return new ApiResponse<object> { IsSuccess = false, Message = "Ingrese una latitud válida (ej: -2.224610)." };
-
-            if (sucursal.Longitud < -180 || sucursal.Longitud > 180)
-                return new ApiResponse<object> { IsSuccess = false, Message = "Ingrese una longitud válida (ej: -79.897900)." };
 
             var categorias = await _sucursalRepository.ListarSucursalesAsync();
             if (categorias.Any(c =>
-                c.Nombre_Sucursal?.ToLower() == sucursal.Nombre_Sucursal.ToLower()
+                c.Nombre_Sucursal?.ToLower() == sucursal.Nombre_Sucursal?.ToLower()
                 && c.Id_Sucursal != sucursal.Id_Sucursal))
             {
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe." };
@@ -134,11 +115,7 @@ namespace DataBaseFirst.Services
             var existe = await _sucursalRepository.ObtenerSucursalAsync(id);
             if (existe == null)
             {
-                return new ApiResponse<int>
-                {
-                    IsSuccess = false,
-                    Message = Mensajes.MESSAGE_QUERY_NOT_FOUND
-                };
+                return new ApiResponse<int> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
             }
 
             var result = await _sucursalRepository.EliminarSucursalAsync(id);

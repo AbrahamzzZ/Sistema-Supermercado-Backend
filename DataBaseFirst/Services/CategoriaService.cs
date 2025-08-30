@@ -2,8 +2,8 @@
 using DataBaseFirst.Repository;
 using DataBaseFirst.Repository.InterfacesRepository;
 using DataBaseFirst.Repository.InterfacesServices;
+using FluentValidation;
 using Microsoft.Data.SqlClient;
-using System.Text.RegularExpressions;
 using Utilities.Shared;
 
 namespace DataBaseFirst.Services
@@ -11,10 +11,12 @@ namespace DataBaseFirst.Services
     public class CategoriaService : ICategoriaService
     {
         private readonly CategoriaRepository _categoriaRepository;
+        private readonly IValidator<Categorium> _validator;
 
-        public CategoriaService(CategoriaRepository categoriaRepository)
+        public CategoriaService(CategoriaRepository categoriaRepository, IValidator<Categorium> validator)
         {
             _categoriaRepository = categoriaRepository;
+            _validator = validator;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -62,21 +64,16 @@ namespace DataBaseFirst.Services
 
         public async Task<ApiResponse<object>> RegistrarCategoriaAsync(Categorium categoria)
         {
-            if (categoria == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_VALIDATE };
+            var validationResult = await _validator.ValidateAsync(categoria);
 
-            if (string.IsNullOrWhiteSpace(categoria.Codigo) || string.IsNullOrWhiteSpace(categoria.Nombre_Categoria))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_EMPTY };
-
-            var regex = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
-            if (!regex.IsMatch(categoria.Nombre_Categoria))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El nombre solo puede contener letras y espacios" };
+            if (!validationResult.IsValid)
+                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
 
             var categorias = await _categoriaRepository.ListarCategoriasAsync();
             if (categorias.Any(c => c.Codigo == categoria.Codigo))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El código ya existe" };
 
-            if (categorias.Any(c => c.Nombre_Categoria?.ToLower() == categoria.Nombre_Categoria.ToLower()))
+            if (categorias.Any(c => c.Nombre_Categoria?.ToLower() == categoria.Nombre_Categoria?.ToLower()))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe" };
 
             var result = await _categoriaRepository.RegistrarCategoriaAsync(categoria);
@@ -89,23 +86,18 @@ namespace DataBaseFirst.Services
         public async Task<ApiResponse<object>> EditarCategoriaAsync(Categorium categoria)
         {
             if (categoria == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_VALIDATE };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
 
-            if (string.IsNullOrWhiteSpace(categoria.Nombre_Categoria))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_EMPTY };
+            var validationResult = await _validator.ValidateAsync(categoria);
+            if (!validationResult.IsValid)
+                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
 
             var categoriaExistente = await _categoriaRepository.ObtenerCategoriaAsync(categoria.Id_Categoria);
             if (categoriaExistente == null)
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
 
-            var regex = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
-            if (!regex.IsMatch(categoria.Nombre_Categoria))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El nombre solo puede contener letras y espacios." };
-
             var categorias = await _categoriaRepository.ListarCategoriasAsync();
-            if (categorias.Any(c =>
-                c.Nombre_Categoria?.ToLower() == categoria.Nombre_Categoria.ToLower()
-                && c.Id_Categoria != categoria.Id_Categoria))
+            if (categorias.Any(c => c.Nombre_Categoria?.ToLower() == categoria.Nombre_Categoria?.ToLower() && c.Id_Categoria != categoria.Id_Categoria))
             {
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe." };
             }
