@@ -25,7 +25,7 @@ public class TestProveedorService
         var result = await _service.RegistrarProveedorAsync(null);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual(Mensajes.MESSAGE_VALIDATE, result.Message);
+        Assert.AreEqual(Mensajes.MESSAGE_NULL, result.Message);
     }
 
     [TestMethod]
@@ -91,7 +91,7 @@ public class TestProveedorService
         var result = await _service.EditarProveedorAsync(null);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual(Mensajes.MESSAGE_VALIDATE, result.Message);
+        Assert.AreEqual(Mensajes.MESSAGE_NULL, result.Message);
     }
 
     [TestMethod]

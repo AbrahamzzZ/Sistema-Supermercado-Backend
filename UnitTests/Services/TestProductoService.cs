@@ -79,7 +79,7 @@ public class TestProductoService
         var result = await _service.RegistrarProductoAsync(null);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual(Mensajes.MESSAGE_VALIDATE, result.Message);
+        Assert.AreEqual(Mensajes.MESSAGE_NULL, result.Message);
     }
 
     [TestMethod]

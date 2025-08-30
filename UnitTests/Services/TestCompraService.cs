@@ -62,7 +62,7 @@ public class TestCompraService
         var result = await _service.RegistrarCompraAsync(null);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual(Mensajes.MESSAGE_VALIDATE, result.Message);
+        Assert.AreEqual(Mensajes.MESSAGE_NULL, result.Message);
     }
 
     [TestMethod]

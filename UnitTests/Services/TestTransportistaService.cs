@@ -25,7 +25,7 @@ public class TestTransportistaService
         var result = await _service.RegistrarTransportistaAsync(null);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual(Mensajes.MESSAGE_VALIDATE, result.Message);
+        Assert.AreEqual(Mensajes.MESSAGE_NULL, result.Message);
     }
 
     [TestMethod]
@@ -91,7 +91,7 @@ public class TestTransportistaService
         var result = await _service.EditarTransportistaAsync(null);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual(Mensajes.MESSAGE_VALIDATE, result.Message);
+        Assert.AreEqual(Mensajes.MESSAGE_NULL, result.Message);
     }
 
     [TestMethod]

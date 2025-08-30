@@ -25,7 +25,7 @@ public class TestUsuarioService
     {
         var result = await _service.RegistrarUsuarioAsync(null);
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual(Mensajes.MESSAGE_VALIDATE, result.Message);
+        Assert.AreEqual(Mensajes.MESSAGE_NULL, result.Message);
     }
 
     [TestMethod]
@@ -94,7 +94,7 @@ public class TestUsuarioService
     {
         var result = await _service.EditarUsuarioAsync(null);
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual(Mensajes.MESSAGE_VALIDATE, result.Message);
+        Assert.AreEqual(Mensajes.MESSAGE_NULL, result.Message);
     }
 
     [TestMethod]
