@@ -46,6 +46,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Configuración de Rate Limiting
 builder.Services.AddRateLimiter(option =>
 {
     option.RejectionStatusCode = 
