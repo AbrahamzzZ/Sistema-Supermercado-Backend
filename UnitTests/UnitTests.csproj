@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\APIRestSistemaVentas\APIRestSistemaVentas.csproj" />
     <ProjectReference Include="..\DataBaseFirst\DataBaseFirst.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

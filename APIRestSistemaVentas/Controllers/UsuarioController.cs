@@ -1,8 +1,8 @@
-﻿using DataBaseFirst.Helpers;
-using DataBaseFirst.Models;
+﻿using DataBaseFirst.Models;
 using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository.InterfacesServices;
-using DataBaseFirst.Services;
+using Infrastructure.Helpers;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Utilities.Shared;
 
