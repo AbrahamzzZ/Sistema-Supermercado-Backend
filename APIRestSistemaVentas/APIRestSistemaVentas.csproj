@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataBaseFirst\DataBaseFirst.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Utilities\Utilities.csproj" />
   </ItemGroup>
 

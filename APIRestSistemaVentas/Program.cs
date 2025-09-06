@@ -1,6 +1,6 @@
 using DataBaseFirst.Contexts;
-using DataBaseFirst.Extensions;
-using DataBaseFirst.Helpers;
+using Infrastructure.Extensions;
+using Infrastructure.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;

@@ -1,6 +1,6 @@
 using APIRestSistemaVentas.Controllers;
 using DataBaseFirst.Models.Dto;
-using DataBaseFirst.Repository.InterfacesServices;
+using Infrastructure.Repository.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Utilities.Shared;
