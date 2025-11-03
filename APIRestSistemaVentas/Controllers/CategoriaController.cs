@@ -1,12 +1,14 @@
 ﻿using DataBaseFirst.Models;
-using DataBaseFirst.Repository.InterfacesServices;
+using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Utilities.Shared;
 
 namespace APIRestSistemaVentas.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriaController : ControllerBase
