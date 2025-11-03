@@ -1,10 +1,12 @@
 ﻿using DataBaseFirst.Models.Dto;
-using DataBaseFirst.Repository.InterfacesServices;
+using Infrastructure.Repository.InterfacesServices;
 using DataBaseFirst.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace APIRestSistemaVentas.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CompraController : ControllerBase

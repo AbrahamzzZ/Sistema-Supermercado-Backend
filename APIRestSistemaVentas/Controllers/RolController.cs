@@ -1,10 +1,12 @@
 ﻿using DataBaseFirst.Models;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Utilities.Shared;
 
 namespace APIRestSistemaVentas.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RolController : ControllerBase

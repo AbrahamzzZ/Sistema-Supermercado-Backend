@@ -1,10 +1,11 @@
 ﻿using DataBaseFirst.Models;
 using DataBaseFirst.Models.Dto;
-using DataBaseFirst.Repository.InterfacesServices;
+using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Helpers;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Utilities.Shared;
+using Microsoft.AspNetCore.Authorization;
 
 namespace APIRestSistemaVentas.Controllers
 {
@@ -24,6 +25,7 @@ namespace APIRestSistemaVentas.Controllers
         }
 
         // GET: api/usuario
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
         {
@@ -31,6 +33,7 @@ namespace APIRestSistemaVentas.Controllers
             return Ok(usuarios);
         }
 
+        [Authorize]
         [HttpGet("paginacion")]
         public async Task<ActionResult<ApiResponse<Paginacion<UsuarioRol>>>> GetUsuariosPaginacion(int pageNumber = 1, int pageSize = 10)
         {
@@ -39,6 +42,7 @@ namespace APIRestSistemaVentas.Controllers
         }
 
         // GET: api/usuario/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<ApiResponse<UsuarioRol>>> GetUsuario(int id)
         {
@@ -62,6 +66,7 @@ namespace APIRestSistemaVentas.Controllers
         }
 
         // POST: api/usuario
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<ApiResponse<object>>>  RegistrarUsuario([FromBody] Usuario usuario)
         {
@@ -70,6 +75,7 @@ namespace APIRestSistemaVentas.Controllers
         }
 
         // PUT: api/usuario/5
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult<ApiResponse<object>>> EditarUsuario(int id, [FromBody] Usuario usuario)
         {
@@ -78,6 +84,7 @@ namespace APIRestSistemaVentas.Controllers
         }
 
         // DELETE: api/usuario/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiResponse<int>>> EliminarUsuario(int id)
         {
