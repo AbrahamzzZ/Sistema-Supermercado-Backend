@@ -4,6 +4,7 @@ using DataBaseFirst.Repository.InterfacesRepository;
 using FluentValidation;
 using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesServices;
+using Utilities.IA;
 using Utilities.Shared;
 using WebApiRest.Dto;
 
@@ -13,11 +14,13 @@ namespace Infrastructure.Services
     {
         private readonly NegocioRepository _negocioRepository;
         private readonly IValidator<Negocio> _validator;
+        private readonly OllamaClient _ollama;
 
-        public NegocioService(NegocioRepository negocioRepository, IValidator<Negocio> validator)
+        public NegocioService(NegocioRepository negocioRepository, IValidator<Negocio> validator, OllamaClient ollama)
         {
             _negocioRepository = negocioRepository;
             _validator = validator;
+            _ollama = ollama;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -32,8 +35,8 @@ namespace Infrastructure.Services
         public async Task<ApiResponse<Negocio>> ObtenerNegocioAsync(int idNegocio)
         {
             var negocio = await _negocioRepository.ObtenerNegocioAsync(idNegocio);
-            if(negocio == null)
-                return new ApiResponse<Negocio> {IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND};
+            if (negocio == null)
+                return new ApiResponse<Negocio> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
 
             return new ApiResponse<Negocio> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = negocio };
         }
@@ -63,7 +66,7 @@ namespace Infrastructure.Services
             var lista = await _negocioRepository.ObtenerProductoMasComprado();
 
             if (lista == null)
-                return new ApiResponse<List<ProductoMasComprado>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY};
+                return new ApiResponse<List<ProductoMasComprado>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
 
             return new ApiResponse<List<ProductoMasComprado>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
         }
@@ -76,6 +79,43 @@ namespace Infrastructure.Services
                 return new ApiResponse<List<ProductoMasVendido>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
 
             return new ApiResponse<List<ProductoMasVendido>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
+        }
+
+
+        public async Task<ApiResponse<object>> ObtenerProductoMasVendidoIA()
+        {
+            var lista = await _negocioRepository.ObtenerProductoMasVendido();
+
+            if (lista == null || lista.Count == 0)
+                return new ApiResponse<object> { IsSuccess = false, Message = "No hay datos." };
+
+            // Convertimos los datos a texto para enviarlos a la IA
+            string texto = string.Join("\n", lista.Select(x =>
+                $"{x.Nombre_Producto}: {x.Cantidad_Vendida} unidades"));
+
+            string prompt = $@"
+Analiza estos productos y sus cantidades vendidas:
+
+{texto}
+
+Genera un análisis corto, en tono profesional, indicando:
+- Cuáles son los productos más vendidos
+- Qué patrón general observas
+- Si parece haber una tendencia reciente
+";
+
+            string analisisIA = await _ollama.GenerateAsync(prompt);
+
+            return new ApiResponse<object>
+            {
+                IsSuccess = true,
+                Message = "Análisis generado",
+                Data = new
+                {
+                    productos = lista,
+                    analisis = analisisIA
+                }
+            };
         }
 
         public async Task<ApiResponse<List<TopCliente>>> ObtenerTopClientes()
