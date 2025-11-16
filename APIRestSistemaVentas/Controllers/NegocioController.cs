@@ -62,6 +62,13 @@ namespace APIRestSistemaVentas.Controllers
             return response.IsSuccess ? Ok(response) : NotFound(response);
         }
 
+        [HttpGet("producto-mas-vendido-ia")]
+        public async Task<ActionResult<ApiResponse<object>>> ProductoMasVendidoIA()
+        {
+            var response = await _negocioService.ObtenerProductoMasVendidoIA();
+            return response.IsSuccess ? Ok(response) : NotFound(response);
+        }
+
         // GET: api/negocio/top-clientes
         [HttpGet("top-clientes")]
         public async Task<ActionResult<List<TopCliente>>> ObtenerTopClientes()
