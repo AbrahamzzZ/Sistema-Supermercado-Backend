@@ -1,11 +1,13 @@
 using DataBaseFirst.Contexts;
 using Infrastructure.Extensions;
 using Infrastructure.Helpers;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Utilities.IA;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,11 @@ builder.Services.AddRepositories();
 builder.Services.AddServices();
 builder.Services.AddValidators();
 builder.Services.AddSingleton<Token>();
+builder.Services.AddHttpClient<OllamaClient>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:11434");
+    client.Timeout = Timeout.InfiniteTimeSpan; 
+});
 
 // JWT Auth
 builder.Services.AddAuthentication(options =>
