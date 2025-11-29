@@ -7,16 +7,13 @@ namespace Utilities.Security
     {
         public static string EncriptarSHA256(string input)
         {
-            using (SHA256 sha256 = SHA256.Create())
+            byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(input));
+            StringBuilder resultado = new();
+            foreach (byte b in bytes)
             {
-                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
-                StringBuilder resultado = new StringBuilder();
-                foreach (byte b in bytes)
-                {
-                    resultado.Append(b.ToString("x2"));
-                }
-                return resultado.ToString();
+                resultado.Append(b.ToString("x2"));
             }
+            return resultado.ToString();
         }
     }
 }

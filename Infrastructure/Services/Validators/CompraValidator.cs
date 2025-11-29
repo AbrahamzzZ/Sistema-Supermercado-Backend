@@ -1,4 +1,4 @@
-﻿using DataBaseFirst.Models.Dto;
+﻿using Domain.Models.Dto.Compra;
 using FluentValidation;
 using Utilities.Shared;
 

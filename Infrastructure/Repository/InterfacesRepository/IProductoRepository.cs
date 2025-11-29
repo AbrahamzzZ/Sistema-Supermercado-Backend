@@ -1,8 +1,8 @@
-﻿using DataBaseFirst.Models;
-using DataBaseFirst.Models.Dto;
+﻿using Domain.Models;
+using Domain.Models.Dto;
 using Utilities.Shared;
 
-namespace DataBaseFirst.Repository.InterfacesRepository
+namespace Infrastructure.Repository.InterfacesRepository
 {
     public interface IProductoRepository
     {

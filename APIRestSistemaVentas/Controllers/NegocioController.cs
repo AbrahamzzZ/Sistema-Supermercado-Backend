@@ -1,11 +1,10 @@
-﻿using DataBaseFirst.Models;
-using DataBaseFirst.Models.Dto;
+﻿using Domain.Models;
+using Domain.Models.Dto.Negocio;
 using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Utilities.Shared;
-using WebApiRest.Dto;
 
 namespace APIRestSistemaVentas.Controllers
 {

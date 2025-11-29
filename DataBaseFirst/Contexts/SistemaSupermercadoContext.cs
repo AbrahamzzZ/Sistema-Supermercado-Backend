@@ -1,8 +1,10 @@
 ﻿using DataBaseFirst.Models;
 using DataBaseFirst.Models.Dto;
+using DataBaseFirst.Models.Dto.Compra;
+using DataBaseFirst.Models.Dto.Negocio;
+using DataBaseFirst.Models.Dto.Venta;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using WebApiRest.Dto;
 
 namespace DataBaseFirst.Contexts;
 

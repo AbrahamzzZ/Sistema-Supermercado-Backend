@@ -1,4 +1,5 @@
-using DataBaseFirst.Contexts;
+using APIRestSistemaVentas.Middleware;
+using Domain.Contexts;
 using Infrastructure.Extensions;
 using Infrastructure.Helpers;
 using Infrastructure.Services;
@@ -123,6 +124,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("NuevaPolitica");
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseRouting();
 

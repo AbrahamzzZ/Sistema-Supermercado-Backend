@@ -1,12 +1,12 @@
-﻿using DataBaseFirst.Models.Dto;
-using DataBaseFirst.Repository.InterfacesRepository;
+﻿using Domain.Models.Dto.Compra;
+using Infrastructure.Repository.InterfacesRepository;
 using FluentValidation;
 using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesServices;
 using Utilities.Shared;
 
 
-namespace DataBaseFirst.Services
+namespace Infrastructure.Services
 {
     public class CompraService : ICompraService
     {
@@ -23,6 +23,7 @@ namespace DataBaseFirst.Services
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
         /*readonly ICompraRepository _compraRepository;
+        private readonly IValidator<Compras> _validator;
 
         public CompraService(ICompraRepository compraRepository)
         {

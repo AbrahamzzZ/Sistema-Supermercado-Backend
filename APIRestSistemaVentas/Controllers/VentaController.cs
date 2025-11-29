@@ -1,4 +1,4 @@
-﻿using DataBaseFirst.Models.Dto;
+﻿using Domain.Models.Dto.Venta;
 using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;

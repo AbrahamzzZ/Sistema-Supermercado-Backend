@@ -1,6 +1,6 @@
-﻿using DataBaseFirst.Contexts;
-using DataBaseFirst.Models;
-using DataBaseFirst.Models.Dto;
+﻿using Domain.Contexts;
+using Domain.Models;
+using Domain.Models.Dto;
 using Infrastructure.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;

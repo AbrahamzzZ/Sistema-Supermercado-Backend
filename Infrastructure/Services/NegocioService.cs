@@ -1,12 +1,11 @@
-﻿using DataBaseFirst.Models;
-using DataBaseFirst.Models.Dto;
-using DataBaseFirst.Repository.InterfacesRepository;
+﻿using Domain.Models;
+using Domain.Models.Dto.Negocio;
+using Infrastructure.Repository.InterfacesRepository;
 using FluentValidation;
 using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesServices;
 using Utilities.IA;
 using Utilities.Shared;
-using WebApiRest.Dto;
 
 namespace Infrastructure.Services
 {
@@ -26,10 +25,12 @@ namespace Infrastructure.Services
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
         /*readonly INegocioRepository _negocioRepository;
+        private readonly IValidator<Negocio> _validator;
 
-        public NegocioService(INegocioRepository negocioRepository)
+        public NegocioService(INegocioRepository negocioRepository, IValidator<Negocio> validator)
         {
             _negocioRepository = negocioRepository;
+            _validator = validator;
         }*/
 
         public async Task<ApiResponse<Negocio>> ObtenerNegocioAsync(int idNegocio)
@@ -90,20 +91,17 @@ namespace Infrastructure.Services
                 return new ApiResponse<object> { IsSuccess = false, Message = "No hay datos." };
 
             // Convertimos los datos a texto para enviarlos a la IA
-            string texto = string.Join("\n", lista.Select(x =>
-                $"{x.Nombre_Producto}: {x.Cantidad_Vendida} unidades"));
+            string texto = string.Join("\n", lista.Select(x => $"{x.Nombre_Producto}: {x.Cantidad_Vendida} unidades"));
 
-            string prompt = $@"
-Analiza estos productos y sus cantidades vendidas:
+            string prompt = $@"Analiza estos productos y sus cantidades vendidas: {texto}
+            Formato requerido:
+            - Producto más vendido.
+            - Comparación rápida entre productos.
+            - Si existe o no una tendencia clara.
 
-{texto}
-
-Genera un análisis corto, en tono profesional, indicando:
-- Cuáles son los productos más vendidos
-- Qué patrón general observas
-- Si parece haber una tendencia reciente
-";
-
+            No escribas más de 5 líneas.
+            Sé directo e informativo.
+            ";
             string analisisIA = await _ollama.GenerateAsync(prompt);
 
             return new ApiResponse<object>

@@ -1,4 +1,4 @@
-﻿using DataBaseFirst.Models;
+﻿using Domain.Models;
 using Utilities.Shared;
 
 namespace Infrastructure.Repository.InterfacesServices
