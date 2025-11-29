@@ -1,10 +1,9 @@
-using DataBaseFirst.Models;
-using DataBaseFirst.Models.Dto;
+using Domain.Models;
+using Domain.Models.Dto.Negocio;
 using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Services;
 using Moq;
 using Utilities.Shared;
-using WebApiRest.Dto;
 
 namespace UnitTests.Services;
 

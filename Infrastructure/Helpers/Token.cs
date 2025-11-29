@@ -1,5 +1,5 @@
-﻿using DataBaseFirst.Models;
-using DataBaseFirst.Models.Dto;
+﻿using Domain.Models;
+using Domain.Models.Dto;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

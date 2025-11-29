@@ -1,8 +1,8 @@
-﻿using DataBaseFirst.Models.Dto;
-using Infrastructure.Repository.InterfacesServices;
-using DataBaseFirst.Services;
+﻿using Infrastructure.Repository.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Domain.Models.Dto.Compra;
+using Infrastructure.Services;
 
 namespace APIRestSistemaVentas.Controllers
 {

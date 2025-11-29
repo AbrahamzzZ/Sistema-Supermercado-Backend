@@ -1,5 +1,5 @@
-﻿using DataBaseFirst.Models;
-using DataBaseFirst.Models.Dto;
+﻿using Domain.Models;
+using Domain.Models.Dto;
 using Utilities.Shared;
 
 namespace Infrastructure.Repository.InterfacesServices

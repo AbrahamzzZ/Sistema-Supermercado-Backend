@@ -1,4 +1,4 @@
-﻿using DataBaseFirst.Models;
+﻿using Domain.Models;
 using FluentValidation;
 using Utilities.Shared;
 

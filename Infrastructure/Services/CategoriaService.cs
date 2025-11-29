@@ -1,4 +1,4 @@
-﻿using DataBaseFirst.Models;
+﻿using Domain.Models;
 using Infrastructure.Repository.InterfacesRepository;
 using FluentValidation;
 using Infrastructure.Repository;
@@ -22,10 +22,12 @@ namespace Infrastructure.Services
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
         
         /*readonly ICategoriaRepository _categoriaRepository;
+        private readonly IValidator<Categorium> _validator;
 
-        public CategoriaService(ICategoriaRepository categoriaRepository)
+        public CategoriaService(ICategoriaRepository categoriaRepository, IValidator<Categorium> validator)
         {
             _categoriaRepository = categoriaRepository;
+            _validator = validator;
         }*/
 
         public async Task<ApiResponse<List<Categorium>>> ListarCategoriasAsync()

@@ -1,4 +1,4 @@
-﻿using DataBaseFirst.Models.Dto;
+﻿using Domain.Models.Dto.Venta;
 using Utilities.Shared;
 
 namespace Infrastructure.Repository.InterfacesServices

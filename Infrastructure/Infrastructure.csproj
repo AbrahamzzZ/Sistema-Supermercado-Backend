@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataBaseFirst\DataBaseFirst.csproj" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Utilities\Utilities.csproj" />
   </ItemGroup>
 

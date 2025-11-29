@@ -1,5 +1,5 @@
 using APIRestSistemaVentas.Controllers;
-using DataBaseFirst.Models;
+using Domain.Models;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

@@ -1,4 +1,4 @@
-﻿using DataBaseFirst.Models;
+﻿using Domain.Models;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

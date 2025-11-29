@@ -1,8 +1,10 @@
-﻿using DataBaseFirst.Models;
-using DataBaseFirst.Models.Dto;
-using DataBaseFirst.Services;
+﻿using Domain.Models;
+using Domain.Models.Dto.Compra;
+using Domain.Models.Dto.Venta;
 using FluentValidation;
 using Infrastructure.Repository;
+using Infrastructure.Repository.InterfacesRepository;
+using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Infrastructure.Services.Validators;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +20,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<ProveedorRepository>();
             services.AddScoped<RolRepository>();
             services.AddScoped<TransportistaRepository>();
+            services.AddScoped<ILogRepository, LogRepository>();
             services.AddScoped<UsuarioRepository>();
             services.AddScoped<NegocioRepository>();
             services.AddScoped<ProductoRepository>();
@@ -36,6 +39,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<MenuService>();
             services.AddScoped<RolService>();
             services.AddScoped<TransportistaService>();
+            services.AddScoped<ILogService, LogService>();
             services.AddScoped<UsuarioService>();
             services.AddScoped<NegocioService>();
             services.AddScoped<ProductoService>();

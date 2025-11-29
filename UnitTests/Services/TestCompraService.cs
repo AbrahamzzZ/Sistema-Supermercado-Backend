@@ -1,6 +1,6 @@
-using DataBaseFirst.Models;
-using DataBaseFirst.Models.Dto;
-using DataBaseFirst.Services;
+using Domain.Models;
+using Domain.Models.Dto.Compra;
+using Infrastructure.Services;
 using Infrastructure.Repository.InterfacesRepository;
 using Moq;
 using Utilities.Shared;

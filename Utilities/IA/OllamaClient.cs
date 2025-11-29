@@ -12,7 +12,7 @@ namespace Utilities.IA
             _http.BaseAddress = new Uri("http://localhost:11434");
         }
 
-        public async Task<string> GenerateAsync(string prompt, string model = "deepseek-r1:8b")
+        public async Task<string> GenerateAsync(string prompt, string model = "qwen3:8b")
         {
             var body = new
             {

@@ -1,4 +1,4 @@
-﻿using DataBaseFirst.Models;
+﻿using Domain.Models;
 
 namespace Infrastructure.Repository.InterfacesRepository
 {

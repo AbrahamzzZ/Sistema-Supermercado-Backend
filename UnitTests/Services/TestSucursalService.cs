@@ -1,4 +1,4 @@
-using DataBaseFirst.Models;
+using Domain.Models;
 using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Services;
 using Moq;

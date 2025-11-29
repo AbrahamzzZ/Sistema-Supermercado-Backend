@@ -1,6 +1,5 @@
-﻿using DataBaseFirst.Models;
-using DataBaseFirst.Models.Dto;
-using WebApiRest.Dto;
+﻿using Domain.Models;
+using Domain.Models.Dto.Negocio;
 
 namespace Infrastructure.Repository.InterfacesRepository
 {

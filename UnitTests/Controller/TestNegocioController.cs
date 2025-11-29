@@ -1,11 +1,10 @@
 using APIRestSistemaVentas.Controllers;
-using DataBaseFirst.Models;
-using DataBaseFirst.Models.Dto;
+using Domain.Models;
+using Domain.Models.Dto.Negocio;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Utilities.Shared;
-using WebApiRest.Dto;
 
 namespace UnitTests.Controller;
 

@@ -1,5 +1,5 @@
-﻿using DataBaseFirst.Models.Dto;
-using DataBaseFirst.Repository.InterfacesRepository;
+﻿using Domain.Models.Dto.Venta;
+using Infrastructure.Repository.InterfacesRepository;
 using FluentValidation;
 using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesServices;
@@ -21,10 +21,11 @@ namespace Infrastructure.Services
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
         /*readonly IVentaRepository _ventaRepository;
-
-        public VentaService(IVentaRepository ventaRepository)
+        private readonly IValidator<Ventas> _validator;
+        public VentaService(IVentaRepository ventaRepository, IValidator<Ventas> validator)
         {
             _ventaRepository = ventaRepository;
+            _validator = validator;
         }*/
 
         public async Task<ApiResponse<string>> ObtenerNumeroDocumentoAsync()

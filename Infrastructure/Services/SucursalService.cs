@@ -1,5 +1,5 @@
-﻿using DataBaseFirst.Models;
-using DataBaseFirst.Repository.InterfacesRepository;
+﻿using Domain.Models;
+using Infrastructure.Repository.InterfacesRepository;
 using FluentValidation;
 using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesServices;
@@ -21,10 +21,12 @@ namespace Infrastructure.Services
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
         /*readonly ISucursalRepository _sucursalRepository;
+        private readonly IValidator<Sucursal> _validator;
 
-        public SucursalService(ISucursalRepository sucursalRepository)
+        public SucursalService(ISucursalRepository sucursalRepository, IValidator<Sucursal> validator)
         {
             _sucursalRepository = sucursalRepository;
+            _validator = validator;
         }*/
 
         public async Task<ApiResponse<List<Sucursal>>> ListarSucursalesAsync()

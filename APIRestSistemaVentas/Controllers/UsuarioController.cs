@@ -1,5 +1,5 @@
-﻿using DataBaseFirst.Models;
-using DataBaseFirst.Models.Dto;
+﻿using Domain.Models;
+using Domain.Models.Dto;
 using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Helpers;
 using Infrastructure.Services;
