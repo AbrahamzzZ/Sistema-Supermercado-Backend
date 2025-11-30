@@ -31,6 +31,6 @@ namespace Utilities.IA
 
     public class OllamaResponse
     {
-        public string response { get; set; }
+        public string? response { get; set; }
     }
 }
