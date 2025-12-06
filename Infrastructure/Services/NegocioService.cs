@@ -66,10 +66,40 @@ namespace Infrastructure.Services
         {
             var lista = await _negocioRepository.ObtenerProductoMasComprado();
 
-            if (lista == null)
+            if (lista == null || lista.Count == 0)
                 return new ApiResponse<List<ProductoMasComprado>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
 
             return new ApiResponse<List<ProductoMasComprado>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
+        }
+
+        public async Task<ApiResponse<object>> ObtenerProductoMasCompradoIA(string promptUsuario)
+        {
+            var lista = await _negocioRepository.ObtenerAnalisisProductosComprados();
+
+            if (lista == null || lista.Count == 0)
+                return new ApiResponse<object> { IsSuccess = false, Message = "No hay datos." };
+
+            // Convertimos los datos a texto para añadirlos al prompt del usuario
+            string datos = string.Join("\n", lista.Select(x =>
+                $"{x.Nombre_Producto}: {x.Cantidad_Comprada} unidades"
+            ));
+
+            string prompt = $@"
+            Datos de productos más vendidos: {datos}
+            Instrucción del usuario: {promptUsuario}";
+
+            string analisisIA = await _ollama.GenerateAsync(prompt);
+
+            return new ApiResponse<object>
+            {
+                IsSuccess = true,
+                Message = "Análisis generado",
+                Data = new
+                {
+                    productos = lista,
+                    analisis = analisisIA
+                }
+            };
         }
 
         public async Task<ApiResponse<List<ProductoMasVendido>>> ObtenerProductoMasVendido()
@@ -83,25 +113,22 @@ namespace Infrastructure.Services
         }
 
 
-        public async Task<ApiResponse<object>> ObtenerProductoMasVendidoIA()
+        public async Task<ApiResponse<object>> ObtenerProductoMasVendidoIA(string promptUsuario)
         {
-            var lista = await _negocioRepository.ObtenerProductoMasVendido();
+            var lista = await _negocioRepository.ObtenerAnalisisProductosVendidos();
 
             if (lista == null || lista.Count == 0)
                 return new ApiResponse<object> { IsSuccess = false, Message = "No hay datos." };
 
-            // Convertimos los datos a texto para enviarlos a la IA
-            string texto = string.Join("\n", lista.Select(x => $"{x.Nombre_Producto}: {x.Cantidad_Vendida} unidades"));
+            // Convertimos los datos a texto para añadirlos al prompt del usuario
+            string datos = string.Join("\n", lista.Select(x =>
+                $"{x.Nombre_Producto}: {x.Cantidad_Vendida} unidades"
+            ));
 
-            string prompt = $@"Analiza estos productos y sus cantidades vendidas: {texto}
-            Formato requerido:
-            - Producto más vendido.
-            - Comparación rápida entre productos.
-            - Si existe o no una tendencia clara.
+            string prompt = $@"
+            Datos de productos más vendidos: {datos}
+            Instrucción del usuario: {promptUsuario} ";
 
-            No escribas más de 5 líneas.
-            Sé directo e informativo.
-            ";
             string analisisIA = await _ollama.GenerateAsync(prompt);
 
             return new ApiResponse<object>

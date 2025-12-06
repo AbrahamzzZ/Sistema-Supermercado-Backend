@@ -21,8 +21,4 @@
     <PackageReference Include="Microsoft.SqlServer.Types" Version="170.1000.7" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Dto\Negocio\IA\" />
-  </ItemGroup>
-
 </Project>

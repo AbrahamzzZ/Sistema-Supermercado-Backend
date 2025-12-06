@@ -16,21 +16,24 @@ namespace Utilities.IA
         {
             var body = new
             {
-                model = model,
-                prompt = prompt,
+                model,
+                prompt,
                 stream = false
             };
 
             var response = await _http.PostAsJsonAsync("/api/generate", body);
 
+            if (!response.IsSuccessStatusCode)
+                return $"Error en IA: {response.StatusCode}";
+
             var result = await response.Content.ReadFromJsonAsync<OllamaResponse>();
 
-            return result?.response ?? string.Empty;
+            return result?.Response ?? "Sin respuesta generada.";
         }
     }
 
     public class OllamaResponse
     {
-        public string? response { get; set; }
+        public string? Response { get; set; }
     }
 }
