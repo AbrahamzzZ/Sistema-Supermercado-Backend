@@ -2,6 +2,7 @@
 using Domain.Models.Dto;
 using Domain.Models.Dto.Compra;
 using Domain.Models.Dto.Negocio;
+using Domain.Models.Dto.Negocio.IA;
 using Domain.Models.Dto.Venta;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -75,7 +76,11 @@ public partial class SistemaSupermercadoContext : DbContext
 
     public DbSet<ProductoMasComprado> ProductoMasComprados { get; set; }
 
+    public DbSet<ProductoMasCompradoAnalisisIA> ProductoMasCompradosAnalisis { get; set; }
+
     public DbSet<ProductoMasVendido> ProductoMasVendidos { get; set; }
+
+    public DbSet<ProductoMasVendidoAnalisisIA> ProductoMasVendidosAnalisis { get; set; }
 
     public DbSet<TopCliente> TopClientes { get; set; }
 
@@ -195,7 +200,11 @@ public partial class SistemaSupermercadoContext : DbContext
 
         modelBuilder.Entity<ProductoMasComprado>().HasNoKey().ToView(null);
 
+        modelBuilder.Entity<ProductoMasCompradoAnalisisIA>().HasNoKey().ToView(null);
+
         modelBuilder.Entity<ProductoMasVendido>().HasNoKey().ToView(null);
+
+        modelBuilder.Entity<ProductoMasVendidoAnalisisIA>().HasNoKey().ToView(null);
 
         modelBuilder.Entity<TopProveedor>().HasNoKey().ToView(null);
 

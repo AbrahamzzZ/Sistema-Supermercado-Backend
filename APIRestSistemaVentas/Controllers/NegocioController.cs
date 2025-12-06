@@ -4,6 +4,7 @@ using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Utilities.IA;
 using Utilities.Shared;
 
 namespace APIRestSistemaVentas.Controllers
@@ -53,6 +54,13 @@ namespace APIRestSistemaVentas.Controllers
             return response.IsSuccess ? Ok(response) : NotFound(response);
         }
 
+        [HttpPost("producto-mas-comprado-ia")]
+        public async Task<ActionResult> ProductoMasCompradoIA([FromBody] AnalisisIARequest request)
+        {
+            var response = await _negocioService.ObtenerProductoMasCompradoIA(request.Prompt);
+            return response.IsSuccess ? Ok(response) : BadRequest(response);
+        }
+
         // GET: api/negocio/producto-mas-vendido
         [HttpGet("producto-mas-vendido")]
         public async Task<ActionResult<List<ProductoMasVendido>>> ObtenerProductosMasVendidos()
@@ -61,11 +69,11 @@ namespace APIRestSistemaVentas.Controllers
             return response.IsSuccess ? Ok(response) : NotFound(response);
         }
 
-        [HttpGet("producto-mas-vendido-ia")]
-        public async Task<ActionResult<ApiResponse<object>>> ProductoMasVendidoIA()
+        [HttpPost("producto-mas-vendido-ia")]
+        public async Task<ActionResult> ProductoMasVendidoIA([FromBody] AnalisisIARequest request)
         {
-            var response = await _negocioService.ObtenerProductoMasVendidoIA();
-            return response.IsSuccess ? Ok(response) : NotFound(response);
+            var response = await _negocioService.ObtenerProductoMasVendidoIA(request.Prompt);
+            return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
         // GET: api/negocio/top-clientes
