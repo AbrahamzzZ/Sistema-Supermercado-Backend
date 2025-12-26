@@ -1,23 +1,28 @@
 ﻿using Domain.Models;
 using Domain.Models.Dto.Negocio;
-using Infrastructure.Repository.InterfacesRepository;
 using FluentValidation;
 using Infrastructure.Repository;
+using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Repository.InterfacesServices;
 using Utilities.IA;
 using Utilities.Shared;
+using static Utilities.IA.Reglas;
 
 namespace Infrastructure.Services
 {
     public class NegocioService : INegocioService
     {
         private readonly NegocioRepository _negocioRepository;
+        private readonly ProductoRepository _productoRepository;
+        private readonly CategoriaRepository _categoriaRepository;
         private readonly IValidator<Negocio> _validator;
         private readonly OllamaClient _ollama;
 
-        public NegocioService(NegocioRepository negocioRepository, IValidator<Negocio> validator, OllamaClient ollama)
+        public NegocioService(NegocioRepository negocioRepository, ProductoRepository productoRepository, CategoriaRepository categoriaRepository, IValidator<Negocio> validator, OllamaClient ollama)
         {
             _negocioRepository = negocioRepository;
+            _productoRepository = productoRepository;
+            _categoriaRepository = categoriaRepository;
             _validator = validator;
             _ollama = ollama;
         }
@@ -72,36 +77,6 @@ namespace Infrastructure.Services
             return new ApiResponse<List<ProductoMasComprado>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
         }
 
-        public async Task<ApiResponse<object>> ObtenerProductoMasCompradoIA(string promptUsuario)
-        {
-            var lista = await _negocioRepository.ObtenerAnalisisProductosComprados();
-
-            if (lista == null || lista.Count == 0)
-                return new ApiResponse<object> { IsSuccess = false, Message = "No hay datos." };
-
-            // Convertimos los datos a texto para añadirlos al prompt del usuario
-            string datos = string.Join("\n", lista.Select(x =>
-                $"{x.Nombre_Producto}: {x.Cantidad_Comprada} unidades"
-            ));
-
-            string prompt = $@"
-            Datos de productos más vendidos: {datos}
-            Instrucción del usuario: {promptUsuario}";
-
-            string analisisIA = await _ollama.GenerateAsync(prompt);
-
-            return new ApiResponse<object>
-            {
-                IsSuccess = true,
-                Message = "Análisis generado",
-                Data = new
-                {
-                    productos = lista,
-                    analisis = analisisIA
-                }
-            };
-        }
-
         public async Task<ApiResponse<List<ProductoMasVendido>>> ObtenerProductoMasVendido()
         {
             var lista = await _negocioRepository.ObtenerProductoMasVendido();
@@ -112,34 +87,65 @@ namespace Infrastructure.Services
             return new ApiResponse<List<ProductoMasVendido>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
         }
 
-
-        public async Task<ApiResponse<object>> ObtenerProductoMasVendidoIA(string promptUsuario)
+        public async Task<ApiResponse<object>> AnalisisIA(string promptUsuario)
         {
-            var lista = await _negocioRepository.ObtenerAnalisisProductosVendidos();
+            var tipo = Reglas.DetectarTipoAnalisis(promptUsuario);
 
-            if (lista == null || lista.Count == 0)
-                return new ApiResponse<object> { IsSuccess = false, Message = "No hay datos." };
+            if (tipo == TipoAnalisis.Invalido)
+            {
+                return new ApiResponse<object>
+                {
+                    IsSuccess = false,
+                    Message = Mensajes.MESSAGE_IA_FAILLED
+                };
+            }
 
-            // Convertimos los datos a texto para añadirlos al prompt del usuario
-            string datos = string.Join("\n", lista.Select(x =>
-                $"{x.Nombre_Producto}: {x.Cantidad_Vendida} unidades"
-            ));
+            string datos;
 
-            string prompt = $@"
-            Datos de productos más vendidos: {datos}
-            Instrucción del usuario: {promptUsuario} ";
+            switch (tipo)
+            {
+                case TipoAnalisis.Producto:
+                    var productos = await _productoRepository.ListarProductosAsync();
+                    datos = string.Join("\n", productos.Select(x => $"{x.Nombre_Producto}: {x.Stock} unidades"));
+                    break;
 
-            string analisisIA = await _ollama.GenerateAsync(prompt);
+                case TipoAnalisis.Categoria:
+                    var categorias = await _categoriaRepository.ListarCategoriasAsync();
+                    datos = string.Join("\n", categorias.Select(x => $"{x.Nombre_Categoria}"));
+                    break;
+
+                case TipoAnalisis.Cliente:
+                    var clientes = await _negocioRepository.ObtenerTopClientes();
+                    datos = string.Join("\n", clientes.Select(x => $"{x.Nombre_Completo}: {x.Compras_Totales} compras"));
+                    break;
+
+                case TipoAnalisis.Comprado:
+                    var comprados = await _negocioRepository.ObtenerAnalisisProductosComprados();
+                    datos = string.Join("\n", comprados.Select(x => $"{x.Nombre_Producto}: {x.Cantidad_Comprada} unidades"));
+                    break;
+
+                case TipoAnalisis.Vendido:
+                    var vendidos = await _negocioRepository.ObtenerAnalisisProductosVendidos();
+                    datos = string.Join("\n", vendidos.Select(x => $"{x.Nombre_Producto}: {x.Cantidad_Vendida} unidades"));
+                    break;
+
+                default:
+                    return new ApiResponse<object>
+                    {
+                        IsSuccess = false,
+                        Message = Mensajes.MESSAGE_IA_FAILLED
+                    };
+            }
+
+            string promptFinal = $@" Analiza los siguientes datos del sistema de ventas: {datos} Solicitud del usuario: {promptUsuario}. Una respuesta clara y máximo de 5 líneas.";
+
+            var respuesta = await _ollama.GenerateAsync(promptFinal);
 
             return new ApiResponse<object>
             {
                 IsSuccess = true,
-                Message = "Análisis generado",
-                Data = new
-                {
-                    productos = lista,
-                    analisis = analisisIA
-                }
+                Message = Mensajes.MESSAGE_IA,
+                Data = respuesta
             };
         }
 

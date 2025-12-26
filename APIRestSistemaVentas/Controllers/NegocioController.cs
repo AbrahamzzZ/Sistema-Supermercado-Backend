@@ -54,13 +54,6 @@ namespace APIRestSistemaVentas.Controllers
             return response.IsSuccess ? Ok(response) : NotFound(response);
         }
 
-        [HttpPost("producto-mas-comprado-ia")]
-        public async Task<ActionResult> ProductoMasCompradoIA([FromBody] AnalisisIARequest request)
-        {
-            var response = await _negocioService.ObtenerProductoMasCompradoIA(request.Prompt);
-            return response.IsSuccess ? Ok(response) : BadRequest(response);
-        }
-
         // GET: api/negocio/producto-mas-vendido
         [HttpGet("producto-mas-vendido")]
         public async Task<ActionResult<List<ProductoMasVendido>>> ObtenerProductosMasVendidos()
@@ -69,10 +62,10 @@ namespace APIRestSistemaVentas.Controllers
             return response.IsSuccess ? Ok(response) : NotFound(response);
         }
 
-        [HttpPost("producto-mas-vendido-ia")]
-        public async Task<ActionResult> ProductoMasVendidoIA([FromBody] AnalisisIARequest request)
+        [HttpPost("analisis-ia")]
+        public async Task<ActionResult> AnalisisIA([FromBody] AnalisisIARequest request)
         {
-            var response = await _negocioService.ObtenerProductoMasVendidoIA(request.Prompt);
+            var response = await _negocioService.AnalisisIA(request.Prompt);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
