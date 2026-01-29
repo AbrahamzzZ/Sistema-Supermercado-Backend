@@ -16,10 +16,17 @@ var builder = WebApplication.CreateBuilder(args);
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var claveSecreta = jwtSettings.GetValue<string>("Key");
 
-// Agregar DbContext con la cadena de conexión del appsettings.json
+// Configuración del docker para la base de datos
+string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("CadenaSQL");
 builder.Services.AddDbContext<SistemaSupermercadoContext>(options =>
+{
+    options.UseSqlServer(connectionString);
+});
+
+// Agregar DbContext con la cadena de conexión del appsettings.json
+/*builder.Services.AddDbContext<SistemaSupermercadoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CadenaSQL"))
-);
+);*/
 
 // Inyección de dependencias separada en métodos de extensión
 builder.Services.AddRepositories();

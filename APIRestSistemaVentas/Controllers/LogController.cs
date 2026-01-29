@@ -28,7 +28,7 @@ namespace APIRestSistemaVentas.Controllers
 
         // GET: api/log/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Categorium>> GetLog(int id)
+        public async Task<ActionResult<Log>> GetLog(int id)
         {
             var response = await _logService.ObtenerLogAsync(id);
             return response.IsSuccess ? Ok(response) : NotFound(response);
