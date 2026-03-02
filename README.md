@@ -69,7 +69,7 @@ https://ollama.com
 
 ollama pull qwen3:8b
 
-**Editar OllamaClient.cs**
+3. Editar OllamaClient.cs
 
 cd Backend\Utilities\IA
 
@@ -84,6 +84,11 @@ git clone <https://github.com/AbrahamzzZ/Sistema-Supermercado-Backend.git>
 
 **Entrar a la carpeta del backend**
 cd backend
+
+**Ejecutar el script de la DB**
+cd backend/Db
+
+Importante si va a usar la autenticacion de Windows en vez de un usuario de la base de datos especificar eso en la cadena de conexión.
 
 **Editar appsettings.json**
 
