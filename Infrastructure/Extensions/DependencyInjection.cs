@@ -19,6 +19,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<ClienteRepository>();
             services.AddScoped<ProveedorRepository>();
             services.AddScoped<RolRepository>();
+            services.AddScoped<MenuRepository>();
             services.AddScoped<TransportistaRepository>();
             services.AddScoped<ILogRepository, LogRepository>();
             services.AddScoped<UsuarioRepository>();
