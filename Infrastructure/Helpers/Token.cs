@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Infrastructure.Helpers
 {
-    public class Token
+    public class Token : IToken
     {
         private readonly IConfiguration _configuration;
 
@@ -23,21 +23,20 @@ namespace Infrastructure.Helpers
             var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
             var claims = new List<Claim>
-            {
-                new(ClaimTypes.NameIdentifier, usuario.Id_Usuario.ToString()),
-                new(ClaimTypes.Name, usuario.Nombre_Completo ?? ""),
-                new(ClaimTypes.Email, usuario.Correo_Electronico ?? ""),
-                new(ClaimTypes.Role, usuario.Nombre_Rol ?? "Usuario"),
-                new("codigo", usuario.Codigo ?? "")
-            };
+        {
+            new(ClaimTypes.NameIdentifier, usuario.Id_Usuario.ToString()),
+            new(ClaimTypes.Name, usuario.Nombre_Completo ?? ""),
+            new(ClaimTypes.Email, usuario.Correo_Electronico ?? ""),
+            new(ClaimTypes.Role, usuario.Nombre_Rol ?? "Usuario"),
+            new("codigo", usuario.Codigo ?? "")
+        };
 
             foreach (var menu in permisos)
             {
                 claims.Add(new Claim("permiso", menu.UrlMenu ?? ""));
             }
 
-            var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
-
+            var credentials = new SigningCredentials( new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
                 issuer: jwtSettings["Issuer"],
                 audience: jwtSettings["Audience"],
