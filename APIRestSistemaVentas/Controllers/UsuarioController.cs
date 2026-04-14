@@ -25,6 +25,19 @@ namespace APIRestSistemaVentas.Controllers
             _menuService = menuService;
         }
 
+        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
+
+        /*private readonly IUsuarioService _usuarioService;
+        private readonly IMenuService _menuService;
+        private readonly IToken _token;
+
+        public UsuarioController(IUsuarioService ventaService, IToken token, IMenuService menuService)
+        {
+            _usuarioService = ventaService;
+            _token = token;
+            _menuService = menuService;
+        }*/
+
         // GET: api/usuario
         [Authorize]
         [HttpGet]
@@ -87,10 +100,14 @@ namespace APIRestSistemaVentas.Controllers
             if (!response.IsSuccess)
                 return Unauthorized(response);
 
-            List<Menu> menus = await _menuService.ObtenerMenusAsync(response.Data!.Id_Usuario);
-            string tokenGenerado = _token.GenerarToken(response.Data, menus);
+            var menusResponse = await _menuService.ObtenerMenusAsync(response.Data!.Id_Usuario);
 
-            return Ok(new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_TOKEN, Data = new { token = tokenGenerado }} );
+            if (!menusResponse.IsSuccess)
+                return Unauthorized(menusResponse);
+
+            string tokenGenerado = _token.GenerarToken(response.Data, menusResponse.Data!);
+
+            return Ok(new ApiResponse<object>{ IsSuccess = true, Message = Mensajes.MESSAGE_TOKEN, Data = new { token = tokenGenerado }});
         }
 
         // POST: api/usuario
