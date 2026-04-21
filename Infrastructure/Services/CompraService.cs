@@ -1,7 +1,8 @@
-﻿using Domain.Models.Dto.Compra;
-using Infrastructure.Repository.InterfacesRepository;
+﻿using Domain.Models;
+using Domain.Models.Dto.Compra;
 using FluentValidation;
 using Infrastructure.Repository;
+using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Repository.InterfacesServices;
 using Utilities.Shared;
 
@@ -12,7 +13,6 @@ namespace Infrastructure.Services
     {
         private readonly CompraRepository _compraRepository;
         private readonly IValidator<Compras> _validator;
-
 
         public CompraService(CompraRepository compraRepository, IValidator<Compras> validator)
         {
@@ -25,9 +25,10 @@ namespace Infrastructure.Services
         /*readonly ICompraRepository _compraRepository;
         private readonly IValidator<Compras> _validator;
 
-        public CompraService(ICompraRepository compraRepository)
+        public CompraService(ICompraRepository compraRepository, IValidator<Compras> validator)
         {
             _compraRepository = compraRepository;
+            _validator = validator;
         }*/
 
         public async Task<ApiResponse<string>> ObtenerNumeroDocumentoAsync()
@@ -57,6 +58,9 @@ namespace Infrastructure.Services
 
         public async Task<ApiResponse<object>> RegistrarCompraAsync(Compras compraDto)
         {
+            if (compraDto == null)
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
+
             var validationResult = await _validator.ValidateAsync(compraDto);
 
             if (!validationResult.IsValid)

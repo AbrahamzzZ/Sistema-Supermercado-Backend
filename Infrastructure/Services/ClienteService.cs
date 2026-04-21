@@ -66,6 +66,9 @@ namespace Infrastructure.Services
 
         public async Task<ApiResponse<object>> RegistrarClienteAsync(Cliente cliente)
         {
+            if (cliente == null)
+                return new ApiResponse<object>{ IsSuccess = false, Message = Mensajes.MESSAGE_NULL};
+            
             var validationResult = await _validator.ValidateAsync(cliente);
 
             if (!validationResult.IsValid)
@@ -73,13 +76,13 @@ namespace Infrastructure.Services
 
             var clientes = await _clienteRepository.ListarClientesAsync();
             if (clientes.Any(c => c.Codigo == cliente.Codigo))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El código ya existe" };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CODE_EXITS };
 
             if (clientes.Any(c => c.Cedula == cliente.Cedula))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El cédula ya existe" };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CEDULA_EXITS };
 
             if (clientes.Any(c => c.Telefono == cliente.Telefono))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El télefono ya existe" };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_PHONE_EXITS };
 
             var result = await _clienteRepository.RegistrarClienteAsync(cliente);
             if (result > 0)
@@ -87,7 +90,6 @@ namespace Infrastructure.Services
 
             return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_REGISTER_FAILLED };
         }
-
 
         public async Task<ApiResponse<object>> EditarClienteAsync(Cliente cliente)
         {
@@ -105,11 +107,11 @@ namespace Infrastructure.Services
             var clientes = await _clienteRepository.ListarClientesAsync();
             if (clientes.Any(c =>c.Cedula == cliente.Cedula && c.Id_Cliente != cliente.Id_Cliente))
             {
-                return new ApiResponse<object> { IsSuccess = false, Message = "El cédula ya existe." };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CEDULA_EXITS };
             }else if (clientes.Any(c => c.Telefono == cliente.Telefono && c.Id_Cliente != cliente.Id_Cliente))
             {
-                return new ApiResponse<object> { IsSuccess = false, Message = "El teléfono ya existe." };
-            }
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_PHONE_EXITS };
+                }
 
             var result = await _clienteRepository.EditarClienteAsync(cliente);
             if (result > 0)

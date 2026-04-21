@@ -67,6 +67,9 @@ namespace Infrastructure.Services
 
         public async Task<ApiResponse<object>> RegistrarOfertaAsync(Ofertum oferta)
         {
+            if (oferta == null)
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
+
             var validationResult = await _validator.ValidateAsync(oferta);
 
             if (!validationResult.IsValid)
@@ -74,7 +77,7 @@ namespace Infrastructure.Services
 
             var ofertas = await _ofertaRepository.ListarOfertasAsync();
             if (ofertas.Any(c => c.Codigo == oferta.Codigo))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El código ya existe" };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CODE_EXITS };
 
             if (ofertas.Any(c => c.Nombre_Oferta?.ToLower() == oferta.Nombre_Oferta?.ToLower()))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe" };
@@ -94,6 +97,10 @@ namespace Infrastructure.Services
             var validationResult = await _validator.ValidateAsync(oferta);
             if (!validationResult.IsValid)
                 return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
+
+            var ofertaExistente = await _ofertaRepository.ObtenerOfertaAsync(oferta.Id_Oferta);
+            if (ofertaExistente == null)
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
 
             var ofertas = await _ofertaRepository.ListarOfertasAsync();
             if (ofertas.Any(c => c.Nombre_Oferta == oferta.Nombre_Oferta && c.Id_Oferta != oferta.Id_Oferta))

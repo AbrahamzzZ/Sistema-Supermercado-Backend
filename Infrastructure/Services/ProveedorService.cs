@@ -66,6 +66,9 @@ namespace Infrastructure.Services
 
         public async Task<ApiResponse<object>> RegistrarProveedorAsync(Proveedor proveedor)
         {
+            if (proveedor == null)
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
+
             var validationResult = await _validator.ValidateAsync(proveedor);
 
             if (!validationResult.IsValid)
@@ -73,13 +76,13 @@ namespace Infrastructure.Services
 
             var categorias = await _proveedorRepository.ListarProveedoresAsync();
             if (categorias.Any(c => c.Codigo == proveedor.Codigo))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El código ya existe" };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CODE_EXITS };
 
             if (categorias.Any(c => c.Cedula == proveedor.Cedula))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El cédula ya existe" };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CEDULA_EXITS };
 
             if (categorias.Any(c => c.Telefono == proveedor.Telefono))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El télefono ya existe" };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_PHONE_EXITS };
 
             var result = await _proveedorRepository.RegistrarProveedorAsync(proveedor);
             if (result > 0)
@@ -105,11 +108,11 @@ namespace Infrastructure.Services
             var clientes = await _proveedorRepository.ListarProveedoresAsync();
             if (clientes.Any(c => c.Cedula == proveedor.Cedula && c.Id_Proveedor != proveedor.Id_Proveedor))
             {
-                return new ApiResponse<object> { IsSuccess = false, Message = "El cédula ya existe." };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CEDULA_EXITS };
             }
             else if (clientes.Any(c => c.Telefono == proveedor.Telefono && c.Id_Proveedor != proveedor.Id_Proveedor))
             {
-                return new ApiResponse<object> { IsSuccess = false, Message = "El teléfono ya existe." };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_PHONE_EXITS };
             }
 
             var result = await _proveedorRepository.EditarProveedorAsync(proveedor);

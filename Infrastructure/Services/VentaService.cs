@@ -55,6 +55,9 @@ namespace Infrastructure.Services
 
         public async Task<ApiResponse<object>> RegistrarVentaAsync(Ventas ventaDto)
         {
+            if (ventaDto == null)
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
+
             var validationResult = await _validator.ValidateAsync(ventaDto);
 
             if (!validationResult.IsValid)
