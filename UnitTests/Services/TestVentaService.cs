@@ -1,4 +1,7 @@
+using Domain.Models.Dto.Compra;
 using Domain.Models.Dto.Venta;
+using FluentValidation;
+using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Services;
 using Moq;
@@ -10,13 +13,18 @@ namespace UnitTests.Services;
 public class TestVentaService
 {
     private Mock<IVentaRepository> _mockRepository;
+    private Mock<IValidator<Ventas>> _mockValidator;
     private VentaService _service;
 
     [TestInitialize]
     public void Setup()
     {
         _mockRepository = new Mock<IVentaRepository>();
-        //_service = new VentaService(_mockRepository.Object);
+        _mockValidator = new Mock<IValidator<Ventas>>();
+        /*_service = new VentaService(
+            _mockRepository.Object,
+            _mockValidator.Object
+        );*/
     }
 
     [TestMethod]
@@ -24,7 +32,6 @@ public class TestVentaService
     { 
         var numeroEsperado = "DOC-001";
         _mockRepository.Setup(r => r.ObtenerNumeroDocumentoAsync()).ReturnsAsync(numeroEsperado);
-
         var result = await _service.ObtenerNumeroDocumentoAsync();
 
         Assert.IsTrue(result.IsSuccess);
@@ -36,7 +43,6 @@ public class TestVentaService
     public async Task ObtenerVentaAsync_SiNoExisteDebeRetornarError()
     {
         _mockRepository.Setup(r => r.ObtenerVentaAsync("DOC-002")).ReturnsAsync((VentaRespuesta)null);
-
         var result = await _service.ObtenerVentaAsync("DOC-002");
 
         Assert.IsFalse(result.IsSuccess);
@@ -48,7 +54,6 @@ public class TestVentaService
     {
         var venta = new VentaRespuesta { Id_Venta = 1, Numero_Documento = "DOC-003" };
         _mockRepository.Setup(r => r.ObtenerVentaAsync("DOC-003")).ReturnsAsync(venta);
-
         var result = await _service.ObtenerVentaAsync("DOC-003");
 
         Assert.IsTrue(result.IsSuccess);
@@ -68,7 +73,7 @@ public class TestVentaService
     public async Task RegistrarVentaAsync_SiCamposInvalidosDebeRetornarError()
     {
         var venta = new Ventas { Id_Usuario = 0,  Id_Cliente = 0, Tipo_Documento = "", Numero_Documento = "",  Monto_Total = 0, Monto_Pago = 0, Detalles = null };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Ventas>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Tipo Documento", Mensajes.MESSAGE_EMPTY) }));
         var result = await _service.RegistrarVentaAsync(venta);
 
         Assert.IsFalse(result.IsSuccess);
@@ -79,7 +84,7 @@ public class TestVentaService
     public async Task RegistrarVentaAsync_SiTipoDocumentoInvalidoDebeRetornarError()
     {
         var venta = new Ventas { Id_Usuario = 1, Id_Cliente = 1, Tipo_Documento = "DOC123", Numero_Documento = "001", Monto_Total = 100, Monto_Pago = 100, Monto_Cambio = 0, Detalles = new List<DetalleVentas> { new DetalleVentas() } };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Ventas>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Tipo Documento", "El tipo de documento solo pueden contener letras.") }));
         var result = await _service.RegistrarVentaAsync(venta);
 
         Assert.IsFalse(result.IsSuccess);
@@ -90,9 +95,8 @@ public class TestVentaService
     public async Task RegistrarVentaAsync_SiVentaValidaDebeRegistrar()
     {
         var venta = new Ventas { Id_Usuario = 1, Id_Cliente = 1, Tipo_Documento = "Factura", Numero_Documento = "001", Monto_Total = 100, Monto_Pago = 150, Monto_Cambio = 50, Detalles = new List<DetalleVentas> { new DetalleVentas() } };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Ventas>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.RegistrarVentaAsync(venta)).ReturnsAsync(true);
-
         var result = await _service.RegistrarVentaAsync(venta);
 
         Assert.IsTrue(result.IsSuccess);

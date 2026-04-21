@@ -65,6 +65,9 @@ namespace Infrastructure.Services
 
         public async Task<ApiResponse<object>> RegistrarTransportistaAsync(Transportistum transportista)
         {
+            if (transportista == null)
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
+
             var validationResult = await _validator.ValidateAsync(transportista);
 
             if (!validationResult.IsValid)
@@ -72,13 +75,13 @@ namespace Infrastructure.Services
 
             var transportistas = await _transportistaRepository.ListarTransportistasAsync();
             if (transportistas.Any(c => c.Codigo == transportista.Codigo))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El código ya existe" };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CODE_EXITS };
 
             if (transportistas.Any(c => c.Cedula == transportista.Cedula))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El cédula ya existe" };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CEDULA_EXITS };
 
             if (transportistas.Any(c => c.Telefono == transportista.Telefono))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El télefono ya existe" };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_PHONE_EXITS };
 
             var result = await _transportistaRepository.RegistrarTransportistaAsync(transportista);
             if (result > 0)
@@ -103,11 +106,11 @@ namespace Infrastructure.Services
             var transportistas = await _transportistaRepository.ListarTransportistasAsync();
             if (transportistas.Any(c => c.Cedula == transportista.Cedula && c.Id_Transportista != transportista.Id_Transportista))
             {
-                return new ApiResponse<object> { IsSuccess = false, Message = "El cédula ya existe." };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CEDULA_EXITS };
             }
             else if (transportistas.Any(c => c.Telefono == transportista.Telefono && c.Id_Transportista != transportista.Id_Transportista))
             {
-                return new ApiResponse<object> { IsSuccess = false, Message = "El teléfono ya existe." };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_PHONE_EXITS };
             }
 
             var result = await _transportistaRepository.EditarTransportistaAsync(transportista);

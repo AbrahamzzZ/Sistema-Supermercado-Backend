@@ -1,5 +1,7 @@
 using Domain.Models;
 using Domain.Models.Dto.Negocio;
+using FluentValidation;
+using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Services;
 using Moq;
@@ -11,20 +13,24 @@ namespace UnitTests.Services;
 public class TestNegocioService
 {
     private Mock<INegocioRepository> _mockRepository;
+    private Mock<IValidator<Negocio>> _mockValidator;
     private NegocioService _service;
 
     [TestInitialize]
     public void Setup()
     {
         _mockRepository = new Mock<INegocioRepository>();
-        //_service = new NegocioService(_mockRepository.Object);
+        _mockValidator = new Mock<IValidator<Negocio>>();
+        /*_service = new NegocioService(
+            _mockRepository.Object,
+            _mockValidator.Object
+        );*/
     }
 
     [TestMethod]
     public async Task ObtenerNegocioAsync_SiNoExisteDebeRetornarError()
     {
         _mockRepository.Setup(r => r.ObtenerNegocioAsync(1)).ReturnsAsync((Negocio)null);
-
         var result = await _service.ObtenerNegocioAsync(1);
 
         Assert.IsFalse(result.IsSuccess);
@@ -36,7 +42,6 @@ public class TestNegocioService
     {
         var negocio = new Negocio { Id_Negocio = 1, Nombre = "MiNegocio" };
         _mockRepository.Setup(r => r.ObtenerNegocioAsync(1)).ReturnsAsync(negocio);
-
         var result = await _service.ObtenerNegocioAsync(1);
 
         Assert.IsTrue(result.IsSuccess);
@@ -56,7 +61,7 @@ public class TestNegocioService
     public async Task EditarNegocioAsync_SiCamposVaciosDebeRetornarError()
     {
         var negocio = new Negocio { Id_Negocio = 1, Nombre = "", Telefono = "", Ruc = "", Direccion = "", Correo_Electronico = "" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Negocio>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure>{ new ValidationFailure("Nombre", Mensajes.MESSAGE_EMPTY) }));
         var result = await _service.EditarNegocioAsync(negocio);
 
         Assert.IsFalse(result.IsSuccess);
@@ -67,9 +72,8 @@ public class TestNegocioService
     public async Task EditarNegocioAsync_SiNoExisteEnBDDebeRetornarError()
     {
         var negocio = new Negocio { Id_Negocio = 1, Nombre = "Test", Telefono = "1234567890", Ruc = "1234567890123", Direccion = "Dir", Correo_Electronico = "correo@test.com" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Negocio>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerNegocioAsync(negocio.Id_Negocio)).ReturnsAsync((Negocio)null);
-
         var result = await _service.EditarNegocioAsync(negocio);
 
         Assert.IsFalse(result.IsSuccess);
@@ -80,9 +84,8 @@ public class TestNegocioService
     public async Task EditarNegocioAsync_TelefonoInvalidoDebeRetornarError()
     {
         var negocio = new Negocio { Id_Negocio = 1, Nombre = "Test", Telefono = "1234", Ruc = "1234567890123", Direccion = "Dir", Correo_Electronico = "correo@test.com" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Negocio>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Teléfono", "El teléfono deben contener exactamente 10 dígitos numéricos") }));
         _mockRepository.Setup(r => r.ObtenerNegocioAsync(negocio.Id_Negocio)).ReturnsAsync(negocio);
-
         var result = await _service.EditarNegocioAsync(negocio);
 
         Assert.IsFalse(result.IsSuccess);
@@ -93,9 +96,8 @@ public class TestNegocioService
     public async Task EditarNegocioAsync_RucInvalidoDebeRetornarError()
     {
         var negocio = new Negocio { Id_Negocio = 1, Nombre = "Test", Telefono = "1234567890", Ruc = "1234", Direccion = "Dir", Correo_Electronico = "correo@test.com" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Negocio>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Ruc", "El RUC deben contener exactamente 13 dígitos numéricos") }));
         _mockRepository.Setup(r => r.ObtenerNegocioAsync(negocio.Id_Negocio)).ReturnsAsync(negocio);
-
         var result = await _service.EditarNegocioAsync(negocio);
 
         Assert.IsFalse(result.IsSuccess);
@@ -106,9 +108,8 @@ public class TestNegocioService
     public async Task EditarNegocioAsync_CorreoInvalidoDebeRetornarError()
     {
         var negocio = new Negocio { Id_Negocio = 1, Nombre = "Test", Telefono = "1234567890", Ruc = "1234567890123", Direccion = "Dir", Correo_Electronico = "correo_invalido" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Negocio>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure>{ new ValidationFailure("Correo_Electronico", "El correo electrónico no tiene un formato válido") }));
         _mockRepository.Setup(r => r.ObtenerNegocioAsync(negocio.Id_Negocio)).ReturnsAsync(negocio);
-
         var result = await _service.EditarNegocioAsync(negocio);
 
         Assert.IsFalse(result.IsSuccess);
@@ -120,10 +121,9 @@ public class TestNegocioService
     public async Task EditarNegocioAsync_SiValidoDebeActualizar()
     {
         var negocio = new Negocio { Id_Negocio = 1, Nombre = "Test", Telefono = "1234567890", Ruc = "1234567890123", Direccion = "Dir", Correo_Electronico = "correo@test.com" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Negocio>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerNegocioAsync(negocio.Id_Negocio)).ReturnsAsync(negocio);
         _mockRepository.Setup(r => r.EditarNegocioAsync(negocio)).ReturnsAsync(1);
-
         var result = await _service.EditarNegocioAsync(negocio);
 
         Assert.IsTrue(result.IsSuccess);

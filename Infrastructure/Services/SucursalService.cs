@@ -65,6 +65,10 @@ namespace Infrastructure.Services
 
         public async Task<ApiResponse<object>> RegistrarSucursalAsync(Sucursal sucursal)
         {
+
+            if (sucursal == null)
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
+
             var validationResult = await _validator.ValidateAsync(sucursal);
 
             if (!validationResult.IsValid)
@@ -72,7 +76,7 @@ namespace Infrastructure.Services
 
             var sucursales = await _sucursalRepository.ListarSucursalesAsync();
             if (sucursales.Any(c => c.Codigo == sucursal.Codigo))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El código ya existe" };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CODE_EXITS };
 
             if (sucursales.Any(c => c.Nombre_Sucursal?.ToLower() == sucursal.Nombre_Sucursal?.ToLower()))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe" };
