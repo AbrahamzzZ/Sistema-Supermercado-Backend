@@ -13,21 +13,21 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class ClienteController : ControllerBase
     {
-        /*private readonly ClienteService _clienteService;
+        private readonly ClienteService _clienteService;
 
         public ClienteController(ClienteService clienteService)
         {
             _clienteService = clienteService;
-        }*/
+        }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
-        private readonly IClienteService _clienteService;
+        /*private readonly IClienteService _clienteService;
 
         public ClienteController(IClienteService clienteService)
         {
             _clienteService = clienteService;
-        }
+        }*/
 
         // GET: api/cliente
         [HttpGet]

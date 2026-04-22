@@ -14,7 +14,7 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class UsuarioController : ControllerBase
     {
-        /*private readonly UsuarioService _usuarioService;
+        private readonly UsuarioService _usuarioService;
         private readonly MenuService _menuService;
         private readonly Token _token;
 
@@ -23,11 +23,11 @@ namespace APIRestSistemaVentas.Controllers
             _usuarioService = usuarioService;
             _token = token;
             _menuService = menuService;
-        }*/
+        }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
-        private readonly IUsuarioService _usuarioService;
+        /*private readonly IUsuarioService _usuarioService;
         private readonly IMenuService _menuService;
         private readonly IToken _token;
 
@@ -36,7 +36,7 @@ namespace APIRestSistemaVentas.Controllers
             _usuarioService = ventaService;
             _token = token;
             _menuService = menuService;
-        }
+        }*/
 
         // GET: api/usuario
         [Authorize]

@@ -13,21 +13,21 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class ProveedorController : ControllerBase
     {
-        /*private readonly ProveedorService _proveedorService;
+        private readonly ProveedorService _proveedorService;
 
         public ProveedorController(ProveedorService proveedorService)
         {
             _proveedorService = proveedorService;
-        }*/
+        }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
-        private readonly IProveedorService _proveedorService;
+        /*private readonly IProveedorService _proveedorService;
 
         public ProveedorController(IProveedorService proveedorService)
         {
             _proveedorService = proveedorService;
-        }
+        }*/
 
         // GET: api/proveedor
         [HttpGet]

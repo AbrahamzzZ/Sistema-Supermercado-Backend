@@ -9,25 +9,25 @@ namespace Infrastructure.Services
 {
     public class SucursalService : ISucursalService
     {
-        /*private readonly SucursalRepository _sucursalRepository;
+        private readonly SucursalRepository _sucursalRepository;
         private readonly IValidator<Sucursal> _validator;
 
         public SucursalService(SucursalRepository sucursalRepository, IValidator<Sucursal> validator)
         {
             _sucursalRepository = sucursalRepository;
             _validator = validator;
-        }*/
+        }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
-        readonly ISucursalRepository _sucursalRepository;
+        /*readonly ISucursalRepository _sucursalRepository;
         private readonly IValidator<Sucursal> _validator;
 
         public SucursalService(ISucursalRepository sucursalRepository, IValidator<Sucursal> validator)
         {
             _sucursalRepository = sucursalRepository;
             _validator = validator;
-        }
+        }*/
 
         public async Task<ApiResponse<List<Sucursal>>> ListarSucursalesAsync()
         {

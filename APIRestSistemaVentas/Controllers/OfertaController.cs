@@ -14,21 +14,21 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class OfertaController : ControllerBase
     {
-        /*private readonly OfertaService _ofertaService;
+        private readonly OfertaService _ofertaService;
 
         public OfertaController(OfertaService ofertaService)
         {
             _ofertaService = ofertaService;
-        }*/
+        }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
-        private readonly IOfertaService _ofertaService;
+        /*private readonly IOfertaService _ofertaService;
 
         public OfertaController(IOfertaService ofertaService)
         {
             _ofertaService = ofertaService;
-        }
+        }*/
 
         // GET: api/oferta
         [HttpGet]

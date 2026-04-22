@@ -18,7 +18,7 @@ public class TestProductoController
     public void Setup()
     {
         _mockService = new Mock<IProductoService>();
-        _controller = new ProductoController(_mockService.Object);
+        //_controller = new ProductoController(_mockService.Object);
     }
 
     // Test 1: GET all productos

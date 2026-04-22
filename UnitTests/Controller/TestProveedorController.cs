@@ -17,7 +17,7 @@ public class TestProveedorController
     public void Setup()
     {
         _mockService = new Mock<IProveedorService>();
-        _controller = new ProveedorController(_mockService.Object);
+        //_controller = new ProveedorController(_mockService.Object);
     }
 
     [TestMethod]

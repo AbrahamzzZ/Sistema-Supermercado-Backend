@@ -13,21 +13,21 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class CategoriaController : ControllerBase
     {
-        /*private readonly CategoriaService _categoriaService;
+        private readonly CategoriaService _categoriaService;
 
         public CategoriaController(CategoriaService categoriaService)
         {
             _categoriaService = categoriaService;
-        }*/
+        }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
-        private readonly ICategoriaService _categoriaService;
+        /*private readonly ICategoriaService _categoriaService;
 
         public CategoriaController(ICategoriaService categoriaService)
         {
             _categoriaService = categoriaService;
-        }
+        }*/
 
         // GET: api/categoria
         [HttpGet]
