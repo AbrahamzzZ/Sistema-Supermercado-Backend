@@ -21,10 +21,10 @@ public class TestUsuarioService
     {
         _mockRepository = new Mock<IUsuarioRepository>();
         _mockValidator = new Mock<IValidator<Usuario>>();
-        /*_service = new UsuarioService(
+        _service = new UsuarioService(
             _mockRepository.Object,
             _mockValidator.Object
-        );*/
+        );
     }
 
     [TestMethod]

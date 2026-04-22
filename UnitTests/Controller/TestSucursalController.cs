@@ -17,7 +17,7 @@ public class TestSucursalController
     public void Setup()
     {
         _mockService = new Mock<ISucursalService>();
-        //_controller = new SucursalController(_mockService.Object);
+        _controller = new SucursalController(_mockService.Object);
     }
 
     [TestMethod]

@@ -9,24 +9,24 @@ namespace Infrastructure.Services
 {
     public class VentaService : IVentaService
     {
-        private readonly VentaRepository _ventaRepository;
+        /*private readonly VentaRepository _ventaRepository;
         private readonly IValidator<Ventas> _validator;
 
         public VentaService(VentaRepository ventaRepository, IValidator<Ventas> validator)
         {
             _ventaRepository = ventaRepository;
             _validator = validator;
-        }
+        }*/
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
-        /*readonly IVentaRepository _ventaRepository;
+        readonly IVentaRepository _ventaRepository;
         private readonly IValidator<Ventas> _validator;
         public VentaService(IVentaRepository ventaRepository, IValidator<Ventas> validator)
         {
             _ventaRepository = ventaRepository;
             _validator = validator;
-        }*/
+        }
 
         public async Task<ApiResponse<string>> ObtenerNumeroDocumentoAsync()
         {

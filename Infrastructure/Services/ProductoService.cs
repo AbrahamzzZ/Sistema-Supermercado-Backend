@@ -11,25 +11,25 @@ namespace Infrastructure.Services
 {
     public class ProductoService : IProductoService
     {
-        private readonly ProductoRepository _productoRepository;
+        /*private readonly ProductoRepository _productoRepository;
         private readonly IValidator<Producto> _validator;
 
         public ProductoService(ProductoRepository productoRepository, IValidator<Producto> validator)
         {
             _productoRepository = productoRepository;
             _validator = validator;
-        }
+        }*/
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
-        /*readonly IProductoRepository _productoRepository;
+        readonly IProductoRepository _productoRepository;
         private readonly IValidator<Producto> _validator;
 
         public ProductoService(IProductoRepository productoRepository, IValidator<Producto> validator)
         {
             _productoRepository = productoRepository;
             _validator = validator;
-        }*/
+        }
 
         public async Task<ApiResponse<List<ProductoCategoria>>> ListarProductosAsync()
         {

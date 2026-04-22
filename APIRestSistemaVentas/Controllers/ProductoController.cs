@@ -15,21 +15,21 @@ namespace APIRestSistemaVentas.Controllers
     public class ProductoController : ControllerBase
     {
 
-        private readonly ProductoService _productoService;
+        /*private readonly ProductoService _productoService;
 
         public ProductoController(ProductoService productoService)
         {
             _productoService = productoService;
-        }
+        }*/
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
-        /*private readonly IProductoService _productoService;
+        private readonly IProductoService _productoService;
 
         public ProductoController(IProductoService productoService)
         {
             _productoService = productoService;
-        }*/
+        }
 
         // GET: api/producto
         [HttpGet]

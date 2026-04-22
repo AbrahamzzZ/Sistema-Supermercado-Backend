@@ -17,7 +17,7 @@ public class TestTranportistaController
     public void Setup()
     {
         _mockService = new Mock<ITransportistaService>();
-        //_controller = new TransportistaController(_mockService.Object);
+        _controller = new TransportistaController(_mockService.Object);
     }
 
 

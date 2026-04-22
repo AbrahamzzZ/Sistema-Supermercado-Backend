@@ -17,7 +17,7 @@ public class TestCategoriaController
     public void Setup()
     {
         _mockService = new Mock<ICategoriaService>();
-        //_controller = new CategoriaController(_mockService.Object);
+        _controller = new CategoriaController(_mockService.Object);
     }
 
     [TestMethod]
