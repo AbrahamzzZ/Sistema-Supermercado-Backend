@@ -13,21 +13,21 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class SucursalController : ControllerBase
     {
-        private readonly SucursalService _sucursalService;
+        /*private readonly SucursalService _sucursalService;
 
         public SucursalController(SucursalService sucursalService)
         {
             _sucursalService = sucursalService;
-        }
+        }*/
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
-        /*private readonly ISucursalService _sucursalService;
+        private readonly ISucursalService _sucursalService;
 
         public SucursalController(ISucursalService sucursalService)
         {
             _sucursalService = sucursalService;
-        }*/
+        }
 
         // GET: api/sucursal
         [HttpGet]
