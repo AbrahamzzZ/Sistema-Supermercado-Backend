@@ -10,25 +10,25 @@ namespace Infrastructure.Services
 {
     public class ClienteService : IClienteService
     {
-        private readonly ClienteRepository _clienteRepository;
+        /*private readonly ClienteRepository _clienteRepository;
         private readonly IValidator<Cliente> _validator;
 
         public ClienteService(ClienteRepository clienteRepository, IValidator<Cliente> validator)
         {
             _clienteRepository = clienteRepository;
             _validator = validator;
-        }
+        }*/
 
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
-        /*readonly IClienteRepository _clienteRepository;
+        readonly IClienteRepository _clienteRepository;
         private readonly IValidator<Cliente> _validator;
         public ClienteService(IClienteRepository clienteRepository, IValidator<Cliente> validator)
         {
             _clienteRepository = clienteRepository;
             _validator = validator;
-        }*/
+        }
 
         public async Task<ApiResponse<List<Cliente>>> ListarClientesAsync()
         {

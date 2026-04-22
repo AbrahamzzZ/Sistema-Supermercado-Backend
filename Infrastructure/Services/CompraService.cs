@@ -11,25 +11,25 @@ namespace Infrastructure.Services
 {
     public class CompraService : ICompraService
     {
-        private readonly CompraRepository _compraRepository;
+        /*private readonly CompraRepository _compraRepository;
         private readonly IValidator<Compras> _validator;
 
         public CompraService(CompraRepository compraRepository, IValidator<Compras> validator)
         {
             _compraRepository = compraRepository;
             _validator = validator;
-        }
+        }*/
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
-        /*readonly ICompraRepository _compraRepository;
+        readonly ICompraRepository _compraRepository;
         private readonly IValidator<Compras> _validator;
 
         public CompraService(ICompraRepository compraRepository, IValidator<Compras> validator)
         {
             _compraRepository = compraRepository;
             _validator = validator;
-        }*/
+        }
 
         public async Task<ApiResponse<string>> ObtenerNumeroDocumentoAsync()
         {

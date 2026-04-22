@@ -12,7 +12,7 @@ namespace Infrastructure.Services
 {
     public class NegocioService : INegocioService
     {
-        private readonly NegocioRepository _negocioRepository;
+        /*private readonly NegocioRepository _negocioRepository;
         private readonly ProductoRepository _productoRepository;
         private readonly CategoriaRepository _categoriaRepository;
         private readonly IValidator<Negocio> _validator;
@@ -25,18 +25,18 @@ namespace Infrastructure.Services
             _categoriaRepository = categoriaRepository;
             _validator = validator;
             _ollama = ollama;
-        }
+        }*/
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
-        /*readonly INegocioRepository _negocioRepository;
+        readonly INegocioRepository _negocioRepository;
         private readonly IValidator<Negocio> _validator;
 
         public NegocioService(INegocioRepository negocioRepository, IValidator<Negocio> validator)
         {
             _negocioRepository = negocioRepository;
             _validator = validator;
-        }*/
+        }
 
         public async Task<ApiResponse<Negocio>> ObtenerNegocioAsync(int idNegocio)
         {
@@ -87,7 +87,7 @@ namespace Infrastructure.Services
             return new ApiResponse<List<ProductoMasVendido>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
         }
 
-        public async Task<ApiResponse<object>> AnalisisIA(string promptUsuario)
+        /*public async Task<ApiResponse<object>> AnalisisIA(string promptUsuario)
         {
             var tipo = Reglas.DetectarTipoAnalisis(promptUsuario);
 
@@ -147,7 +147,7 @@ namespace Infrastructure.Services
                 Message = Mensajes.MESSAGE_IA,
                 Data = respuesta
             };
-        }
+        }*/
 
         public async Task<ApiResponse<List<TopCliente>>> ObtenerTopClientes()
         {
