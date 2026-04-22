@@ -20,10 +20,10 @@ public class TestSucursalService
     {
         _mockRepository = new Mock<ISucursalRepository>();
         _mockValidator = new Mock<IValidator<Sucursal>>();
-        _service = new SucursalService(
+        /*_service = new SucursalService(
             _mockRepository.Object, 
             _mockValidator.Object
-        );
+        );*/
     }
 
     [TestMethod]

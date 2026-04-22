@@ -20,10 +20,10 @@ public class TestProveedorService
     {
         _mockRepository = new Mock<IProveedorRepository>();
         _mockValidator = new Mock<IValidator<Proveedor>>();
-        _service = new ProveedorService(
+        /*_service = new ProveedorService(
             _mockRepository.Object,
             _mockValidator.Object
-        );
+        );*/
     }
 
     [TestMethod]

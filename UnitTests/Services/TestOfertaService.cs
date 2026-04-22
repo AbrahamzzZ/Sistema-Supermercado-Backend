@@ -21,10 +21,10 @@ public class TestOfertaService
     {
         _mockRepository = new Mock<IOfertaRepository>();
         _mockValidator = new Mock<IValidator<Ofertum>>();
-        _service = new OfertaService(
+        /*_service = new OfertaService(
             _mockRepository.Object,
             _mockValidator.Object
-        );
+        );*/
     }
 
     [TestMethod]

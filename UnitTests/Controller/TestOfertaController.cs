@@ -18,7 +18,7 @@ public class TestOfertaController
     public void Setup()
     {
         _mockService = new Mock<IOfertaService>();
-        _controller = new OfertaController(_mockService.Object);
+        //_controller = new OfertaController(_mockService.Object);
     }
 
     [TestMethod]

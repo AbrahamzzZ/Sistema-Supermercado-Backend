@@ -11,24 +11,24 @@ namespace Infrastructure.Services
 {
     public class UsuarioService : IUsuarioService
     {
-        /*private readonly UsuarioRepository _usuarioRepository;
+        private readonly UsuarioRepository _usuarioRepository;
         private readonly IValidator<Usuario> _validator;
 
         public UsuarioService(UsuarioRepository usuarioRepository, IValidator<Usuario> validator)
         {
             _usuarioRepository = usuarioRepository;
             _validator = validator;
-        }*/
+        }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
-        readonly IUsuarioRepository _usuarioRepository;
+        /*readonly IUsuarioRepository _usuarioRepository;
         private readonly IValidator<Usuario> _validator;
         public UsuarioService(IUsuarioRepository usuarioRepository, IValidator<Usuario> validator)
         {
             _usuarioRepository = usuarioRepository;
             _validator = validator;
-        }
+        }*/
 
         public async Task<ApiResponse<List<UsuarioRol>>> ListarUsuariosAsync()
         {

@@ -21,10 +21,10 @@ public class TestVentaService
     {
         _mockRepository = new Mock<IVentaRepository>();
         _mockValidator = new Mock<IValidator<Ventas>>();
-        _service = new VentaService(
+        /*_service = new VentaService(
             _mockRepository.Object,
             _mockValidator.Object
-        );
+        );*/
     }
 
     [TestMethod]

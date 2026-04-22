@@ -20,10 +20,10 @@ public class TestCategoriaService
     {
         _mockRepository = new Mock<ICategoriaRepository>();
         _mockValidator = new Mock<IValidator<Categorium>>();
-        _service = new CategoriaService(
+        /*_service = new CategoriaService(
             _mockRepository.Object,
             _mockValidator.Object
-        );
+        );*/
     }
 
     [TestMethod]

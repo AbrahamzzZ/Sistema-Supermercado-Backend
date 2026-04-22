@@ -17,7 +17,7 @@ public class TestCompraController
     public void Setup()
     {
         _mockService = new Mock<ICompraService>();
-        _controller = new CompraController(_mockService.Object);
+        //_controller = new CompraController(_mockService.Object);
     }
 
     [TestMethod]

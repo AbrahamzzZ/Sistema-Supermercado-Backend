@@ -15,21 +15,21 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class NegocioController : ControllerBase
     {
-        /*private readonly NegocioService _negocioService;
+        private readonly NegocioService _negocioService;
 
         public NegocioController(NegocioService negocioService)
         {
             _negocioService = negocioService;
-        }*/
+        }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
 
-        private readonly INegocioService _negocioService;
+        /*private readonly INegocioService _negocioService;
 
         public NegocioController(INegocioService negocioService)
         {
             _negocioService = negocioService;
-        }
+        }*/
 
         // GET: api/negocio/1
         [HttpGet("{id}")]
@@ -92,7 +92,7 @@ namespace APIRestSistemaVentas.Controllers
         }
 
         // POST: api/negocio/analisis-ia
-        /*[HttpPost("analisis-ia")]
+        [HttpPost("analisis-ia")]
         [SwaggerOperation(
             Summary = "Análisis con IA",
             Description = "Genera un análisis del negocio utilizando inteligencia artificial basado en el prompt enviado."
@@ -104,7 +104,7 @@ namespace APIRestSistemaVentas.Controllers
         {
             var response = await _negocioService.AnalisisIA(request.Prompt);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
-        }*/
+        }
 
         // GET: api/negocio/top-clientes
         [HttpGet("top-clientes")]
