@@ -25,11 +25,11 @@ public class TestUsuarioController
         _mockService = new Mock<IUsuarioService>();
         _mockMenuService = new Mock<IMenuService>();
         _mockToken = new Mock<IToken>();
-        /*_controller = new UsuarioController(
+        _controller = new UsuarioController(
             _mockService.Object,
             _mockToken.Object,
             _mockMenuService.Object
-        );*/
+        );
     }
 
     [TestMethod]

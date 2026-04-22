@@ -17,7 +17,7 @@ public class TestVentaController
     public void Setup()
     {
         _mockService = new Mock<IVentaService>();
-        //_controller = new VentaController(_mockService.Object);
+        _controller = new VentaController(_mockService.Object);
     }
 
 

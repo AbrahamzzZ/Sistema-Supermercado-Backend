@@ -18,7 +18,7 @@ public class TestNegocioController
     public void Setup()
     {
         _mockService = new Mock<INegocioService>();
-        //_controller = new NegocioController(_mockService.Object);
+        _controller = new NegocioController(_mockService.Object);
     }
 
     [TestMethod]

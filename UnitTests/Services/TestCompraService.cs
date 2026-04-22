@@ -21,10 +21,10 @@ public class TestCompraService
     {
         _mockRepository = new Mock<ICompraRepository>();
         _mockValidator = new Mock<IValidator<Compras>>();
-        /*_service = new CompraService(
+        _service = new CompraService(
             _mockRepository.Object,
             _mockValidator.Object
-        );*/
+        );
     }
 
     [TestMethod]

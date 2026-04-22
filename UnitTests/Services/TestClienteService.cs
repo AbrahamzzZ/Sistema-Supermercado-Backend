@@ -20,10 +20,10 @@ public class TestClienteService
     {
         _mockRepository = new Mock<IClienteRepository>();
         _mockValidator = new Mock<IValidator<Cliente>>();
-        /*_service = new ClienteService(
+        _service = new ClienteService(
             _mockRepository.Object,
             _mockValidator.Object
-        );*/
+        );
     }
 
     [TestMethod]

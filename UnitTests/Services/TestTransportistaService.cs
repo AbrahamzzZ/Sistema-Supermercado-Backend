@@ -20,10 +20,10 @@ public class TestTransportistaService
     {
         _mockRepository = new Mock<ITransportistaRepository>();
         _mockValidator = new Mock<IValidator<Transportistum>>();
-        /*_service = new TransportistaService(
+        _service = new TransportistaService(
             _mockRepository.Object,
             _mockValidator.Object
-        );*/
+        );
     }
 
     [TestMethod]

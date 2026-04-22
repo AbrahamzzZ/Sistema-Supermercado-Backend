@@ -17,7 +17,7 @@ public class TestClienteController
     public void Setup()
     {
         _mockService = new Mock<IClienteService>();
-        //_controller = new ClienteController(_mockService.Object);
+        _controller = new ClienteController(_mockService.Object);
     }
 
     [TestMethod]

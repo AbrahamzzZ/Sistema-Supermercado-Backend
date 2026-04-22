@@ -21,10 +21,10 @@ public class TestNegocioService
     {
         _mockRepository = new Mock<INegocioRepository>();
         _mockValidator = new Mock<IValidator<Negocio>>();
-        /*_service = new NegocioService(
+        _service = new NegocioService(
             _mockRepository.Object,
             _mockValidator.Object
-        );*/
+        );
     }
 
     [TestMethod]
