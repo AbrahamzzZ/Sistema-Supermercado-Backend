@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     tools {
-        dotnetsdk 'dotnet-sdk-8.0'   // ← CAMBIADO: dotnet → dotnetsdk
+        dotnetsdk 'dotnet-sdk-8.0' 
     }
     
     stages {
@@ -19,7 +19,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Ejecutando pruebas unitarias...'
-                dir('UnitTests') {   // ← CAMBIADO: UnitTest → UnitTests (con 's')
+                dir('UnitTests') {  
                     bat 'dotnet test --verbosity normal'
                 }
             }
