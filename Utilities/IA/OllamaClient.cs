@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using Utilities.IA.Response;
 
 namespace Utilities.IA
 {
@@ -12,7 +13,7 @@ namespace Utilities.IA
             _http.BaseAddress = new Uri("http://localhost:11434");
         }
 
-        public async Task<string> GenerateAsync(string prompt, string model = "TU_MODELO")
+        public async Task<string> GenerateAsync(string prompt, string model = "qwen3:8b")
         {
             var body = new
             {
@@ -30,10 +31,5 @@ namespace Utilities.IA
 
             return result?.Response ?? "Sin respuesta generada.";
         }
-    }
-
-    public class OllamaResponse
-    {
-        public string? Response { get; set; }
     }
 }
