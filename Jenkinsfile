@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     tools {
-        dotnet 'dotnet-sdk-8.0' 
+        dotnetsdk 'dotnet-sdk-8.0'   // ← CAMBIADO: dotnet → dotnetsdk
     }
     
     stages {
@@ -15,11 +15,11 @@ pipeline {
             }
         }
         
-        // 2. PROBAR - Ejecuta TODAS las pruebas del proyecto UnitTest
+        // 2. PROBAR
         stage('Test') {
             steps {
                 echo 'Ejecutando pruebas unitarias...'
-                dir('UnitTest/Controller') {
+                dir('UnitTests') {   // ← CAMBIADO: UnitTest → UnitTests (con 's')
                     bat 'dotnet test --verbosity normal'
                 }
             }
@@ -29,7 +29,7 @@ pipeline {
         stage('Publish') {
             steps {
                 echo 'Publicando API...'
-                dir('ApiRestSistemaVentas') {
+                dir('APIRestSistemaVentas') { 
                     bat 'dotnet publish -c Release -o publish'
                 }
             }
