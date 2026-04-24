@@ -43,13 +43,45 @@ pipeline {
             }
         }
     }
-    
     post {
         success {
-            echo 'Pipeline exitoso - Todas las pruebas pasaron correctamente'
+            echo '✅ Pipeline exitoso - Todas las pruebas pasaron correctamente'
+            
+            emailext (
+                to: 'hermanosfarfan@gmail.com',
+                subject: "✅ [EXITO] Pipeline ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+                body: """
+                    El pipeline se ejecutó correctamente.
+                    
+                    Detalles:
+                    - Proyecto: ${env.JOB_NAME}
+                    - Build: ${env.BUILD_NUMBER}
+                    - URL: ${env.BUILD_URL}
+                    - Fecha: ${new Date()}
+                    
+                    ✅ Todas las pruebas unitarias pasaron exitosamente.
+                    ✅ El despliegue se completó sin errores.
+                """
+            )
         }
         failure {
-            echo 'Pipeline fallido - Revisar pruebas unitarias'
+            echo '❌ Pipeline fallido - Revisar pruebas unitarias'
+            
+            emailext (
+                to: 'hermanosfarfan@gmail.com',
+                subject: "❌ [FALLO] Pipeline ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+                body: """
+                    El pipeline HA FALLADO. Se requiere atención.
+                    
+                    Detalles:
+                    - Proyecto: ${env.JOB_NAME}
+                    - Build: ${env.BUILD_NUMBER}
+                    - URL: ${env.BUILD_URL}
+                    - Fecha: ${new Date()}
+                    
+                    ❌ Revisar los logs en Jenkins para identificar el error.
+                """
+            )
         }
     }
 }
