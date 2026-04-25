@@ -101,3 +101,51 @@ dotnet restore
 
 **Ejecutar**
 dotnet run
+
+---
+
+## CI/CD Pipeline con Jenkins
+
+El proyecto cuenta con un pipeline de Integración Continua y Despliegue Continuo configurado en **Jenkins** que automatiza el proceso de compilación, prueba y despliegue.
+
+### Importante
+
+**El pipeline SOLO funciona en la rama `5-test`.** Esta rama está preparada exclusivamente para la ejecución de pruebas unitarias y despliegue automatizado.
+
+### Flujo del Pipeline
+
+Cada vez que se realiza un `git push` a la rama `5-test`, Jenkins ejecuta automáticamente las siguientes etapas:
+
+| Etapa | Descripción |
+|-------|-------------|
+| **Build** | Restaura paquetes NuGet y compila la solución |
+| **Test** | Ejecuta las 233 pruebas unitarias usando MSTest |
+| **Publish** | Genera los archivos ejecutables de la API |
+| **Deploy** | Copia los archivos a `C:\SistemaVentas\API` |
+
+### Notificaciones
+
+Al finalizar el pipeline, se envía un correo electrónico al equipo de desarrollo indicando:
+- ✅ **Éxito**: Todas las pruebas pasaron correctamente
+- ❌ **Fallo**: Se requiere revisar los logs del pipeline
+
+### Archivos de configuración
+
+- `Jenkinsfile` → Define las etapas del pipeline
+- `deploy.ps1` → Script de despliegue en entorno local
+
+### Requisitos para ejecutar el pipeline
+
+- Jenkins instalado (v2.541.3+)
+- Java 21 (LTS)
+- .NET SDK 8.0
+- ngrok (para webhook local)
+
+### Rama de pruebas
+
+```bash
+# Cambiar a la rama de pruebas
+git checkout 5-test
+
+# Subir cambios para activar el pipeline
+git push origin 5-test
