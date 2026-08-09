@@ -14,10 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Configuración de clave JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var claveSecreta = jwtSettings.GetValue<string>("Key");
+var claveSecreta = jwtSettings.GetValue<string>("Key") ?? throw new InvalidOperationException("JWT Key no configurada");
 
 // Configuración del docker para la base de datos
-string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("CadenaSQL");
+string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("CadenaSQL") ?? "";
 builder.Services.AddDbContext<SistemaSupermercadoContext>(options =>
 {
     options.UseSqlServer(connectionString);

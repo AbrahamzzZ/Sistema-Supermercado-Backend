@@ -65,7 +65,7 @@ namespace Infrastructure.Repository
             tablaDetalle.Columns.Add("SubTotal", typeof(decimal));
             tablaDetalle.Columns.Add("Descuento", typeof(decimal));
 
-            foreach (var item in ventaDto.Detalles)
+            foreach (var item in ventaDto.Detalles ?? Enumerable.Empty<DetalleVentas>())
             {
                 tablaDetalle.Rows.Add(item.Id_Producto, item.Precio_Venta, item.Cantidad, item.SubTotal, item.Descuento);
             }

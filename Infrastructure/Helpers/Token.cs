@@ -20,7 +20,7 @@ namespace Infrastructure.Helpers
         public string GenerarToken(UsuarioRol usuario, List<Menu> permisos)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
-            var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+            var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? "");
 
             var claims = new List<Claim>
         {
