@@ -14,12 +14,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Configuración de clave JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var claveSecreta = jwtSettings.GetValue<string>("Key");
+var claveSecreta = jwtSettings.GetValue<string>("Key") ?? throw new InvalidOperationException("JWT Key no configurada");
+
+// Configuración del docker para la base de datos
+string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("CadenaSQL") ?? "";
+builder.Services.AddDbContext<SistemaSupermercadoContext>(options =>
+{
+    options.UseSqlServer(connectionString);
+});
 
 // Agregar DbContext con la cadena de conexión del appsettings.json
-builder.Services.AddDbContext<SistemaSupermercadoContext>(options =>
+/*builder.Services.AddDbContext<SistemaSupermercadoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CadenaSQL"))
-);
+);*/
 
 // Inyección de dependencias separada en métodos de extensión
 builder.Services.AddRepositories();
@@ -86,6 +93,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new() { Title = "API Supermercado", Version = "v1" });
+    options.EnableAnnotations();
 
     // Configuración de seguridad JWT
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme

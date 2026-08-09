@@ -1,4 +1,6 @@
 using Domain.Models;
+using FluentValidation;
+using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Services;
 using Moq;
@@ -10,13 +12,18 @@ namespace UnitTests.Services;
 public class TestTransportistaService
 {
     private Mock<ITransportistaRepository> _mockRepository;
+    private Mock<IValidator<Transportistum>> _mockValidator;
     private TransportistaService _service;
 
     [TestInitialize]
     public void Setup()
     {
         _mockRepository = new Mock<ITransportistaRepository>();
-        //_service = new TransportistaService(_mockRepository.Object);
+        _mockValidator = new Mock<IValidator<Transportistum>>();
+        /*_service = new TransportistaService(
+            _mockRepository.Object,
+            _mockValidator.Object
+        );*/
     }
 
     [TestMethod]
@@ -32,7 +39,7 @@ public class TestTransportistaService
     public async Task RegistrarTransportista_DeberiaFallar_SiCamposObligatoriosVacios()
     {
         var transportista = new Transportistum { Codigo = "", Nombres = "", Apellidos = "", Cedula = "", Telefono = "", Correo_Electronico = "" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Transportistum>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Codigo", Mensajes.MESSAGE_EMPTY) }));
         var result = await _service.RegistrarTransportistaAsync(transportista);
 
         Assert.IsFalse(result.IsSuccess);
@@ -43,7 +50,7 @@ public class TestTransportistaService
     public async Task RegistrarTransportista_DeberiaFallar_SiNombresInvalidos()
     {
         var transportista = new Transportistum { Codigo = "CLI01", Nombres = "Juan123", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Transportistum>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Nombres Apellidos", "Los nombres y apellidos solo puede contener letras y espacios") }));
         var result = await _service.RegistrarTransportistaAsync(transportista);
 
         Assert.IsFalse(result.IsSuccess);
@@ -54,7 +61,7 @@ public class TestTransportistaService
     public async Task RegistrarTransportista_DeberiaFallar_SiCedulaOTelefonoInvalidos()
     {
         var transportista = new Transportistum { Codigo = "CLI01", Nombres = "Juan", Apellidos = "Perez", Cedula = "123", Telefono = "098", Correo_Electronico = "test@mail.com" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Transportistum>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Cedula", "La cédula y el teléfono deben contener exactamente 10 dígitos numéricos") }));
         var result = await _service.RegistrarTransportistaAsync(transportista);
 
         Assert.IsFalse(result.IsSuccess);
@@ -65,7 +72,7 @@ public class TestTransportistaService
     public async Task RegistrarTransportista_DeberiaFallar_SiCorreoInvalido()
     {
         var transportista = new Transportistum { Codigo = "CLI01", Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "correo_invalido" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Transportistum>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Correo Electronico", "El correo electrónico no tiene un formato válido") }));
         var result = await _service.RegistrarTransportistaAsync(transportista);
 
         Assert.IsFalse(result.IsSuccess);
@@ -76,13 +83,12 @@ public class TestTransportistaService
     public async Task RegistrarTransportista_DeberiaFallar_SiCodigoDuplicado()
     {
         var transportista = new Transportistum { Codigo = "CLI01", Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Transportistum>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Codigo", Mensajes.MESSAGE_CODE_EXITS) }));
         _mockRepository.Setup(r => r.ListarTransportistasAsync()).ReturnsAsync(new List<Transportistum> { new Transportistum { Codigo = "CLI01" } });
-
         var result = await _service.RegistrarTransportistaAsync(transportista);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("El código ya existe", result.Message);
+        Assert.AreEqual(Mensajes.MESSAGE_CODE_EXITS, result.Message);
     }
 
     [TestMethod]
@@ -98,7 +104,7 @@ public class TestTransportistaService
     public async Task EditarTransportista_DeberiaFallar_SiCamposObligatoriosVacios()
     {
         var transportista = new Transportistum { Nombres = "", Apellidos = "", Cedula = "", Telefono = "", Correo_Electronico = "" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Transportistum>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Codigo", Mensajes.MESSAGE_EMPTY) }));
         var result = await _service.EditarTransportistaAsync(transportista);
 
         Assert.IsFalse(result.IsSuccess);
@@ -109,9 +115,8 @@ public class TestTransportistaService
     public async Task EditarTranspotista_DeberiaFallar_SiClienteNoExiste()
     {
         var transportista = new Transportistum { Id_Transportista = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Transportistum>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerTransportistaAsync(1)).ReturnsAsync((Transportistum)null);
-
         var result = await _service.EditarTransportistaAsync(transportista);
 
         Assert.IsFalse(result.IsSuccess);
@@ -122,9 +127,8 @@ public class TestTransportistaService
     public async Task EditarTranspotista_DeberiaFallar_SiNombresInvalidos()
     {
         var transportista = new Transportistum { Id_Transportista = 1, Nombres = "Juan123", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Transportistum>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Nombres Apellidos", "Los nombres y apellidos solo puede contener letras y espacios") }));
         _mockRepository.Setup(r => r.ObtenerTransportistaAsync(1)).ReturnsAsync(new Transportistum());
-
         var result = await _service.EditarTransportistaAsync(transportista);
 
         Assert.IsFalse(result.IsSuccess);
@@ -135,9 +139,8 @@ public class TestTransportistaService
     public async Task EditarTransportista_DeberiaFallar_SiCedulaOTelefonoInvalidos()
     {
         var cliente = new Transportistum { Id_Transportista = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "123", Telefono = "098", Correo_Electronico = "test@mail.com" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Transportistum>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Cedula", "La cédula y el teléfono deben contener exactamente 10 dígitos numéricos") }));
         _mockRepository.Setup(r => r.ObtenerTransportistaAsync(1)).ReturnsAsync(new Transportistum());
-
         var result = await _service.EditarTransportistaAsync(cliente);
 
         Assert.IsFalse(result.IsSuccess);
@@ -148,9 +151,8 @@ public class TestTransportistaService
     public async Task EditarTransportista_DeberiaFallar_SiCorreoInvalido()
     {
         var cliente = new Transportistum { Id_Transportista = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "correo_invalido" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Transportistum>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Correo Electronico", "El correo electrónico no tiene un formato válido") }));
         _mockRepository.Setup(r => r.ObtenerTransportistaAsync(1)).ReturnsAsync(new Transportistum());
-
         var result = await _service.EditarTransportistaAsync(cliente);
 
         Assert.IsFalse(result.IsSuccess);
@@ -161,24 +163,20 @@ public class TestTransportistaService
     public async Task EditarTransportista_DeberiaFallar_SiCedulaOTelefonoDuplicados()
     {
         var cliente = new Transportistum { Id_Transportista = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Transportistum>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerTransportistaAsync(1)).ReturnsAsync(new Transportistum());
-        _mockRepository.Setup(r => r.ListarTransportistasAsync()).ReturnsAsync(new List<Transportistum>
-        {
-            new Transportistum { Id_Transportista = 2, Cedula = "1234567890" }
-        });
-
+        _mockRepository.Setup(r => r.ListarTransportistasAsync()).ReturnsAsync(new List<Transportistum>{ new Transportistum { Id_Transportista = 2, Cedula = "1234567890" } });
         var result = await _service.EditarTransportistaAsync(cliente);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("El cédula ya existe.", result.Message);
+        Assert.AreEqual(Mensajes.MESSAGE_CEDULA_EXITS, result.Message);
     }
 
     [TestMethod]
     public async Task EditarTransportista_DeberiaSerExitoso()
     {
         var transportista = new Transportistum { Id_Transportista = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Transportistum>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerTransportistaAsync(1)).ReturnsAsync(new Transportistum());
         _mockRepository.Setup(r => r.ListarTransportistasAsync()).ReturnsAsync(new List<Transportistum>());
         _mockRepository.Setup(r => r.EditarTransportistaAsync(transportista)).ReturnsAsync(1);

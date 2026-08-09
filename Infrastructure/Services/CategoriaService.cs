@@ -73,7 +73,7 @@ namespace Infrastructure.Services
 
             var categorias = await _categoriaRepository.ListarCategoriasAsync();
             if (categorias.Any(c => c.Codigo == categoria.Codigo))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El código ya existe" };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CODE_EXITS };
 
             if (categorias.Any(c => c.Nombre_Categoria?.ToLower() == categoria.Nombre_Categoria?.ToLower()))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe" };

@@ -1,6 +1,7 @@
 ﻿using Domain.Contexts;
 using Domain.Models;
 using Domain.Models.Dto.Negocio;
+using Domain.Models.Dto.Negocio.IA;
 using Infrastructure.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +32,7 @@ namespace Infrastructure.Repository
         {
             if (!string.IsNullOrWhiteSpace(negocio.ImagenBase64))
             {
-                if (negocio.ImagenBase64.Contains(","))
+                if (negocio.ImagenBase64.Contains(','))
                 {
                     negocio.ImagenBase64 = negocio.ImagenBase64.Split(',')[1];
                 }
@@ -56,9 +57,19 @@ namespace Infrastructure.Repository
             return await _context.ProductoMasComprados.FromSqlRaw("EXEC PA_PRODUCTOS_MAS_COMPRADOS").ToListAsync();
         }
 
+        public async Task<List<ProductoMasCompradoAnalisisIA>> ObtenerAnalisisProductosComprados()
+        {
+            return await _context.ProductoMasCompradosAnalisis.FromSqlRaw("EXEC PA_TENDENCIA_PRODUCTOS_COMPRADOS").ToListAsync();
+        }
+
         public async Task<List<ProductoMasVendido>> ObtenerProductoMasVendido()
         {
             return await _context.ProductoMasVendidos.FromSqlRaw("EXEC PA_PRODUCTOS_MAS_VENDIDOS").ToListAsync();
+        }
+
+        public async Task<List<ProductoMasVendidoAnalisisIA>> ObtenerAnalisisProductosVendidos()
+        {
+            return await _context.ProductoMasVendidosAnalisis.FromSqlRaw("EXEC PA_TENDENCIA_PRODUCTOS_VENDIDOS").ToListAsync();
         }
 
         public async Task<List<TopCliente>> ObtenerTopClientes()

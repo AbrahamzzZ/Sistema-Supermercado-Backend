@@ -1,26 +1,27 @@
-﻿using Domain.Contexts;
-using Domain.Models;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Domain.Models;
+using Infrastructure.Repository;
+using Infrastructure.Repository.InterfacesServices;
+using Utilities.Shared;
 
 namespace Infrastructure.Services
 {
-    public class MenuService 
+    public class MenuService : IMenuService
     {
-        private readonly SistemaSupermercadoContext _context;
+        private readonly MenuRepository _menusRepository;
 
-        public MenuService(SistemaSupermercadoContext context)
+        public MenuService(MenuRepository menuRepository)
         {
-            _context = context;
+            _menusRepository = menuRepository;
         }
 
-        public async Task<List<Menu>> ObtenerMenusAsync(int idUsuario)
+        public async Task<ApiResponse<List<Menu>>> ObtenerMenusAsync(int idUsuario)
         {
-            var idParam = new SqlParameter("@Id_Usuario", idUsuario);
-            return await _context.Menus
-                .FromSqlRaw("EXEC PA_OBTENER_MENU @Id_Usuario", idParam)
-                .AsNoTracking()
-                .ToListAsync();
+            var obtenerMenus = await _menusRepository.ObtenerMenusAsync(idUsuario);
+
+            if (obtenerMenus == null || obtenerMenus.Count == 0)
+                return new ApiResponse<List<Menu>>{ IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = obtenerMenus};
+
+            return new ApiResponse<List<Menu>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = obtenerMenus };
         }
     }
 }

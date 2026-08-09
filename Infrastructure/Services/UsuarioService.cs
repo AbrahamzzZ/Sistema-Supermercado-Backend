@@ -89,6 +89,9 @@ namespace Infrastructure.Services
 
         public async Task<ApiResponse<object>> RegistrarUsuarioAsync(Usuario usuario)
         {
+            if (usuario == null)
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
+
             var validationResult = await _validator.ValidateAsync(usuario);
 
             if (!validationResult.IsValid)
@@ -96,7 +99,7 @@ namespace Infrastructure.Services
 
             var usuarios = await _usuarioRepository.ListarUsuariosAsync();
             if (usuarios.Any(c => c.Codigo == usuario.Codigo))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El código ya existe" };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CODE_EXITS };
 
             if (usuarios.Any(c => c.Nombre_Completo == usuario.Nombre_Completo))
                 return new ApiResponse<object> { IsSuccess = false, Message = "Ese nombre ya existe" };

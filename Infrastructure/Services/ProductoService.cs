@@ -67,6 +67,9 @@ namespace Infrastructure.Services
 
         public async Task<ApiResponse<object>> RegistrarProductoAsync(Producto producto)
         {
+            if (producto == null)
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
+
             var validationResult = await _validator.ValidateAsync(producto);
 
             if (!validationResult.IsValid)
@@ -74,7 +77,7 @@ namespace Infrastructure.Services
 
             var productos = await _productoRepository.ListarProductosAsync();
             if (productos.Any(c => c.Codigo == producto.Codigo))
-                return new ApiResponse<object> { IsSuccess = false, Message = "El código ya existe" };
+                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CODE_EXITS };
 
             if (productos.Any(c => c.Nombre_Producto?.ToLower() == producto.Nombre_Producto?.ToLower()))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe" };

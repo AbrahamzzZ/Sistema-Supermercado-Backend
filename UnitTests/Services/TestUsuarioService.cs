@@ -1,5 +1,7 @@
 using Domain.Models;
 using Domain.Models.Dto;
+using FluentValidation;
+using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Services;
 using Moq;
@@ -11,13 +13,18 @@ namespace UnitTests.Services;
 public class TestUsuarioService
 {
     private Mock<IUsuarioRepository> _mockRepository;
+    private Mock<IValidator<Usuario>> _mockValidator;
     private UsuarioService _service;
 
     [TestInitialize]
     public void Setup()
     {
         _mockRepository = new Mock<IUsuarioRepository>();
-        //_service = new UsuarioService(_mockRepository.Object);
+        _mockValidator = new Mock<IValidator<Usuario>>();
+        /*_service = new UsuarioService(
+            _mockRepository.Object,
+            _mockValidator.Object
+        );*/
     }
 
     [TestMethod]
@@ -32,7 +39,7 @@ public class TestUsuarioService
     public async Task RegistrarUsuario_DeberiaFallar_SiCamposObligatoriosVacios()
     {
         var usuario = new Usuario { Nombre_Completo = "", Correo_Electronico = "", Clave = "" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Usuario>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Nombre_Completo", Mensajes.MESSAGE_EMPTY) }));
         var result = await _service.RegistrarUsuarioAsync(usuario);
 
         Assert.IsFalse(result.IsSuccess);
@@ -43,7 +50,7 @@ public class TestUsuarioService
     public async Task RegistrarUsuario_DeberiaFallar_SiNombreInvalido()
     {
         var usuario = new Usuario { Codigo = "USR01", Nombre_Completo = "Juan123", Correo_Electronico = "test@mail.com", Clave = "ClaveValida#123" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Usuario>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Nombre Completo", "El nombre completo solo puede contener letras y espacios.") }));
         var result = await _service.RegistrarUsuarioAsync(usuario);
 
         Assert.IsFalse(result.IsSuccess);
@@ -54,7 +61,7 @@ public class TestUsuarioService
     public async Task RegistrarUsuario_DeberiaFallar_SiClaveInvalida()
     {
         var usuario = new Usuario { Codigo = "USR01", Nombre_Completo = "Juan Perez", Correo_Electronico = "test@mail.com", Clave = "123" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Usuario>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Clave", "La clave debe tener al menos 10 caracteres, incluyendo letras, números y caracteres especiales.") }));
         var result = await _service.RegistrarUsuarioAsync(usuario);
 
         Assert.IsFalse(result.IsSuccess);
@@ -65,7 +72,7 @@ public class TestUsuarioService
     public async Task RegistrarUsuario_DeberiaFallar_SiCorreoInvalido()
     {
         var usuario = new Usuario { Codigo = "USR01", Nombre_Completo = "Juan Perez", Correo_Electronico = "correo_invalido", Clave = "ClaveValida#123" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Usuario>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Correo Electronico", "El correo electrónico no tiene un formato válido") }));
         var result = await _service.RegistrarUsuarioAsync(usuario);
 
         Assert.IsFalse(result.IsSuccess);
@@ -76,16 +83,12 @@ public class TestUsuarioService
     public async Task RegistrarUsuario_DeberiaFallar_SiCodigoDuplicado()
     {
         var usuario = new Usuario { Codigo = "USR01", Nombre_Completo = "Juan Perez", Correo_Electronico = "test@mail.com", Clave = "ClaveValida#123" };
-
-        _mockRepository.Setup(r => r.ListarUsuariosAsync()).ReturnsAsync(new List<UsuarioRol>
-        {
-            new UsuarioRol { Codigo = "USR01" }
-        });
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Usuario>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Codigo", Mensajes.MESSAGE_CODE_EXITS) }));
+        _mockRepository.Setup(r => r.ListarUsuariosAsync()).ReturnsAsync(new List<UsuarioRol>{ new UsuarioRol { Codigo = "USR01" } });
         var result = await _service.RegistrarUsuarioAsync(usuario);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("El código ya existe", result.Message);
+        Assert.AreEqual(Mensajes.MESSAGE_CODE_EXITS, result.Message);
     }
 
 
@@ -101,7 +104,7 @@ public class TestUsuarioService
     public async Task EditarUsuario_DeberiaFallar_SiCamposObligatoriosVacios()
     {
         var usuario = new Usuario { Nombre_Completo = "", Correo_Electronico = "" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Usuario>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure>{ new ValidationFailure("Nombre_Completo", Mensajes.MESSAGE_EMPTY)}));
         var result = await _service.EditarUsuarioAsync(usuario);
 
         Assert.IsFalse(result.IsSuccess);
@@ -112,9 +115,8 @@ public class TestUsuarioService
     public async Task EditarUsuario_DeberiaFallar_SiNoExisteUsuario()
     {
         var usuario = new Usuario { Id_Usuario = 1, Nombre_Completo = "Juan Perez", Correo_Electronico = "test@mail.com" };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Usuario>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerUsuarioAsync(usuario.Id_Usuario)).ReturnsAsync((UsuarioRol)null);
-
         var result = await _service.EditarUsuarioAsync(usuario);
 
         Assert.IsFalse(result.IsSuccess);
@@ -126,10 +128,9 @@ public class TestUsuarioService
     {
         var usuarioActual = new UsuarioRol { Id_Usuario = 1, Nombre_Rol = "Administrador", Estado = true, Id_Rol = 1 };
         var usuarioEditado = new Usuario { Id_Usuario = 1, Nombre_Completo = "Juan Perez", Correo_Electronico = "test@mail.com", Estado = false, Id_Rol = 1 };
-
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Usuario>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerUsuarioAsync(usuarioEditado.Id_Usuario)).ReturnsAsync(usuarioActual);
         _mockRepository.Setup(r => r.ListarUsuariosAsync()).ReturnsAsync(new List<UsuarioRol> { usuarioActual });
-
         var result = await _service.EditarUsuarioAsync(usuarioEditado);
 
         Assert.IsFalse(result.IsSuccess);

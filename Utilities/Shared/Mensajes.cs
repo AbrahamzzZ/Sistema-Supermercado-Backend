@@ -21,5 +21,10 @@
         public const string MESSAGE_CEDULA = "El campo debe contener una cédula válida de 10 dígitos.";
         public const string MESSAGE_EMAIL = "El campo debe contener un correo electrónico válido.";
         public const string MESSAGE_DETAILS_EMPTY = "Debe ingresar al menos un detalle.";
+        public const string MESSAGE_IA = "Análisis generado exitosamente.";
+        public const string MESSAGE_IA_FAILLED = "La pregunta no está relacionada con nada del negocio.";
+        public const string MESSAGE_CODE_EXITS = "El código ya existe.";
+        public const string MESSAGE_PHONE_EXITS = "El télefono ya existe.";
+        public const string MESSAGE_CEDULA_EXITS = "La cédula ya existe.";
     }
 }

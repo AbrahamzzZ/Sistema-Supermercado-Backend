@@ -4,6 +4,7 @@ using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using Utilities.Shared;
 
 namespace APIRestSistemaVentas.Controllers
@@ -31,13 +32,26 @@ namespace APIRestSistemaVentas.Controllers
 
         // GET: api/oferta
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Listar ofertas",
+            Description = "Obtiene la lista completa de ofertas de productos registradas en el sistema."
+        )]
+        [SwaggerResponse(200, "Lista de ofertas obtenida correctamente")]
+        [SwaggerResponse(401, "No autorizado")]
         public async Task<ActionResult<ApiResponse<OfertaProducto>>> GetOfertas()
         {
             var ofertas = await _ofertaService.ListarOfertasAsync();
             return Ok(ofertas);
         }
 
+        // GET: api/oferta/paginacion
         [HttpGet("paginacion")]
+        [SwaggerOperation(
+            Summary = "Listar ofertas con paginación",
+            Description = "Obtiene la lista de ofertas utilizando paginación."
+        )]
+        [SwaggerResponse(200, "Lista paginada obtenida correctamente")]
+        [SwaggerResponse(401, "No autorizado")]
         public async Task<ActionResult<ApiResponse<Paginacion<OfertaProducto>>>> GetOfertasPaginacion(int pageNumber = 1, int pageSize = 10)
         {
             var result = await _ofertaService.ListarOfertasPaginacionAsync(pageNumber, pageSize);
@@ -46,6 +60,13 @@ namespace APIRestSistemaVentas.Controllers
 
         // GET: api/oferta/5
         [HttpGet("{id}")]
+        [SwaggerOperation(
+            Summary = "Obtener oferta por ID",
+            Description = "Obtiene la información de una oferta específica."
+        )]
+        [SwaggerResponse(200, "Oferta encontrada")]
+        [SwaggerResponse(404, "Oferta no encontrada")]
+        [SwaggerResponse(401, "No autorizado")]
         public async Task<ActionResult<Ofertum>> GetOferta(int id)
         {
             var response = await _ofertaService.ObtenerOfertaAsync(id);
@@ -54,6 +75,13 @@ namespace APIRestSistemaVentas.Controllers
 
         // POST: api/oferta
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Registrar oferta",
+            Description = "Registra una nueva oferta para un producto."
+        )]
+        [SwaggerResponse(200, "Oferta registrada correctamente")]
+        [SwaggerResponse(400, "Error en los datos enviados")]
+        [SwaggerResponse(401, "No autorizado")]
         public async Task<ActionResult<ApiResponse<object>>> RegistrarOferta([FromBody] Ofertum oferta)
         {
             var response = await _ofertaService.RegistrarOfertaAsync(oferta);
@@ -62,6 +90,13 @@ namespace APIRestSistemaVentas.Controllers
 
         // PUT: api/oferta/5
         [HttpPut("{id}")]
+        [SwaggerOperation(
+            Summary = "Actualizar oferta",
+            Description = "Actualiza la información de una oferta existente."
+        )]
+        [SwaggerResponse(200, "Oferta actualizada correctamente")]
+        [SwaggerResponse(400, "Error en los datos enviados")]
+        [SwaggerResponse(401, "No autorizado")]
         public async Task<ActionResult<ApiResponse<object>>> EditarOferta(int id, [FromBody] Ofertum oferta)
         {
             var response = await _ofertaService.EditarOfertaAsync(oferta);
@@ -70,6 +105,13 @@ namespace APIRestSistemaVentas.Controllers
 
         // DELETE: api/oferta/5
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+            Summary = "Eliminar oferta",
+            Description = "Elimina una oferta registrada en el sistema."
+        )]
+        [SwaggerResponse(200, "Oferta eliminada correctamente")]
+        [SwaggerResponse(404, "Oferta no encontrada")]
+        [SwaggerResponse(401, "No autorizado")]
         public async Task<ActionResult<ApiResponse<int>>> EliminarOferta(int id)
         {
             var response = await _ofertaService.EliminarOfertaAsync(id);

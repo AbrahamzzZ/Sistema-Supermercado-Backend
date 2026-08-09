@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DataBaseFirst.Contexts.Configuration
+namespace Domain.Contexts.Configuration
 {
     public class DetalleVentaConfiguration : IEntityTypeConfiguration<DetalleVentum>
     {
