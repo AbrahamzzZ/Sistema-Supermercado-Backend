@@ -9,26 +9,34 @@ namespace Utilities.IA
         public OllamaClient(HttpClient http)
         {
             _http = http;
-            _http.BaseAddress = new Uri("http://localhost:11434");
         }
 
-        public async Task<string> GenerateAsync(string prompt, string model = "TU_MODELO")
+        public async Task<string> GenerateAsync(string prompt, string model = "phi3.5")
         {
             var body = new
             {
                 model,
                 prompt,
-                stream = false
+                stream = false,
+                temperature = 0.3,
+                num_predict = 50,
+                top_p = 0.9
             };
 
-            var response = await _http.PostAsJsonAsync("/api/generate", body);
+            try
+            {
+                var response = await _http.PostAsJsonAsync("/api/generate", body);
 
-            if (!response.IsSuccessStatusCode)
-                return $"Error en IA: {response.StatusCode}";
+                if (!response.IsSuccessStatusCode)
+                    return $"Error en IA: {response.StatusCode}";
 
-            var result = await response.Content.ReadFromJsonAsync<OllamaResponse>();
-
-            return result?.Response ?? "Sin respuesta generada.";
+                var result = await response.Content.ReadFromJsonAsync<OllamaResponse>();
+                return result?.Response ?? "Sin respuesta generada.";
+            }
+            catch (Exception ex)
+            {
+                return $"Error conectando a Ollama: {ex.Message}";
+            }
         }
     }
 
