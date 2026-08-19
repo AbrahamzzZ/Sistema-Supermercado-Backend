@@ -86,7 +86,7 @@ namespace Infrastructure.Services
 
             return new ApiResponse<List<ProductoMasVendido>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
         }
-
+        
         public async Task<ApiResponse<object>> AnalisisIA(string promptUsuario)
         {
             var tipo = Reglas.DetectarTipoAnalisis(promptUsuario);
@@ -137,8 +137,7 @@ namespace Infrastructure.Services
                     };
             }
 
-            string promptFinal = $@" Analiza los siguientes datos del sistema de ventas: {datos} Solicitud del usuario: {promptUsuario}. Una respuesta clara y máximo de 5 líneas.";
-
+            string promptFinal = $@"Analiza estos datos y responde en máximo 3 líneas: {datos} Pregunta: {promptUsuario}";
             var respuesta = await _ollama.GenerateAsync(promptFinal);
 
             return new ApiResponse<object>

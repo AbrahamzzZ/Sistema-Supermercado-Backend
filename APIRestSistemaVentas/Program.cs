@@ -78,6 +78,7 @@ builder.Services.AddRateLimiter(option =>
 
 // Agregar servicios para controladores
 builder.Services.AddControllers();
+builder.Services.AddOllamaClient(builder.Configuration);
 
 // Creacion de una nueva politica
 builder.Services.AddCors(options =>
