@@ -29,4 +29,6 @@ public partial class Producto
     public virtual Categorium? IdCategoriaNavigation { get; set; }
 
     public virtual ICollection<Ofertum> Oferta { get; set; } = new List<Ofertum>();
+
+    public virtual ICollection<HistorialPrecioProducto> HistorialPrecios { get; set; } = new List<HistorialPrecioProducto> ();
 }
