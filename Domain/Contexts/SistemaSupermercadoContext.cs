@@ -74,6 +74,8 @@ public partial class SistemaSupermercadoContext : DbContext
 
     public DbSet<DetalleVentasRepuesta> DetalleVentasRepuestaDto { get; set; }
 
+    public virtual DbSet<HistorialPrecioProducto> HistorialPreciosProducto { get; set; }
+
     public DbSet<ProductoMasComprado> ProductoMasComprados { get; set; }
 
     public DbSet<ProductoMasCompradoAnalisisIA> ProductoMasCompradosAnalisis { get; set; }
