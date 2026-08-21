@@ -1,5 +1,5 @@
 using Domain.Models;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Response.Producto;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
@@ -30,7 +30,7 @@ public class TestProductoService
     [TestMethod]
     public async Task ListarProductosAsync_ReturnsSuccess_WhenDataExists()
     {
-        var productos = new List<ProductoCategoria> { new ProductoCategoria { Id_Producto = 1, Nombre_Producto = "Producto A" } };
+        var productos = new List<ProductoCategoriaResponse> { new ProductoCategoriaResponse { Id_Producto = 1, Nombre_Producto = "Producto A" } };
         _mockRepository.Setup(r => r.ListarProductosAsync()).ReturnsAsync(productos);
         var result = await _service.ListarProductosAsync();
 
@@ -42,7 +42,7 @@ public class TestProductoService
     [TestMethod]
     public async Task ListarProductosAsync_ReturnsEmpty_WhenNoData()
     {
-        _mockRepository.Setup(r => r.ListarProductosAsync()).ReturnsAsync(new List<ProductoCategoria>());
+        _mockRepository.Setup(r => r.ListarProductosAsync()).ReturnsAsync(new List<ProductoCategoriaResponse>());
         var result = await _service.ListarProductosAsync();
 
         Assert.IsFalse(result.IsSuccess);
@@ -95,7 +95,7 @@ public class TestProductoService
     {
         var producto = new Producto { Codigo = "P001", Id_Categoria = 1, Nombre_Producto = "Producto Test", Descripcion = "Desc", Pais_Origen = "Ecuador" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Producto>(), default)).ReturnsAsync(new ValidationResult());
-        _mockRepository.Setup(r => r.ListarProductosAsync()).ReturnsAsync(new List<ProductoCategoria>());
+        _mockRepository.Setup(r => r.ListarProductosAsync()).ReturnsAsync(new List<ProductoCategoriaResponse>());
         _mockRepository.Setup(r => r.RegistrarProductoAsync(producto)).ReturnsAsync(1);
         var result = await _service.RegistrarProductoAsync(producto);
 
@@ -121,7 +121,7 @@ public class TestProductoService
         var producto = new Producto { Id_Producto = 1, Id_Categoria = 1, Nombre_Producto = "Producto Editado", Descripcion = "Desc",  Pais_Origen = "Ecuador" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Producto>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerProductoAsync(1)).ReturnsAsync(new ProductoResponse());
-        _mockRepository.Setup(r => r.ListarProductosAsync()).ReturnsAsync(new List<ProductoCategoria>());
+        _mockRepository.Setup(r => r.ListarProductosAsync()).ReturnsAsync(new List<ProductoCategoriaResponse>());
         _mockRepository.Setup(r => r.EditarProductoAsync(producto)).ReturnsAsync(1);
         var result = await _service.EditarProductoAsync(producto);
 

@@ -1,5 +1,5 @@
 using Domain.Models;
-using Domain.Models.Dto.Negocio;
+using Domain.Models.Dto.Response.Negocio;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
@@ -133,7 +133,7 @@ public class TestNegocioService
     [TestMethod]
     public async Task ObtenerProductoMasComprado_SiNullDebeRetornarError()
     {
-        _mockRepository.Setup(r => r.ObtenerProductoMasComprado()).ReturnsAsync((List<ProductoMasComprado>)null);
+        _mockRepository.Setup(r => r.ObtenerProductoMasComprado()).ReturnsAsync((List<ProductoMasCompradoResponse>)null);
 
         var result = await _service.ObtenerProductoMasComprado();
 
@@ -144,7 +144,7 @@ public class TestNegocioService
     [TestMethod]
     public async Task ObtenerProductoMasVendido_SiListaVaciaDebeRetornarError()
     {
-        _mockRepository.Setup(r => r.ObtenerProductoMasVendido()).ReturnsAsync(new List<ProductoMasVendido>());
+        _mockRepository.Setup(r => r.ObtenerProductoMasVendido()).ReturnsAsync(new List<ProductoMasVendidoResponse>());
 
         var result = await _service.ObtenerProductoMasVendido();
 
@@ -155,7 +155,7 @@ public class TestNegocioService
     [TestMethod]
     public async Task ObtenerTopClientes_SiListaVaciaDebeRetornarError()
     {
-        _mockRepository.Setup(r => r.ObtenerTopClientes()).ReturnsAsync(new List<TopCliente>());
+        _mockRepository.Setup(r => r.ObtenerTopClientes()).ReturnsAsync(new List<TopClienteResponse>());
 
         var result = await _service.ObtenerTopClientes();
 
@@ -166,7 +166,7 @@ public class TestNegocioService
     [TestMethod]
     public async Task ObtenerTopProveedores_SiListaVaciaDebeRetornarError()
     {
-        _mockRepository.Setup(r => r.ObtenerTopProveedores()).ReturnsAsync(new List<TopProveedor>());
+        _mockRepository.Setup(r => r.ObtenerTopProveedores()).ReturnsAsync(new List<TopProveedorResponse>());
 
         var result = await _service.ObtenerTopProveedores();
 
@@ -177,7 +177,7 @@ public class TestNegocioService
     [TestMethod]
     public async Task ObtenerViajesTransportista_SiListaVaciaDebeRetornarError()
     {
-        _mockRepository.Setup(r => r.ObtenerViajesTransportista()).ReturnsAsync(new List<ViajesTransportista>());
+        _mockRepository.Setup(r => r.ObtenerViajesTransportista()).ReturnsAsync(new List<ViajesTransportistaResponse>());
 
         var result = await _service.ObtenerViajesTransportista();
 
@@ -188,7 +188,7 @@ public class TestNegocioService
     [TestMethod]
     public async Task ObtenerEmpleadosProductivos_SiListaVaciaDebeRetornarError()
     {
-        _mockRepository.Setup(r => r.ObtenerEmpleadosProductivos()).ReturnsAsync(new List<EmpleadoProductivo>());
+        _mockRepository.Setup(r => r.ObtenerEmpleadosProductivos()).ReturnsAsync(new List<EmpleadoProductivoResponse>());
 
         var result = await _service.ObtenerEmpleadosProductivos();
 

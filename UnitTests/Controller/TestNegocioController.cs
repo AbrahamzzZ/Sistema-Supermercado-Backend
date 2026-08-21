@@ -1,6 +1,6 @@
 using APIRestSistemaVentas.Controllers;
 using Domain.Models;
-using Domain.Models.Dto.Negocio;
+using Domain.Models.Dto.Response.Negocio;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -90,8 +90,8 @@ public class TestNegocioController
     [TestMethod]
     public async Task ObtenerProductosMasComprados_ReturnsOk_WhenSuccess()
     {
-        var response = new ApiResponse<List<ProductoMasComprado>>
-        { IsSuccess = true, Data = new List<ProductoMasComprado> { new ProductoMasComprado { Nombre_Producto = "Producto A", Cantidad_Comprada = 10 } } };
+        var response = new ApiResponse<List<ProductoMasCompradoResponse>>
+        { IsSuccess = true, Data = new List<ProductoMasCompradoResponse> { new ProductoMasCompradoResponse { Nombre_Producto = "Producto A", Cantidad_Comprada = 10 } } };
 
         _mockService.Setup(s => s.ObtenerProductoMasComprado())
                     .ReturnsAsync(response);
@@ -107,7 +107,7 @@ public class TestNegocioController
     [TestMethod]
     public async Task ObtenerProductosMasVendidos_ReturnsOk_WhenSuccess()
     {
-        var response = new ApiResponse<List<ProductoMasVendido>> { IsSuccess = true, Data = new List<ProductoMasVendido>  { new ProductoMasVendido { Nombre_Producto = "Producto X", Cantidad_Vendida = 20 } } };
+        var response = new ApiResponse<List<ProductoMasVendidoResponse>> { IsSuccess = true, Data = new List<ProductoMasVendidoResponse>  { new ProductoMasVendidoResponse { Nombre_Producto = "Producto X", Cantidad_Vendida = 20 } } };
 
         _mockService.Setup(s => s.ObtenerProductoMasVendido())
                     .ReturnsAsync(response);
@@ -123,8 +123,8 @@ public class TestNegocioController
     [TestMethod]
     public async Task ObtenerTopClientes_ReturnsOk_WhenSuccess()
     {
-        var response = new ApiResponse<List<TopCliente>>
-        { IsSuccess = true, Data = new List<TopCliente> { new TopCliente { Nombre_Completo = "Cliente A", Compras_Totales = 500 } } };
+        var response = new ApiResponse<List<TopClienteResponse>>
+        { IsSuccess = true, Data = new List<TopClienteResponse> { new TopClienteResponse { Nombre_Completo = "Cliente A", Compras_Totales = 500 } } };
 
         _mockService.Setup(s => s.ObtenerTopClientes())
                     .ReturnsAsync(response);
@@ -140,8 +140,8 @@ public class TestNegocioController
     [TestMethod]
     public async Task ObtenerTopProveedores_ReturnsOk_WhenSuccess()
     {
-        var response = new ApiResponse<List<TopProveedor>>
-        { IsSuccess = true, Data = new List<TopProveedor> {  new TopProveedor { Nombre_Completo = "Proveedor A", Compras_Totales = 300 } } };
+        var response = new ApiResponse<List<TopProveedorResponse>>
+        { IsSuccess = true, Data = new List<TopProveedorResponse> {  new TopProveedorResponse { Nombre_Completo = "Proveedor A", Compras_Totales = 300 } } };
 
         _mockService.Setup(s => s.ObtenerTopProveedores())
                     .ReturnsAsync(response);
@@ -157,7 +157,7 @@ public class TestNegocioController
     [TestMethod]
     public async Task ObtenerTransportistaViajes_ReturnsOk_WhenSuccess()
     {
-        var response = new ApiResponse<List<ViajesTransportista>> { IsSuccess = true, Data = new List<ViajesTransportista> { new ViajesTransportista { Nombre_Completo = "Juan", Viajes_Realizados = 15 } } };
+        var response = new ApiResponse<List<ViajesTransportistaResponse>> { IsSuccess = true, Data = new List<ViajesTransportistaResponse> { new ViajesTransportistaResponse { Nombre_Completo = "Juan", Viajes_Realizados = 15 } } };
 
         _mockService.Setup(s => s.ObtenerViajesTransportista())
                     .ReturnsAsync(response);
@@ -173,7 +173,7 @@ public class TestNegocioController
     [TestMethod]
     public async Task ObtenerEmpleadosProductivos_ReturnsOk_WhenSuccess()
     {
-        var response = new ApiResponse<List<EmpleadoProductivo>> { IsSuccess = true, Data = new List<EmpleadoProductivo> { new EmpleadoProductivo { Nombre_Completo = "Pedro", Ventas_Empleado = 50 } } };
+        var response = new ApiResponse<List<EmpleadoProductivoResponse>> { IsSuccess = true, Data = new List<EmpleadoProductivoResponse> { new EmpleadoProductivoResponse { Nombre_Completo = "Pedro", Ventas_Empleado = 50 } } };
 
         _mockService.Setup(s => s.ObtenerEmpleadosProductivos())
                     .ReturnsAsync(response);

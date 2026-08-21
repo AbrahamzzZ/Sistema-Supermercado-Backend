@@ -1,6 +1,7 @@
 using APIRestSistemaVentas.Controllers;
 using Domain.Models;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Request;
+using Domain.Models.Dto.Response.Usuario;
 using Infrastructure.Helpers;
 using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Repository.InterfacesServices;
@@ -36,7 +37,7 @@ public class TestUsuarioController
     public async Task GetUsuarios_DeberiaRetornarOk()
     {
         _mockService.Setup(s => s.ListarUsuariosAsync())
-            .ReturnsAsync(new ApiResponse<List<UsuarioRol>> { IsSuccess = true,Data = new List<UsuarioRol> { new UsuarioRol { Id_Usuario = 1, Nombre_Completo = "Snacks" } }});
+            .ReturnsAsync(new ApiResponse<List<UsuarioRolResponse>> { IsSuccess = true,Data = new List<UsuarioRolResponse> { new UsuarioRolResponse { Id_Usuario = 1, Nombre_Completo = "Snacks" } }});
 
         var result = await _controller.GetUsuarios();
 
@@ -48,7 +49,7 @@ public class TestUsuarioController
     public async Task GetUsuario_DeberiaRetornarNotFound_SiNoExiste()
     {
         _mockService.Setup(s => s.ObtenerUsuarioAsync(99))
-            .ReturnsAsync(new ApiResponse<UsuarioRol>
+            .ReturnsAsync(new ApiResponse<UsuarioRolResponse>
             {
                 IsSuccess = false
             });
@@ -61,11 +62,11 @@ public class TestUsuarioController
     [TestMethod]
     public async Task IniciarSesion_DeberiaRetornarOk_SiCredencialesValidas()
     {
-        var login = new Login { Correo_Electronico = "test@mail.com", Clave = "123456" };
-        var usuario = new UsuarioRol { Id_Usuario = 1 };
+        var login = new LoginRequest { Correo_Electronico = "test@mail.com", Clave = "123456" };
+        var usuario = new UsuarioRolResponse { Id_Usuario = 1 };
 
         _mockService.Setup(s => s.IniciarSesionAsync(login))
-            .ReturnsAsync(new ApiResponse<UsuarioRol>{ IsSuccess = true, Data = usuario});
+            .ReturnsAsync(new ApiResponse<UsuarioRolResponse>{ IsSuccess = true, Data = usuario});
 
         _mockMenuService.Setup(m => m.ObtenerMenusAsync(usuario.Id_Usuario))
             .ReturnsAsync(new ApiResponse<List<Menu>>
@@ -81,10 +82,10 @@ public class TestUsuarioController
     [TestMethod]
     public async Task IniciarSesion_DeberiaRetornarUnauthorized_SiFalla()
     {
-        var login = new Login { Correo_Electronico = "test@mail.com", Clave = "123456" };
+        var login = new LoginRequest { Correo_Electronico = "test@mail.com", Clave = "123456" };
 
         _mockService.Setup(s => s.IniciarSesionAsync(login))
-            .ReturnsAsync(new ApiResponse<UsuarioRol>
+            .ReturnsAsync(new ApiResponse<UsuarioRolResponse>
             {
                 IsSuccess = false
             });

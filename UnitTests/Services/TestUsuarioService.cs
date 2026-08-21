@@ -1,5 +1,6 @@
 using Domain.Models;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Request;
+using Domain.Models.Dto.Response.Usuario;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
@@ -84,7 +85,7 @@ public class TestUsuarioService
     {
         var usuario = new Usuario { Codigo = "USR01", Nombre_Completo = "Juan Perez", Correo_Electronico = "test@mail.com", Clave = "ClaveValida#123" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Usuario>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Codigo", Mensajes.MESSAGE_CODE_EXITS) }));
-        _mockRepository.Setup(r => r.ListarUsuariosAsync()).ReturnsAsync(new List<UsuarioRol>{ new UsuarioRol { Codigo = "USR01" } });
+        _mockRepository.Setup(r => r.ListarUsuariosAsync()).ReturnsAsync(new List<UsuarioRolResponse>{ new UsuarioRolResponse { Codigo = "USR01" } });
         var result = await _service.RegistrarUsuarioAsync(usuario);
 
         Assert.IsFalse(result.IsSuccess);
@@ -116,7 +117,7 @@ public class TestUsuarioService
     {
         var usuario = new Usuario { Id_Usuario = 1, Nombre_Completo = "Juan Perez", Correo_Electronico = "test@mail.com" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Usuario>(), default)).ReturnsAsync(new ValidationResult());
-        _mockRepository.Setup(r => r.ObtenerUsuarioAsync(usuario.Id_Usuario)).ReturnsAsync((UsuarioRol)null);
+        _mockRepository.Setup(r => r.ObtenerUsuarioAsync(usuario.Id_Usuario)).ReturnsAsync((UsuarioRolResponse)null);
         var result = await _service.EditarUsuarioAsync(usuario);
 
         Assert.IsFalse(result.IsSuccess);
@@ -126,11 +127,11 @@ public class TestUsuarioService
     [TestMethod]
     public async Task EditarUsuario_DeberiaFallar_SiEsUnicoAdministradorYSeQuiereInactivar()
     {
-        var usuarioActual = new UsuarioRol { Id_Usuario = 1, Nombre_Rol = "Administrador", Estado = true, Id_Rol = 1 };
+        var usuarioActual = new UsuarioRolResponse { Id_Usuario = 1, Nombre_Rol = "Administrador", Estado = true, Id_Rol = 1 };
         var usuarioEditado = new Usuario { Id_Usuario = 1, Nombre_Completo = "Juan Perez", Correo_Electronico = "test@mail.com", Estado = false, Id_Rol = 1 };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Usuario>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerUsuarioAsync(usuarioEditado.Id_Usuario)).ReturnsAsync(usuarioActual);
-        _mockRepository.Setup(r => r.ListarUsuariosAsync()).ReturnsAsync(new List<UsuarioRol> { usuarioActual });
+        _mockRepository.Setup(r => r.ListarUsuariosAsync()).ReturnsAsync(new List<UsuarioRolResponse> { usuarioActual });
         var result = await _service.EditarUsuarioAsync(usuarioEditado);
 
         Assert.IsFalse(result.IsSuccess);
@@ -141,7 +142,7 @@ public class TestUsuarioService
     [TestMethod]
     public async Task EliminarUsuario_DeberiaFallar_SiUsuarioNoExiste()
     {
-        _mockRepository.Setup(r => r.ObtenerUsuarioAsync(1)).ReturnsAsync((UsuarioRol)null);
+        _mockRepository.Setup(r => r.ObtenerUsuarioAsync(1)).ReturnsAsync((UsuarioRolResponse)null);
 
         var result = await _service.EliminarUsuarioAsync(1);
 
@@ -152,10 +153,10 @@ public class TestUsuarioService
     [TestMethod]
     public async Task EliminarUsuario_DeberiaFallar_SiEsUnicoAdministrador()
     {
-        var usuario = new UsuarioRol { Id_Usuario = 1, Nombre_Rol = "Administrador", Estado = true };
+        var usuario = new UsuarioRolResponse { Id_Usuario = 1, Nombre_Rol = "Administrador", Estado = true };
 
         _mockRepository.Setup(r => r.ObtenerUsuarioAsync(1)).ReturnsAsync(usuario);
-        _mockRepository.Setup(r => r.ListarUsuariosAsync()).ReturnsAsync(new List<UsuarioRol> { usuario });
+        _mockRepository.Setup(r => r.ListarUsuariosAsync()).ReturnsAsync(new List<UsuarioRolResponse> { usuario });
 
         var result = await _service.EliminarUsuarioAsync(1);
 
@@ -176,9 +177,9 @@ public class TestUsuarioService
     [TestMethod]
     public async Task IniciarSesion_DeberiaFallar_SiCredencialesInvalidas()
     {
-        var login = new Login { Correo_Electronico = "test@mail.com", Clave = "123456" };
+        var login = new LoginRequest { Correo_Electronico = "test@mail.com", Clave = "123456" };
 
-        _mockRepository.Setup(r => r.IniciarSesionAsync(login)).ReturnsAsync((UsuarioRol)null);
+        _mockRepository.Setup(r => r.IniciarSesionAsync(login)).ReturnsAsync((UsuarioRolResponse)null);
 
         var result = await _service.IniciarSesionAsync(login);
 
@@ -189,8 +190,8 @@ public class TestUsuarioService
     [TestMethod]
     public async Task IniciarSesion_DeberiaFallar_SiUsuarioInactivo()
     {
-        var login = new Login { Correo_Electronico = "test@mail.com", Clave = "123456" };
-        var usuario = new UsuarioRol { Estado = false };
+        var login = new LoginRequest { Correo_Electronico = "test@mail.com", Clave = "123456" };
+        var usuario = new UsuarioRolResponse { Estado = false };
 
         _mockRepository.Setup(r => r.IniciarSesionAsync(login)).ReturnsAsync(usuario);
 
