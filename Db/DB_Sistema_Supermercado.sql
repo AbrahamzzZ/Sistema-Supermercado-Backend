@@ -13,7 +13,7 @@ RUC varchar(13) unique,
 DIRECCION varchar(60),
 CORREO_ELECTRONICO varchar(40),
 LOGO varbinary(max)NUll,
-USUARIO_MODIFICACION varchar(100) null,
+USUARIO_MODIFICACION int null,
 FECHA_MODIFICACION datetime null,
 );
 GO
@@ -39,7 +39,7 @@ CREATE PROCEDURE PA_EDITAR_NEGOCIO(
 @Direccion varchar(60),
 @Correo_Electronico varchar(40),
 @Logo varbinary(max) = NULL,
-@Usuario_Modificacion varchar(100)
+@Usuario_Modificacion int 
 )
 AS
 BEGIN
@@ -137,9 +137,9 @@ CORREO_ELECTRONICO nvarchar(50),
 CLAVE nvarchar(300),
 ID_ROL int references ROL(ID_ROL),
 ESTADO bit,
-USUARIO_CREACION varchar(100) null,
+USUARIO_CREACION int null,
 FECHA_CREACION datetime null default GETDATE(),
-USUARIO_MODIFICACION varchar(100) null,
+USUARIO_MODIFICACION int null,
 FECHA_MODIFICACION datetime null,
 );
 GO
@@ -215,7 +215,7 @@ CREATE PROCEDURE PA_REGISTRAR_USUARIO(
 @Clave nvarchar(300),
 @Id_Rol int,
 @Estado bit,
-@Usuario_Creacion varchar(100)
+@Usuario_Creacion int
 )
 AS
 BEGIN
@@ -231,7 +231,7 @@ CREATE PROCEDURE PA_EDITAR_USUARIO(
 @Clave NVARCHAR(300),
 @Id_Rol INT,
 @Estado BIT,
-@Usuario_Modificacion VARCHAR(100)
+@Usuario_Modificacion INT 
 )
 AS
 BEGIN
@@ -258,9 +258,9 @@ DIRECCION_SUCURSAL VARCHAR(250),
 UBICACION_SUCURSAL GEOGRAPHY,
 CIUDAD_SUCURSAL VARCHAR(30),
 ESTADO BIT,
-USUARIO_CREACION varchar(100) null,
+USUARIO_CREACION int null,
 FECHA_CREACION datetime null default GETDATE(),
-USUARIO_MODIFICACION varchar(100) null,
+USUARIO_MODIFICACION int null,
 FECHA_MODIFICACION datetime null,
 );
 GO
@@ -325,7 +325,7 @@ CREATE PROCEDURE PA_REGISTRAR_SUCURSAL(
 @Ubicacion geography,
 @Ciudad varchar(30),
 @Estado bit,
-@Usuario_Creacion varchar(100)
+@Usuario_Creacion int
 )
 AS
 BEGIN
@@ -342,7 +342,7 @@ CREATE PROCEDURE PA_EDITAR_SUCURSAL(
 @Ubicacion geography,
 @Ciudad varchar(30),
 @Estado bit,
-@Usuario_Modificacion varchar(100)
+@Usuario_Modificacion int
 )
 AS
 BEGIN
@@ -376,9 +376,9 @@ CEDULA varchar(10),
 TELEFONO varchar(10),
 CORREO_ELECTRONICO nvarchar(50),
 ESTADO bit,
-USUARIO_CREACION varchar(100) null,
+USUARIO_CREACION int null,
 FECHA_CREACION datetime null default GETDATE(),
-USUARIO_MODIFICACION varchar(100) null,
+USUARIO_MODIFICACION int null,
 FECHA_MODIFICACION datetime null,
 );
 GO
@@ -441,7 +441,7 @@ CREATE PROCEDURE PA_REGISTRAR_PROVEEDOR(
 @Telefono varchar(10),
 @Correo_Electronico varchar(50),
 @Estado bit,
-@Usuario_Creacion varchar(100)
+@Usuario_Creacion int
 )
 AS
 BEGIN
@@ -458,7 +458,7 @@ CREATE PROCEDURE PA_EDITAR_PROVEEDOR(
 @Telefono varchar(10),
 @Correo_Electronico varchar(50),
 @Estado bit,
-@Usuario_Modificacion varchar(100)
+@Usuario_Modificacion int
 )
 AS
 BEGIN
@@ -486,9 +486,9 @@ TELEFONO varchar(10),
 CORREO_ELECTRONICO nvarchar(50),
 FOTO varbinary(max)NUll,
 ESTADO bit,
-USUARIO_CREACION varchar(100) null,
+USUARIO_CREACION int null,
 FECHA_CREACION datetime null default GETDATE(),
-USUARIO_MODIFICACION varchar(100) null,
+USUARIO_MODIFICACION int null,
 FECHA_MODIFICACION datetime null,
 );
 GO
@@ -553,7 +553,7 @@ CREATE PROCEDURE PA_REGISTRAR_TRANSPORTISTA(
 @Correo_Electronico varchar(50),
 @Foto varbinary(max) = NULL,
 @Estado bit,
-@Usuario_Creacion varchar(100)
+@Usuario_Creacion int
 )
 AS
 BEGIN
@@ -571,7 +571,7 @@ CREATE PROCEDURE PA_EDITAR_TRANSPORTISTA(
 @Correo_Electronico varchar(50),
 @Foto varbinary(max) = NULL,
 @Estado bit,
-@Usuario_Modificacion varchar(100)
+@Usuario_Modificacion int
 )
 AS
 BEGIN
@@ -597,9 +597,9 @@ APELLIDOS varchar(30),
 CEDULA varchar(10),
 TELEFONO varchar(10),
 CORREO_ELECTRONICO nvarchar(50),
-USUARIO_CREACION varchar(100) null,
+USUARIO_CREACION int null,
 FECHA_CREACION datetime null default GETDATE(),
-USUARIO_MODIFICACION varchar(100) null,
+USUARIO_MODIFICACION int null,
 FECHA_MODIFICACION datetime null,
 );
 GO
@@ -659,7 +659,7 @@ CREATE PROCEDURE PA_REGISTRAR_CLIENTE(
 @Cedula varchar(10),
 @Telefono varchar(10),
 @Correo_Electronico varchar(50),
-@Usuario_Creacion varchar(100)
+@Usuario_Creacion int
 )
 AS
 BEGIN
@@ -675,7 +675,7 @@ CREATE PROCEDURE PA_EDITAR_CLIENTE(
 @Cedula varchar(10),
 @Telefono varchar(10),
 @Correo_Electronico varchar(50),
-@Usuario_Modificacion varchar(100)
+@Usuario_Modificacion int
 )
 AS
 BEGIN
@@ -698,9 +698,9 @@ CREATE TABLE CATEGORIA ( ID_CATEGORIA INT PRIMARY KEY IDENTITY,
 CODIGO varchar(10),
 NOMBRE_CATEGORIA nvarchar(50),
 ESTADO bit,
-USUARIO_CREACION varchar(100) null,
+USUARIO_CREACION int null,
 FECHA_CREACION datetime null default GETDATE(),
-USUARIO_MODIFICACION varchar(100) null,
+USUARIO_MODIFICACION int null,
 FECHA_MODIFICACION datetime null,
 );
 GO
@@ -753,7 +753,7 @@ CREATE PROCEDURE PA_REGISTRAR_CATEGORIA(
 @Codigo varchar(10),
 @Nombre nvarchar(50),
 @Estado bit,
-@Usuario_Creacion varchar(100)
+@Usuario_Creacion int
 )
 AS
 BEGIN
@@ -764,7 +764,7 @@ CREATE PROCEDURE PA_EDITAR_CATEGORIA(
 @Id_Categoria int,
 @Nombre nvarchar(50),
 @Estado bit,
-@Usuario_Modificacion varchar(100)
+@Usuario_Modificacion int
 )
 AS
 BEGIN
@@ -807,9 +807,9 @@ STOCK int not null default 0,
 PRECIO_COMPRA decimal (10,2) default 0,
 PRECIO_VENTA decimal (10,2) default 0,
 ESTADO bit,
-USUARIO_CREACION varchar(100) null,
+USUARIO_CREACION int null,
 FECHA_CREACION datetime null default GETDATE(),
-USUARIO_MODIFICACION varchar(100) null,
+USUARIO_MODIFICACION int null,
 FECHA_MODIFICACION datetime null,
 );
 GO
@@ -875,7 +875,7 @@ CREATE PROCEDURE PA_REGISTRAR_PRODUCTO(
 @Id_Categoria int,
 @Pais_Origen varchar(30),
 @Estado bit,
-@Usuario_Creacion varchar(100)
+@Usuario_Creacion int
 )
 AS
 BEGIN
@@ -891,7 +891,7 @@ CREATE PROCEDURE PA_EDITAR_PRODUCTO(
 @Id_Categoria int,
 @Pais_Origen varchar(30),
 @Estado bit,
-@Usuario_Modificacion varchar(100)
+@Usuario_Modificacion int
 )
 AS
 BEGIN
@@ -918,9 +918,9 @@ FECHA_INICIO date,
 FECHA_FIN date,
 DESCUENTO decimal(5,2) default 0,
 ESTADO bit,
-USUARIO_CREACION varchar(100) null,
+USUARIO_CREACION int null,
 FECHA_CREACION datetime null default GETDATE(),
-USUARIO_MODIFICACION varchar(100) null,
+USUARIO_MODIFICACION int null,
 FECHA_MODIFICACION datetime null,
 );
 GO
@@ -988,7 +988,7 @@ CREATE PROCEDURE PA_REGISTRAR_OFERTA(
 @Fecha_Fin datetime,
 @Descuento int,
 @Estado bit,
-@Usuario_Creacion varchar(100)
+@Usuario_Creacion int
 )
 AS
 BEGIN
@@ -1006,7 +1006,7 @@ CREATE PROCEDURE PA_EDITAR_OFERTA(
 @Fecha_Fin datetime,
 @Descuento int,
 @Estado bit,
-@Usuario_Modificacion varchar(100)
+@Usuario_Modificacion int
 )
 AS
 BEGIN
