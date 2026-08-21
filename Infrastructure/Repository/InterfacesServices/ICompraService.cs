@@ -1,4 +1,4 @@
-﻿using Domain.Models.Dto.Compra;
+﻿using Domain.Models.Dto.Response.Compra;
 using Utilities.Shared;
 
 namespace Infrastructure.Repository.InterfacesServices

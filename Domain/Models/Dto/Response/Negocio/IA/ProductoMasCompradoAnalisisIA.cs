@@ -1,4 +1,4 @@
-﻿namespace Domain.Models.Dto.Negocio.IA
+﻿namespace Domain.Models.Dto.Response.Negocio.IA
 {
     public class ProductoMasCompradoAnalisisIA
     {

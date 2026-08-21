@@ -1,5 +1,5 @@
 using Domain.Models;
-using Domain.Models.Dto.Compra;
+using Domain.Models.Dto.Response.Compra;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;

@@ -1,11 +1,11 @@
 ﻿using Domain.Models;
-using Domain.Models.Dto;
 using Infrastructure.Repository.InterfacesRepository;
 using FluentValidation;
 using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.Data.SqlClient;
 using Utilities.Shared;
+using Domain.Models.Dto.Response.Producto;
 
 namespace Infrastructure.Services
 {
@@ -31,26 +31,26 @@ namespace Infrastructure.Services
             _validator = validator;
         }*/
 
-        public async Task<ApiResponse<List<ProductoCategoria>>> ListarProductosAsync()
+        public async Task<ApiResponse<List<ProductoCategoriaResponse>>> ListarProductosAsync()
         {
             var listapProductos = await _productoRepository.ListarProductosAsync();
 
             if (listapProductos == null || listapProductos.Count == 0)
-                return new ApiResponse<List<ProductoCategoria>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listapProductos };
+                return new ApiResponse<List<ProductoCategoriaResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listapProductos };
 
-            return new ApiResponse<List<ProductoCategoria>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listapProductos };
+            return new ApiResponse<List<ProductoCategoriaResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listapProductos };
         }
 
-        public async Task<ApiResponse<Paginacion<ProductoCategoria>>> ListarProductosPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<ApiResponse<Paginacion<ProductoCategoriaResponse>>> ListarProductosPaginacionAsync(int pageNumber, int pageSize)
         {
             var pagedResult = await _productoRepository.ListarProductosPaginacionAsync(pageNumber, pageSize);
 
             if (pagedResult.Items == null || pagedResult.Items.Count == 0)
             {
-                return new ApiResponse<Paginacion<ProductoCategoria>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
+                return new ApiResponse<Paginacion<ProductoCategoriaResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
             }
 
-            return new ApiResponse<Paginacion<ProductoCategoria>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
+            return new ApiResponse<Paginacion<ProductoCategoriaResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
         }
 
         public async Task<ApiResponse<ProductoResponse>> ObtenerProductoAsync(int idProducto)

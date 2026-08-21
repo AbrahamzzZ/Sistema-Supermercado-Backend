@@ -1,5 +1,5 @@
 using APIRestSistemaVentas.Controllers;
-using Domain.Models.Dto.Compra;
+using Domain.Models.Dto.Response.Compra;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

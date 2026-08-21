@@ -1,4 +1,4 @@
-﻿namespace Domain.Models.Dto.Compra
+﻿namespace Domain.Models.Dto.Response.Compra
 {
     public class DetalleCompras
     {

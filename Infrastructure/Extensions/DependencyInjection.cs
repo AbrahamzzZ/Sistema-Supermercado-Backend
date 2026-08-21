@@ -1,6 +1,6 @@
 ﻿using Domain.Models;
-using Domain.Models.Dto.Compra;
-using Domain.Models.Dto.Venta;
+using Domain.Models.Dto.Response.Compra;
+using Domain.Models.Dto.Response.Venta;
 using FluentValidation;
 using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesRepository;

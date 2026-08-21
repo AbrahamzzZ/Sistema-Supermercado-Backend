@@ -1,5 +1,5 @@
 ﻿using Domain.Models;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Response.Oferta;
 using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -38,7 +38,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista de ofertas obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<OfertaProducto>>> GetOfertas()
+        public async Task<ActionResult<ApiResponse<OfertaProductoResponse>>> GetOfertas()
         {
             var ofertas = await _ofertaService.ListarOfertasAsync();
             return Ok(ofertas);
@@ -52,7 +52,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista paginada obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Paginacion<OfertaProducto>>>> GetOfertasPaginacion(int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<ApiResponse<Paginacion<OfertaProductoResponse>>>> GetOfertasPaginacion(int pageNumber = 1, int pageSize = 10)
         {
             var result = await _ofertaService.ListarOfertasPaginacionAsync(pageNumber, pageSize);
             return Ok(result);

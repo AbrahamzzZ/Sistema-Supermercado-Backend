@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Domain.Models.Dto
+namespace Domain.Models.Dto.Response.Oferta
 {
-    public class OfertaProducto
+    public class OfertaProductoResponse
     {
         public int Id_Oferta { get; set; }
         public string? Codigo { get; set; }

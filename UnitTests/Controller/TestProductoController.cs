@@ -1,6 +1,6 @@
 using APIRestSistemaVentas.Controllers;
 using Domain.Models;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Response.Producto;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -25,15 +25,15 @@ public class TestProductoController
     [TestMethod]
     public async Task GetProductos_DeberiaRetornarOk()
     {
-        var data = new List<ProductoCategoria> { new ProductoCategoria { Id_Producto = 1, Nombre_Producto = "Snacks" } };
+        var data = new List<ProductoCategoriaResponse> { new ProductoCategoriaResponse { Id_Producto = 1, Nombre_Producto = "Snacks" } };
         _mockService.Setup(s => s.ListarProductosAsync())
-            .ReturnsAsync(new ApiResponse<List<ProductoCategoria>> { IsSuccess = true, Data = data });
+            .ReturnsAsync(new ApiResponse<List<ProductoCategoriaResponse>> { IsSuccess = true, Data = data });
 
         var result = await _controller.GetProductos();
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
-        var response = okResult.Value as ApiResponse<List<ProductoCategoria>>;
+        var response = okResult.Value as ApiResponse<List<ProductoCategoriaResponse>>;
         Assert.IsTrue(response.IsSuccess);
         Assert.AreEqual(1, response.Data.Count);
     }

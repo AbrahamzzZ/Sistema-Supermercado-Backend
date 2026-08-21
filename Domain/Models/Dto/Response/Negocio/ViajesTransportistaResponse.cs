@@ -1,6 +1,6 @@
-﻿namespace Domain.Models.Dto.Negocio
+﻿namespace Domain.Models.Dto.Response.Negocio
 {
-    public class ViajesTransportista
+    public class ViajesTransportistaResponse
     {
         public string? Nombre_Completo { get; set; }
         public int Viajes_Realizados { get; set; }

@@ -1,5 +1,5 @@
 using Domain.Models;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Response.Oferta;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
@@ -30,7 +30,7 @@ public class TestOfertaService
     [TestMethod]
     public async Task ListarOfertasAsync_ReturnsSuccess_WhenDataExists()
     {
-        var ofertas = new List<OfertaProducto> { new OfertaProducto { Id_Oferta = 1, Nombre_Oferta = "Oferta A" } };
+        var ofertas = new List<OfertaProductoResponse> { new OfertaProductoResponse { Id_Oferta = 1, Nombre_Oferta = "Oferta A" } };
         _mockRepository.Setup(r => r.ListarOfertasAsync()).ReturnsAsync(ofertas);
         var result = await _service.ListarOfertasAsync();
 
@@ -42,7 +42,7 @@ public class TestOfertaService
     [TestMethod]
     public async Task ListarOfertasAsync_ReturnsEmpty_WhenNoData()
     {
-        _mockRepository.Setup(r => r.ListarOfertasAsync()).ReturnsAsync(new List<OfertaProducto>());
+        _mockRepository.Setup(r => r.ListarOfertasAsync()).ReturnsAsync(new List<OfertaProductoResponse>());
         var result = await _service.ListarOfertasAsync();
 
         Assert.IsFalse(result.IsSuccess);
@@ -117,7 +117,7 @@ public class TestOfertaService
     {
         var oferta = new Ofertum { Id_Producto = 1, Codigo = "OF001", Nombre_Oferta = "Oferta Test", Descripcion = "Descripción", Descuento = 20, Fecha_Fin = DateOnly.FromDateTime(DateTime.Now.AddDays(5)) };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Ofertum>(), default)).ReturnsAsync(new ValidationResult());
-        _mockRepository.Setup(r => r.ListarOfertasAsync()).ReturnsAsync(new List<OfertaProducto>());
+        _mockRepository.Setup(r => r.ListarOfertasAsync()).ReturnsAsync(new List<OfertaProductoResponse>());
         _mockRepository.Setup(r => r.RegistrarOfertaAsync(oferta)).ReturnsAsync(1);
         var result = await _service.RegistrarOfertaAsync(oferta);
 
@@ -143,7 +143,7 @@ public class TestOfertaService
         var oferta = new Ofertum { Id_Oferta = 1, Id_Producto = 1, Nombre_Oferta = "Oferta Editada", Descripcion = "Desc", Descuento = 15, Fecha_Fin = DateOnly.FromDateTime(DateTime.Now.AddDays(10)) };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Ofertum>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerOfertaAsync(1)).ReturnsAsync(new Ofertum());
-        _mockRepository.Setup(r => r.ListarOfertasAsync()).ReturnsAsync(new List<OfertaProducto>());
+        _mockRepository.Setup(r => r.ListarOfertasAsync()).ReturnsAsync(new List<OfertaProductoResponse>());
         _mockRepository.Setup(r => r.EditarOfertaAsync(oferta)).ReturnsAsync(1);
         var result = await _service.EditarOfertaAsync(oferta);
 

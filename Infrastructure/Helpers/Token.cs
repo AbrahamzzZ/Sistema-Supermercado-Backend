@@ -1,5 +1,5 @@
 ﻿using Domain.Models;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Response.Usuario;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,7 +17,7 @@ namespace Infrastructure.Helpers
             _configuration = configuration;
         }
 
-        public string GenerarToken(UsuarioRol usuario, List<Menu> permisos)
+        public string GenerarToken(UsuarioRolResponse usuario, List<Menu> permisos)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
             var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? "");

@@ -1,5 +1,5 @@
 ﻿using Domain.Models;
-using Domain.Models.Dto.Negocio;
+using Domain.Models.Dto.Response.Negocio;
 using Utilities.Shared;
 
 namespace Infrastructure.Repository.InterfacesServices
@@ -8,11 +8,11 @@ namespace Infrastructure.Repository.InterfacesServices
     {
         Task<ApiResponse<Negocio>> ObtenerNegocioAsync(int idNegocio);
         Task<ApiResponse<object>> EditarNegocioAsync(Negocio negocio);
-        Task<ApiResponse<List<ProductoMasComprado>>> ObtenerProductoMasComprado();
-        Task<ApiResponse<List<ProductoMasVendido>>> ObtenerProductoMasVendido();
-        Task<ApiResponse<List<TopCliente>>> ObtenerTopClientes();
-        Task<ApiResponse<List<TopProveedor>>> ObtenerTopProveedores();
-        Task<ApiResponse<List<ViajesTransportista>>> ObtenerViajesTransportista();
-        Task<ApiResponse<List<EmpleadoProductivo>>> ObtenerEmpleadosProductivos();
+        Task<ApiResponse<List<ProductoMasCompradoResponse>>> ObtenerProductoMasComprado();
+        Task<ApiResponse<List<ProductoMasVendidoResponse>>> ObtenerProductoMasVendido();
+        Task<ApiResponse<List<TopClienteResponse>>> ObtenerTopClientes();
+        Task<ApiResponse<List<TopProveedorResponse>>> ObtenerTopProveedores();
+        Task<ApiResponse<List<ViajesTransportistaResponse>>> ObtenerViajesTransportista();
+        Task<ApiResponse<List<EmpleadoProductivoResponse>>> ObtenerEmpleadosProductivos();
     }
 }

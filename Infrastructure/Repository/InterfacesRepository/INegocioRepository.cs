@@ -1,6 +1,6 @@
 ﻿using Domain.Models;
-using Domain.Models.Dto.Negocio;
-using Domain.Models.Dto.Negocio.IA;
+using Domain.Models.Dto.Response.Negocio;
+using Domain.Models.Dto.Response.Negocio.IA;
 
 
 namespace Infrastructure.Repository.InterfacesRepository
@@ -9,13 +9,13 @@ namespace Infrastructure.Repository.InterfacesRepository
     {
         Task<Negocio?> ObtenerNegocioAsync(int idNegocio);
         Task<int> EditarNegocioAsync(Negocio negocio);
-        Task<List<ProductoMasComprado>> ObtenerProductoMasComprado();
-        Task<List<ProductoMasVendido>> ObtenerProductoMasVendido();
+        Task<List<ProductoMasCompradoResponse>> ObtenerProductoMasComprado();
+        Task<List<ProductoMasVendidoResponse>> ObtenerProductoMasVendido();
         Task<List<ProductoMasCompradoAnalisisIA>> ObtenerAnalisisProductosComprados();
         Task<List<ProductoMasVendidoAnalisisIA>> ObtenerAnalisisProductosVendidos();
-        Task<List<TopCliente>> ObtenerTopClientes();
-        Task<List<TopProveedor>> ObtenerTopProveedores();
-        Task<List<ViajesTransportista>> ObtenerViajesTransportista();
-        Task<List<EmpleadoProductivo>> ObtenerEmpleadosProductivos();
+        Task<List<TopClienteResponse>> ObtenerTopClientes();
+        Task<List<TopProveedorResponse>> ObtenerTopProveedores();
+        Task<List<ViajesTransportistaResponse>> ObtenerViajesTransportista();
+        Task<List<EmpleadoProductivoResponse>> ObtenerEmpleadosProductivos();
     }
 }

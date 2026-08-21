@@ -1,9 +1,9 @@
-﻿using Domain.Models.Dto.Venta;
-using Infrastructure.Repository.InterfacesRepository;
+﻿using Infrastructure.Repository.InterfacesRepository;
 using FluentValidation;
 using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesServices;
 using Utilities.Shared;
+using Domain.Models.Dto.Response.Venta;
 
 namespace Infrastructure.Services
 {

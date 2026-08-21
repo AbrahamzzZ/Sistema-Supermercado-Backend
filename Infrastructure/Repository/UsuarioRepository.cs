@@ -1,6 +1,7 @@
 ﻿using Domain.Contexts;
 using Domain.Models;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Request;
+using Domain.Models.Dto.Response.Usuario;
 using Infrastructure.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -19,14 +20,14 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<List<UsuarioRol>> ListarUsuariosAsync()
+        public async Task<List<UsuarioRolResponse>> ListarUsuariosAsync()
         {
             return await _context.UsuariosDto
                 .FromSqlRaw("EXEC PA_LISTA_USUARIO")
                 .ToListAsync();
         }
 
-        public async Task<Paginacion<UsuarioRol>> ListarUsuariosPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<Paginacion<UsuarioRolResponse>> ListarUsuariosPaginacionAsync(int pageNumber, int pageSize)
         {
 
             using var command = _context.Database.GetDbConnection().CreateCommand();
@@ -37,14 +38,14 @@ namespace Infrastructure.Repository
 
             await _context.Database.OpenConnectionAsync();
 
-            var usuarios = new List<UsuarioRol>();
+            var usuarios = new List<UsuarioRolResponse>();
             int totalCount = 0;
 
             using (var reader = await command.ExecuteReaderAsync())
             {
                 while (await reader.ReadAsync())
                 {
-                    usuarios.Add(new UsuarioRol
+                    usuarios.Add(new UsuarioRolResponse
                     {
                         Id_Usuario = reader.GetInt32(0),
                         Codigo = reader.GetString(1),
@@ -63,10 +64,10 @@ namespace Infrastructure.Repository
                 }
             }
 
-            return new Paginacion<UsuarioRol> { Items = usuarios, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
+            return new Paginacion<UsuarioRolResponse> { Items = usuarios, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
         }
 
-        public async Task<UsuarioRol?> ObtenerUsuarioAsync(int idUsuario)
+        public async Task<UsuarioRolResponse?> ObtenerUsuarioAsync(int idUsuario)
         {
             var idParam = new SqlParameter("@Id_Usuario", idUsuario);
             return await Task.Run(() =>
@@ -78,7 +79,7 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<UsuarioRol?> IniciarSesionAsync(Login login)
+        public async Task<UsuarioRolResponse?> IniciarSesionAsync(LoginRequest login)
         {
             string claveEncriptada = Encriptacion.EncriptarSHA256(login.Clave ?? "");
 

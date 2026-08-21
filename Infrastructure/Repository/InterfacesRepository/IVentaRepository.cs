@@ -1,4 +1,4 @@
-﻿using Domain.Models.Dto.Venta;
+﻿using Domain.Models.Dto.Response.Venta;
 
 namespace Infrastructure.Repository.InterfacesRepository
 {

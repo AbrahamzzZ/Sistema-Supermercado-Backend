@@ -1,6 +1,6 @@
 using APIRestSistemaVentas.Controllers;
 using Domain.Models;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Response.Oferta;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -25,14 +25,14 @@ public class TestOfertaController
     public async Task GetOfertas_DeberiaRetornarOk()
     {
         _mockService.Setup(s => s.ListarOfertasAsync())
-            .ReturnsAsync(new ApiResponse<List<OfertaProducto>>
-            { IsSuccess = true,Data = new List<OfertaProducto> { new OfertaProducto { Id_Oferta = 1, Nombre_Oferta = "Descuento Snacks" } } });
+            .ReturnsAsync(new ApiResponse<List<OfertaProductoResponse>>
+            { IsSuccess = true,Data = new List<OfertaProductoResponse> { new OfertaProductoResponse { Id_Oferta = 1, Nombre_Oferta = "Descuento Snacks" } } });
 
         var result = await _controller.GetOfertas();
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
-        var response = okResult.Value as ApiResponse<List<OfertaProducto>>;
+        var response = okResult.Value as ApiResponse<List<OfertaProductoResponse>>;
         Assert.IsTrue(response.IsSuccess);
         Assert.AreEqual(1, response.Data.Count);
     }
@@ -40,19 +40,19 @@ public class TestOfertaController
     [TestMethod]
     public async Task GetOfertasPaginacion_DeberiaRetornarOk()
     {
-        var paginacion = new Paginacion<OfertaProducto>
+        var paginacion = new Paginacion<OfertaProductoResponse>
         {
-            Items = new List<OfertaProducto> { new OfertaProducto { Id_Oferta = 1, Nombre_Oferta = "Oferta Especial" } }, TotalCount = 1
+            Items = new List<OfertaProductoResponse> { new OfertaProductoResponse { Id_Oferta = 1, Nombre_Oferta = "Oferta Especial" } }, TotalCount = 1
         };
 
         _mockService.Setup(s => s.ListarOfertasPaginacionAsync(1, 10))
-            .ReturnsAsync(new ApiResponse<Paginacion<OfertaProducto>> { IsSuccess = true, Data = paginacion });
+            .ReturnsAsync(new ApiResponse<Paginacion<OfertaProductoResponse>> { IsSuccess = true, Data = paginacion });
 
         var result = await _controller.GetOfertasPaginacion(1, 10);
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
-        var response = okResult.Value as ApiResponse<Paginacion<OfertaProducto>>;
+        var response = okResult.Value as ApiResponse<Paginacion<OfertaProductoResponse>>;
         Assert.IsTrue(response.IsSuccess);
         Assert.AreEqual(1, response.Data.Items.Count);
     }

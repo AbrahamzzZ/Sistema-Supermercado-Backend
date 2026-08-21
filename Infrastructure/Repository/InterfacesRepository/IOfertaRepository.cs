@@ -1,13 +1,13 @@
 ﻿using Domain.Models;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Response.Oferta;
 using Utilities.Shared;
 
 namespace Infrastructure.Repository.InterfacesRepository
 {
     public interface IOfertaRepository
     {
-        Task<List<OfertaProducto>> ListarOfertasAsync();
-        Task<Paginacion<OfertaProducto>> ListarOfertasPaginacionAsync(int pageNumber, int pageSize);
+        Task<List<OfertaProductoResponse>> ListarOfertasAsync();
+        Task<Paginacion<OfertaProductoResponse>> ListarOfertasPaginacionAsync(int pageNumber, int pageSize);
         Task<Ofertum?> ObtenerOfertaAsync(int idOferta);
         Task<int> RegistrarOfertaAsync(Ofertum oferta);
         Task<int> EditarOfertaAsync(Ofertum oferta);

@@ -1,5 +1,5 @@
 ﻿using Domain.Contexts;
-using Domain.Models.Dto.Venta;
+using Domain.Models.Dto.Response.Venta;
 using Infrastructure.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
