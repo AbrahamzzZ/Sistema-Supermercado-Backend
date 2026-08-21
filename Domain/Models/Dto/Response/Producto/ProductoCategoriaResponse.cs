@@ -1,6 +1,8 @@
-﻿namespace Domain.Models.Dto
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Domain.Models.Dto.Response.Producto
 {
-    public class ProductoResponse
+    public class ProductoCategoriaResponse
     {
         public int Id_Producto { get; set; }
         public string? Codigo { get; set; }
@@ -9,6 +11,11 @@
         public int? Id_Categoria { get; set; }
         public string? Nombre_Categoria { get; set; }
         public string? Pais_Origen { get; set; }
+        public int Stock { get; set; }
+        public decimal? Precio_Compra { get; set; }
+        public decimal? Precio_Venta { get; set; }
         public bool? Estado { get; set; }
+        [NotMapped]
+        public int TotalCount { get; set; }
     }
 }

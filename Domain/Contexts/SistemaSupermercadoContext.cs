@@ -1,9 +1,11 @@
 ﻿using Domain.Models;
-using Domain.Models.Dto;
-using Domain.Models.Dto.Compra;
-using Domain.Models.Dto.Negocio;
-using Domain.Models.Dto.Negocio.IA;
-using Domain.Models.Dto.Venta;
+using Domain.Models.Dto.Response.Compra;
+using Domain.Models.Dto.Response.Negocio;
+using Domain.Models.Dto.Response.Negocio.IA;
+using Domain.Models.Dto.Response.Oferta;
+using Domain.Models.Dto.Response.Producto;
+using Domain.Models.Dto.Response.Usuario;
+using Domain.Models.Dto.Response.Venta;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -54,13 +56,13 @@ public partial class SistemaSupermercadoContext : DbContext
 
     public virtual DbSet<Ventum> Venta { get; set; }
 
-    public DbSet<UsuarioRol> UsuariosDto { get; set; }
+    public DbSet<UsuarioRolResponse> UsuariosDto { get; set; }
 
-    public DbSet<ProductoCategoria> ProductosDto { get; set; }
+    public DbSet<ProductoCategoriaResponse> ProductosDto { get; set; }
 
     public DbSet<ProductoResponse> ProductoDto { get; set; }
 
-    public DbSet<OfertaProducto> OfertasDto { get; set; }
+    public DbSet<OfertaProductoResponse> OfertasDto { get; set; }
 
     public DbSet<CompraResponse> CompraDto { get; set; }
 
@@ -76,28 +78,28 @@ public partial class SistemaSupermercadoContext : DbContext
 
     public virtual DbSet<HistorialPrecioProducto> HistorialPreciosProducto { get; set; }
 
-    public DbSet<ProductoMasComprado> ProductoMasComprados { get; set; }
+    public DbSet<ProductoMasCompradoResponse> ProductoMasComprados { get; set; }
 
     public DbSet<ProductoMasCompradoAnalisisIA> ProductoMasCompradosAnalisis { get; set; }
 
-    public DbSet<ProductoMasVendido> ProductoMasVendidos { get; set; }
+    public DbSet<ProductoMasVendidoResponse> ProductoMasVendidos { get; set; }
 
     public DbSet<ProductoMasVendidoAnalisisIA> ProductoMasVendidosAnalisis { get; set; }
 
-    public DbSet<TopCliente> TopClientes { get; set; }
+    public DbSet<TopClienteResponse> TopClientes { get; set; }
 
-    public DbSet<TopProveedor> TopProveedores { get; set; }
+    public DbSet<TopProveedorResponse> TopProveedores { get; set; }
 
-    public DbSet<ViajesTransportista> ViajesTransportistas { get; set; }
+    public DbSet<ViajesTransportistaResponse> ViajesTransportistas { get; set; }
 
-    public DbSet<EmpleadoProductivo> EmpleadoProductivos { get; set; }
+    public DbSet<EmpleadoProductivoResponse> EmpleadoProductivos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //Clases serializadas
-        modelBuilder.Entity<UsuarioRol>().HasNoKey().ToView(null);
+        modelBuilder.Entity<UsuarioRolResponse>().HasNoKey().ToView(null);
 
-        modelBuilder.Entity<ProductoCategoria>(entity =>
+        modelBuilder.Entity<ProductoCategoriaResponse>(entity =>
         {
             entity.HasNoKey()
                   .ToView(null);
@@ -111,7 +113,7 @@ public partial class SistemaSupermercadoContext : DbContext
 
         modelBuilder.Entity<ProductoResponse>().HasNoKey().ToView(null);
 
-        modelBuilder.Entity<OfertaProducto>().HasNoKey()
+        modelBuilder.Entity<OfertaProductoResponse>().HasNoKey()
             .ToView(null)
             .Property(c => c.Descuento)
             .HasPrecision(18, 2);
@@ -200,21 +202,21 @@ public partial class SistemaSupermercadoContext : DbContext
                   .HasPrecision(18, 2);
         });
 
-        modelBuilder.Entity<ProductoMasComprado>().HasNoKey().ToView(null);
+        modelBuilder.Entity<ProductoMasCompradoResponse>().HasNoKey().ToView(null);
 
         modelBuilder.Entity<ProductoMasCompradoAnalisisIA>().HasNoKey().ToView(null);
 
-        modelBuilder.Entity<ProductoMasVendido>().HasNoKey().ToView(null);
+        modelBuilder.Entity<ProductoMasVendidoResponse>().HasNoKey().ToView(null);
 
         modelBuilder.Entity<ProductoMasVendidoAnalisisIA>().HasNoKey().ToView(null);
 
-        modelBuilder.Entity<TopProveedor>().HasNoKey().ToView(null);
+        modelBuilder.Entity<TopProveedorResponse>().HasNoKey().ToView(null);
 
-        modelBuilder.Entity<TopCliente>().HasNoKey().ToView(null);
+        modelBuilder.Entity<TopClienteResponse>().HasNoKey().ToView(null);
 
-        modelBuilder.Entity<ViajesTransportista>().HasNoKey().ToView(null);
+        modelBuilder.Entity<ViajesTransportistaResponse>().HasNoKey().ToView(null);
 
-        modelBuilder.Entity<EmpleadoProductivo>().HasNoKey().ToView(null);
+        modelBuilder.Entity<EmpleadoProductivoResponse>().HasNoKey().ToView(null);
 
         modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

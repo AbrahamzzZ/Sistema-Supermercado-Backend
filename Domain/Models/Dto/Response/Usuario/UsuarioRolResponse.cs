@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Domain.Models.Dto
+namespace Domain.Models.Dto.Response.Usuario
 {
-    public class UsuarioRol
+    public class UsuarioRolResponse
     {
         public int Id_Usuario { get; set; }
         public string? Codigo { get; set; }

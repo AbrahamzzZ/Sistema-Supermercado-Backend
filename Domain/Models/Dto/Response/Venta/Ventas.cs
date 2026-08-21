@@ -1,4 +1,4 @@
-﻿namespace Domain.Models.Dto.Venta
+﻿namespace Domain.Models.Dto.Response.Venta
 {
     public class Ventas
     {
