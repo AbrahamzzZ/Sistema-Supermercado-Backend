@@ -61,7 +61,7 @@ namespace Infrastructure.Repository
                         Cedula = reader.GetString(4),
                         Telefono = reader.GetString(5),
                         Correo_Electronico = reader.GetString(6),
-                        Imagen = imagen,
+                        Foto = imagen,
                         Estado = reader.GetBoolean(8),
                         Fecha_Registro = reader.GetDateTime(9)
                     });
@@ -97,18 +97,18 @@ namespace Infrastructure.Repository
                     transportista.ImagenBase64 = transportista.ImagenBase64.Split(',')[1];
                 }
 
-                transportista.Imagen = Convert.FromBase64String(transportista.ImagenBase64);
+                transportista.Foto = Convert.FromBase64String(transportista.ImagenBase64);
             }
 
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_REGISTRAR_TRANSPORTISTA @Codigo, @Nombres, @Apellidos, @Cedula, @Telefono, @Correo_Electronico, @Imagen, @Estado",
+                "EXEC PA_REGISTRAR_TRANSPORTISTA @Codigo, @Nombres, @Apellidos, @Cedula, @Telefono, @Correo_Electronico, @Foto, @Estado",
                 new SqlParameter("@Codigo", transportista.Codigo ?? (object)DBNull.Value),
                 new SqlParameter("@Nombres", transportista.Nombres ?? (object)DBNull.Value),
                 new SqlParameter("@Apellidos", transportista.Apellidos ?? (object)DBNull.Value),
                 new SqlParameter("@Cedula", transportista.Cedula ?? (object)DBNull.Value),
                 new SqlParameter("@Telefono", transportista.Telefono ?? (object)DBNull.Value),
                 new SqlParameter("@Correo_Electronico", transportista.Correo_Electronico ?? (object)DBNull.Value),
-                new SqlParameter("@Imagen", transportista.Imagen ?? (object)DBNull.Value),
+                new SqlParameter("@Foto", transportista.Foto ?? (object)DBNull.Value),
                 new SqlParameter("@Estado", transportista.Estado ?? (object)DBNull.Value)
             );
         }
@@ -122,18 +122,18 @@ namespace Infrastructure.Repository
                     transportista.ImagenBase64 = transportista.ImagenBase64.Split(',')[1];
                 }
 
-                transportista.Imagen = Convert.FromBase64String(transportista.ImagenBase64);
+                transportista.Foto = Convert.FromBase64String(transportista.ImagenBase64);
             }
 
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_EDITAR_TRANSPORTISTA @Id_Transportista, @Nombres, @Apellidos, @Cedula, @Telefono, @Correo_Electronico, @Imagen, @Estado",
+                "EXEC PA_EDITAR_TRANSPORTISTA @Id_Transportista, @Nombres, @Apellidos, @Cedula, @Telefono, @Correo_Electronico, @Foto, @Estado",
                 new SqlParameter("@Id_Transportista", transportista.Id_Transportista),
                 new SqlParameter("@Nombres", transportista.Nombres ?? (object)DBNull.Value),
                 new SqlParameter("@Apellidos", transportista.Apellidos ?? (object)DBNull.Value),
                 new SqlParameter("@Cedula", transportista.Cedula ?? (object)DBNull.Value),
                 new SqlParameter("@Telefono", transportista.Telefono ?? (object)DBNull.Value),
                 new SqlParameter("@Correo_Electronico", transportista.Correo_Electronico ?? (object)DBNull.Value),
-                new SqlParameter("@Imagen", transportista.Imagen ?? (object)DBNull.Value),
+                new SqlParameter("@Foto", transportista.Foto ?? (object)DBNull.Value),
                 new SqlParameter("@Estado", transportista.Estado ?? (object)DBNull.Value)
             );
         }
