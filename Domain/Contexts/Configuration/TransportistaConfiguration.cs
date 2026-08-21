@@ -33,7 +33,7 @@ namespace Domain.Contexts.Configuration
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("FECHA_REGISTRO");
-            builder.Property(e => e.Imagen).HasColumnName("IMAGEN");
+            builder.Property(e => e.Foto).HasColumnName("FOTO");
             builder.Property(e => e.Nombres)
                 .HasMaxLength(30)
                 .IsUnicode(false)
