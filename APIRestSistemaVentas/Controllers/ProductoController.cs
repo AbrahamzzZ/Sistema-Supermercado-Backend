@@ -1,5 +1,5 @@
 ﻿using Domain.Models;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Response.Producto;
 using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -39,7 +39,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista de productos obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<ProductoCategoria>>> GetProductos()
+        public async Task<ActionResult<ApiResponse<ProductoCategoriaResponse>>> GetProductos()
         {
             var productos = await _productoService.ListarProductosAsync();
             return Ok(productos);
@@ -53,7 +53,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista paginada obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Paginacion<ProductoCategoria>>>> GetProductosPaginacion(int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<ApiResponse<Paginacion<ProductoCategoriaResponse>>>> GetProductosPaginacion(int pageNumber = 1, int pageSize = 10)
         {
             var result = await _productoService.ListarProductosPaginacionAsync(pageNumber, pageSize);
             return Ok(result);

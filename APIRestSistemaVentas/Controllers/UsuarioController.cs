@@ -1,5 +1,6 @@
 ﻿using Domain.Models;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Request;
+using Domain.Models.Dto.Response.Usuario;
 using Infrastructure.Helpers;
 using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
@@ -62,7 +63,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista paginada obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Paginacion<UsuarioRol>>>> GetUsuariosPaginacion(int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<ApiResponse<Paginacion<UsuarioRolResponse>>>> GetUsuariosPaginacion(int pageNumber = 1, int pageSize = 10)
         {
             var result = await _usuarioService.ListarUsuariosPaginacionAsync(pageNumber, pageSize);
             return Ok(result);
@@ -78,7 +79,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Usuario encontrado")]
         [SwaggerResponse(404, "Usuario no encontrado")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<UsuarioRol>>> GetUsuario(int id)
+        public async Task<ActionResult<ApiResponse<UsuarioRolResponse>>> GetUsuario(int id)
         {
             var response = await _usuarioService.ObtenerUsuarioAsync(id);
             return response.IsSuccess ? Ok(response) : NotFound(response);
@@ -93,7 +94,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Login exitoso, retorna el token")]
         [SwaggerResponse(401, "Credenciales incorrectas")]
 
-        public async Task<ActionResult<ApiResponse<UsuarioRol>>> IniciarSesion([FromBody] Login login)
+        public async Task<ActionResult<ApiResponse<UsuarioRolResponse>>> IniciarSesion([FromBody] LoginRequest login)
         {
             var response = await _usuarioService.IniciarSesionAsync(login);
 

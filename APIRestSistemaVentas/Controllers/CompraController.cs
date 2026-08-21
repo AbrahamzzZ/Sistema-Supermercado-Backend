@@ -1,4 +1,4 @@
-﻿using Domain.Models.Dto.Compra;
+﻿using Domain.Models.Dto.Response.Compra;
 using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;

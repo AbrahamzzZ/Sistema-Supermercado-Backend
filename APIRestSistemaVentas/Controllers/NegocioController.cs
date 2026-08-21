@@ -1,5 +1,5 @@
 ﻿using Domain.Models;
-using Domain.Models.Dto.Negocio;
+using Domain.Models.Dto.Response.Negocio;
 using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -70,7 +70,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Listado obtenido correctamente")]
         [SwaggerResponse(404, "Información no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<List<ProductoMasComprado>>> ObtenerProductosMasComprados()
+        public async Task<ActionResult<List<ProductoMasCompradoResponse>>> ObtenerProductosMasComprados()
         {
             var response = await _negocioService.ObtenerProductoMasComprado();
             return response.IsSuccess ? Ok(response) : NotFound(response);
@@ -85,7 +85,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Listado obtenido correctamente")]
         [SwaggerResponse(404, "Información no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<List<ProductoMasVendido>>> ObtenerProductosMasVendidos()
+        public async Task<ActionResult<List<ProductoMasVendidoResponse>>> ObtenerProductosMasVendidos()
         {
             var response = await _negocioService.ObtenerProductoMasVendido();
             return response.IsSuccess ? Ok(response) : NotFound(response);
@@ -115,7 +115,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Listado obtenido correctamente")]
         [SwaggerResponse(404, "Información no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<List<TopCliente>>> ObtenerTopClientes()
+        public async Task<ActionResult<List<TopClienteResponse>>> ObtenerTopClientes()
         {
             var response = await _negocioService.ObtenerTopClientes();
             return response.IsSuccess ? Ok(response) : NotFound(response);
@@ -130,7 +130,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Listado obtenido correctamente")]
         [SwaggerResponse(404, "Información no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<List<TopProveedor>>> ObtenerProveedorPreferido()
+        public async Task<ActionResult<List<TopProveedorResponse>>> ObtenerProveedorPreferido()
         {
             var response = await _negocioService.ObtenerTopProveedores();
             return response.IsSuccess ? Ok(response) : NotFound(response);
@@ -145,7 +145,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Listado obtenido correctamente")]
         [SwaggerResponse(404, "Información no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<List<ViajesTransportista>>> ObtenerTransportistaViajes()
+        public async Task<ActionResult<List<ViajesTransportistaResponse>>> ObtenerTransportistaViajes()
         {
             var response = await _negocioService.ObtenerViajesTransportista();
             return response.IsSuccess ? Ok(response) : NotFound(response);
@@ -160,7 +160,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Listado obtenido correctamente")]
         [SwaggerResponse(404, "Información no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<List<EmpleadoProductivo>>> ObtenerEmpleadosProductivos()
+        public async Task<ActionResult<List<EmpleadoProductivoResponse>>> ObtenerEmpleadosProductivos()
         {
             var response = await _negocioService.ObtenerEmpleadosProductivos();
             return response.IsSuccess ? Ok(response) : NotFound(response);

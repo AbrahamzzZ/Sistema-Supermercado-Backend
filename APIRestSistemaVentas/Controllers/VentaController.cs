@@ -1,4 +1,4 @@
-﻿using Domain.Models.Dto.Venta;
+﻿using Domain.Models.Dto.Response.Venta;
 using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
