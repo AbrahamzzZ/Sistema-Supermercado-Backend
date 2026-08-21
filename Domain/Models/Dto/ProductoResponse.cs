@@ -1,6 +1,6 @@
 ﻿namespace Domain.Models.Dto
 {
-    public class ProductoRespuesta
+    public class ProductoResponse
     {
         public int Id_Producto { get; set; }
         public string? Codigo { get; set; }

@@ -34,23 +34,23 @@ namespace Infrastructure.Services
             return new ApiResponse<string> { IsSuccess = true, Message = "Número de documento generado correctamente.", Data = numero };
         }
 
-        public async Task<ApiResponse<VentaRespuesta>> ObtenerVentaAsync(string numeroDocumento)
+        public async Task<ApiResponse<VentaResponse>> ObtenerVentaAsync(string numeroDocumento)
         {
             var numero = await _ventaRepository.ObtenerVentaAsync(numeroDocumento);
             if(numero == null) 
-                return new ApiResponse<VentaRespuesta> {IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
+                return new ApiResponse<VentaResponse> {IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
 
-            return new ApiResponse<VentaRespuesta> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = numero };
+            return new ApiResponse<VentaResponse> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = numero };
         }
 
-        public async Task<ApiResponse<List<DetalleVentasRepuesta>>> ObtenerDetallesVentaAsync(int idVenta)
+        public async Task<ApiResponse<List<DetalleVentaReponse>>> ObtenerDetallesVentaAsync(int idVenta)
         {
             var detalleVenta = await _ventaRepository.ObtenerDetallesVentaAsync(idVenta);
 
             if(detalleVenta == null || detalleVenta.Count == 0)
-                return new ApiResponse<List<DetalleVentasRepuesta>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = detalleVenta };
+                return new ApiResponse<List<DetalleVentaReponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = detalleVenta };
 
-            return new ApiResponse<List<DetalleVentasRepuesta>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = detalleVenta };
+            return new ApiResponse<List<DetalleVentaReponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = detalleVenta };
         }
 
         public async Task<ApiResponse<object>> RegistrarVentaAsync(Ventas ventaDto)

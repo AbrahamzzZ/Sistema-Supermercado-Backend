@@ -63,7 +63,7 @@ namespace Infrastructure.Repository
                         Correo_Electronico = reader.GetString(6),
                         Foto = imagen,
                         Estado = reader.GetBoolean(8),
-                        Fecha_Registro = reader.GetDateTime(9)
+                        Fecha_Creacion = reader.GetDateTime(9)
                     });
                 }
 

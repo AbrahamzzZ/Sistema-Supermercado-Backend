@@ -1,6 +1,6 @@
 ﻿namespace Domain.Models.Dto.Venta
 {
-    public class VentaRespuesta
+    public class VentaResponse
     {
         public int Id_Venta { get; set; }
         public int Id_Usuario { get; set; }

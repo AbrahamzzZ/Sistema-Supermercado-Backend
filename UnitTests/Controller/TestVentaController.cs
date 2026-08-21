@@ -40,7 +40,7 @@ public class TestVentaController
     [TestMethod]
     public async Task GetObtenerVenta_ReturnsOkWithVenta()
     {
-        var response = new ApiResponse<VentaRespuesta> { IsSuccess = true, Message = "OK", Data = new VentaRespuesta { Numero_Documento = "VEN-0001", Monto_Total = 100, Id_Cliente = 1 } };
+        var response = new ApiResponse<VentaResponse> { IsSuccess = true, Message = "OK", Data = new VentaResponse { Numero_Documento = "VEN-0001", Monto_Total = 100, Id_Cliente = 1 } };
 
         _mockService.Setup(s => s.ObtenerVentaAsync("VEN-0001"))
                     .ReturnsAsync(response);
@@ -56,11 +56,11 @@ public class TestVentaController
     [TestMethod]
     public async Task GetObtenerDetallesVenta_ReturnsOkWithDetalles()
     {
-        var response = new ApiResponse<List<DetalleVentasRepuesta>>
+        var response = new ApiResponse<List<DetalleVentaReponse>>
         {
             IsSuccess = true,
             Message = "OK",
-            Data = new List<DetalleVentasRepuesta> { new DetalleVentasRepuesta { Id_Producto = 1, Cantidad = 2, Precio_Venta = 10 } }
+            Data = new List<DetalleVentaReponse> { new DetalleVentaReponse { Id_Producto = 1, Cantidad = 2, Precio_Venta = 10 } }
         };
 
         _mockService.Setup(s => s.ObtenerDetallesVentaAsync(1))

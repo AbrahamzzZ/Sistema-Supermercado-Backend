@@ -58,21 +58,21 @@ public partial class SistemaSupermercadoContext : DbContext
 
     public DbSet<ProductoCategoria> ProductosDto { get; set; }
 
-    public DbSet<ProductoRespuesta> ProductoDto { get; set; }
+    public DbSet<ProductoResponse> ProductoDto { get; set; }
 
     public DbSet<OfertaProducto> OfertasDto { get; set; }
 
-    public DbSet<CompraRespuesta> CompraDto { get; set; }
+    public DbSet<CompraResponse> CompraDto { get; set; }
 
     public DbSet<DetalleCompras> DetalleComprasDto { get; set; }
 
-    public DbSet<DetalleComprasRepuesta> DetalleComprasRepuestaDto { get; set; }
+    public DbSet<DetalleCompraReponse> DetalleComprasRepuestaDto { get; set; }
 
-    public DbSet<VentaRespuesta> VentaDto { get; set; }
+    public DbSet<VentaResponse> VentaDto { get; set; }
 
     public DbSet<DetalleVentas> DetalleVentasDto { get; set; }
 
-    public DbSet<DetalleVentasRepuesta> DetalleVentasRepuestaDto { get; set; }
+    public DbSet<DetalleVentaReponse> DetalleVentasRepuestaDto { get; set; }
 
     public virtual DbSet<HistorialPrecioProducto> HistorialPreciosProducto { get; set; }
 
@@ -109,14 +109,14 @@ public partial class SistemaSupermercadoContext : DbContext
                   .HasPrecision(18, 2);
         });
 
-        modelBuilder.Entity<ProductoRespuesta>().HasNoKey().ToView(null);
+        modelBuilder.Entity<ProductoResponse>().HasNoKey().ToView(null);
 
         modelBuilder.Entity<OfertaProducto>().HasNoKey()
             .ToView(null)
             .Property(c => c.Descuento)
             .HasPrecision(18, 2);
 
-        modelBuilder.Entity<CompraRespuesta>().HasNoKey()
+        modelBuilder.Entity<CompraResponse>().HasNoKey()
             .ToView(null)
             .Property(c => c.Monto_Total)
             .HasPrecision(18, 2);
@@ -136,7 +136,7 @@ public partial class SistemaSupermercadoContext : DbContext
                   .HasPrecision(18, 2);
         });
 
-        modelBuilder.Entity<DetalleComprasRepuesta>(entity =>
+        modelBuilder.Entity<DetalleCompraReponse>(entity =>
         {
             entity.HasNoKey()
                   .ToView(null);
@@ -151,7 +151,7 @@ public partial class SistemaSupermercadoContext : DbContext
                   .HasPrecision(18, 2);
         });
 
-        modelBuilder.Entity<VentaRespuesta>(entity =>
+        modelBuilder.Entity<VentaResponse>(entity =>
         {
             entity.HasNoKey()
                   .ToView(null);
@@ -185,7 +185,7 @@ public partial class SistemaSupermercadoContext : DbContext
 
         });
 
-        modelBuilder.Entity<DetalleVentasRepuesta>(entity =>
+        modelBuilder.Entity<DetalleVentaReponse>(entity =>
         {
             entity.HasNoKey()
                   .ToView(null);

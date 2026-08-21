@@ -37,23 +37,23 @@ namespace Infrastructure.Services
             return new ApiResponse<string> { IsSuccess = true, Message = "Número de documento generado correctamente.", Data = numero };
         }
 
-        public async Task<ApiResponse<CompraRespuesta>> ObtenerCompraAsync(string numeroDocumento)
+        public async Task<ApiResponse<CompraResponse>> ObtenerCompraAsync(string numeroDocumento)
         {
             var numero = await _compraRepository.ObtenerCompraAsync(numeroDocumento);
             if (numero == null)
-                return new ApiResponse<CompraRespuesta> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
+                return new ApiResponse<CompraResponse> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
 
-            return new ApiResponse<CompraRespuesta> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = numero };
+            return new ApiResponse<CompraResponse> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = numero };
         }
 
-        public async Task<ApiResponse<List<DetalleComprasRepuesta>>> ObtenerDetallesCompraAsync(int idCompra)
+        public async Task<ApiResponse<List<DetalleCompraReponse>>> ObtenerDetallesCompraAsync(int idCompra)
         {
             var detalleCompra = await _compraRepository.ObtenerDetallesCompraAsync(idCompra);
 
             if (detalleCompra == null || detalleCompra.Count == 0)
-                return new ApiResponse<List<DetalleComprasRepuesta>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = detalleCompra };
+                return new ApiResponse<List<DetalleCompraReponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = detalleCompra };
 
-            return new ApiResponse<List<DetalleComprasRepuesta>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = detalleCompra };
+            return new ApiResponse<List<DetalleCompraReponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = detalleCompra };
         }
 
         public async Task<ApiResponse<object>> RegistrarCompraAsync(Compras compraDto)

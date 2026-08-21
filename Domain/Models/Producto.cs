@@ -22,6 +22,14 @@ public partial class Producto
 
     public bool? Estado { get; set; }
 
+    public int? Usuario_Creacion { get; set; }
+
+    public DateTime? Fecha_Creacion { get; set; }
+
+    public int? Usuario_Modificacion { get; set; }
+
+    public DateTime? Fecha_Modificacion { get; set; }
+
     public virtual ICollection<DetalleCompra> DetalleCompras { get; set; } = new List<DetalleCompra>();
 
     public virtual ICollection<DetalleVentum> DetalleVenta { get; set; } = new List<DetalleVentum>();

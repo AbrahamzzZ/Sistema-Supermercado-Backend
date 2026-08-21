@@ -42,7 +42,7 @@ public class TestCompraService
     [TestMethod]
     public async Task ObtenerCompraAsync_SiNoExisteDebeRetornarError()
     {
-        _mockRepository.Setup(r => r.ObtenerCompraAsync("COMP-002")).ReturnsAsync((CompraRespuesta)null);
+        _mockRepository.Setup(r => r.ObtenerCompraAsync("COMP-002")).ReturnsAsync((CompraResponse)null);
         var result = await _service.ObtenerCompraAsync("COMP-002");
 
         Assert.IsFalse(result.IsSuccess);
@@ -52,7 +52,7 @@ public class TestCompraService
     [TestMethod]
     public async Task ObtenerCompraAsync_SiExisteDebeRetornarCompra()
     {
-        var compra = new CompraRespuesta { Id_Compra = 1, Numero_Documento = "COMP-003" };
+        var compra = new CompraResponse { Id_Compra = 1, Numero_Documento = "COMP-003" };
         _mockRepository.Setup(r => r.ObtenerCompraAsync("COMP-003")).ReturnsAsync(compra);
         var result = await _service.ObtenerCompraAsync("COMP-003");
 

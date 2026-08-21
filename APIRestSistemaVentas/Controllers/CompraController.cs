@@ -51,7 +51,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Compra encontrada")]
         [SwaggerResponse(404, "Compra no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<CompraRespuesta>> GetObtenerCompra(string numeroDocumento)
+        public async Task<ActionResult<CompraResponse>> GetObtenerCompra(string numeroDocumento)
         {
             var compra = await _compraService.ObtenerCompraAsync(numeroDocumento);
             return Ok(compra);
