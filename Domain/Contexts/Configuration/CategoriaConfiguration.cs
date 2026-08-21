@@ -18,10 +18,15 @@ namespace Domain.Contexts.Configuration
                 .IsUnicode(false)
                 .HasColumnName("CODIGO");
             builder.Property(e => e.Estado).HasColumnName("ESTADO");
+            builder.Property(e => e.Usuario_Creacion).HasColumnName("USUARIO_CREACION");
             builder.Property(e => e.Fecha_Creacion)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("FECHA_CREACION");
+            builder.Property(e => e.Usuario_Modificacion).HasColumnName("USUARIO_MODIFICACION");
+            builder.Property(e => e.Fecha_Modificacion)
+                .HasColumnType("datetime")
+                .HasColumnName("FECHA_MODIFICACION");
             builder.Property(e => e.Nombre_Categoria)
                 .HasMaxLength(50)
                 .HasColumnName("NOMBRE_CATEGORIA");

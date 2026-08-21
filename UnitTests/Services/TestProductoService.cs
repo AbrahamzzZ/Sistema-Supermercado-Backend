@@ -52,7 +52,7 @@ public class TestProductoService
     [TestMethod]
     public async Task ObtenerProductoAsync_ReturnsSuccess_WhenFound()
     {
-        var producto = new ProductoRespuesta { Id_Producto = 1, Nombre_Producto = "Producto A" };
+        var producto = new ProductoResponse { Id_Producto = 1, Nombre_Producto = "Producto A" };
         _mockRepository.Setup(r => r.ObtenerProductoAsync(1)).ReturnsAsync(producto);
         var result = await _service.ObtenerProductoAsync(1);
 
@@ -63,7 +63,7 @@ public class TestProductoService
     [TestMethod]
     public async Task ObtenerProductoAsync_ReturnsNotFound_WhenNotExists()
     {
-        _mockRepository.Setup(r => r.ObtenerProductoAsync(99)).ReturnsAsync((ProductoRespuesta)null);
+        _mockRepository.Setup(r => r.ObtenerProductoAsync(99)).ReturnsAsync((ProductoResponse)null);
         var result = await _service.ObtenerProductoAsync(99);
 
         Assert.IsFalse(result.IsSuccess);
@@ -108,7 +108,7 @@ public class TestProductoService
     {
         var producto = new Producto { Id_Producto = 1,  Id_Categoria = 1, Nombre_Producto = "Producto Editar",  Descripcion = "Desc", Pais_Origen = "Ecuador" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Producto>(), default)).ReturnsAsync(new ValidationResult());
-        _mockRepository.Setup(r => r.ObtenerProductoAsync(1)).ReturnsAsync((ProductoRespuesta)null);
+        _mockRepository.Setup(r => r.ObtenerProductoAsync(1)).ReturnsAsync((ProductoResponse)null);
         var result = await _service.EditarProductoAsync(producto);
 
         Assert.IsFalse(result.IsSuccess);
@@ -120,7 +120,7 @@ public class TestProductoService
     {
         var producto = new Producto { Id_Producto = 1, Id_Categoria = 1, Nombre_Producto = "Producto Editado", Descripcion = "Desc",  Pais_Origen = "Ecuador" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Producto>(), default)).ReturnsAsync(new ValidationResult());
-        _mockRepository.Setup(r => r.ObtenerProductoAsync(1)).ReturnsAsync(new ProductoRespuesta());
+        _mockRepository.Setup(r => r.ObtenerProductoAsync(1)).ReturnsAsync(new ProductoResponse());
         _mockRepository.Setup(r => r.ListarProductosAsync()).ReturnsAsync(new List<ProductoCategoria>());
         _mockRepository.Setup(r => r.EditarProductoAsync(producto)).ReturnsAsync(1);
         var result = await _service.EditarProductoAsync(producto);
@@ -132,7 +132,7 @@ public class TestProductoService
     [TestMethod]
     public async Task EliminarProducto_DeberiaFallar_SiProductoNoExiste()
     {
-        _mockRepository.Setup(r => r.ObtenerProductoAsync(99)).ReturnsAsync((ProductoRespuesta)null);
+        _mockRepository.Setup(r => r.ObtenerProductoAsync(99)).ReturnsAsync((ProductoResponse)null);
         var result = await _service.EliminarProductoAsync(99);
 
         Assert.IsFalse(result.IsSuccess);
@@ -143,7 +143,7 @@ public class TestProductoService
     public async Task EliminarProducto_DeberiaSerExitos()
     {
 
-        _mockRepository.Setup(r => r.ObtenerProductoAsync(1)).ReturnsAsync(new ProductoRespuesta());
+        _mockRepository.Setup(r => r.ObtenerProductoAsync(1)).ReturnsAsync(new ProductoResponse());
         _mockRepository.Setup(r => r.EliminarProductoAsync(1)).ReturnsAsync(1);
         var result = await _service.EliminarProductoAsync(1);
 

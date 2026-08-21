@@ -52,7 +52,7 @@ namespace Infrastructure.Repository
                         Telefono = reader.GetString(5),
                         Correo_Electronico = reader.GetString(6),
                         Estado = reader.GetBoolean(7),
-                        Fecha_Registro = reader.GetDateTime(8)
+                        Fecha_Creacion = reader.GetDateTime(8)
                     });
                 }
 

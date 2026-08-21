@@ -33,6 +33,15 @@ namespace Domain.Contexts.Configuration
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasColumnName("NOMBRE_SUCURSAL");
+            builder.Property(e => e.Usuario_Creacion).HasColumnName("USUARIO_CREACION");
+            builder.Property(e => e.Fecha_Creacion)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("FECHA_CREACION");
+            builder.Property(e => e.Usuario_Modificacion).HasColumnName("USUARIO_MODIFICACION");
+            builder.Property(e => e.Fecha_Modificacion)
+                .HasColumnType("datetime")
+                .HasColumnName("FECHA_MODIFICACION");
 
             builder.HasOne(d => d.IdNegocioNavigation).WithMany(p => p.Sucursals)
                 .HasForeignKey(d => d.Id_Negocio)

@@ -22,6 +22,14 @@ public partial class Sucursal
 
     public bool? Estado { get; set; }
 
+    public int? Usuario_Creacion { get; set; }
+
+    public DateTime? Fecha_Creacion { get; set; }
+
+    public int? Usuario_Modificacion { get; set; }
+
+    public DateTime? Fecha_Modificacion { get; set; }
+
     public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
 
     public virtual Negocio? IdNegocioNavigation { get; set; }

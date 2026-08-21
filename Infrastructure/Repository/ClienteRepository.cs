@@ -51,7 +51,7 @@ namespace Infrastructure.Repository
                         Cedula = reader.GetString(4),
                         Telefono = reader.GetString(5),
                         Correo_Electronico = reader.GetString(6),
-                        Fecha_Registro = reader.GetDateTime(7)
+                        Fecha_Creacion = reader.GetDateTime(7)
                     });
                 }
 

@@ -68,7 +68,7 @@ namespace Infrastructure.Repository
             return new Paginacion<ProductoCategoria> { Items = productos, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
         }
 
-        public async Task<ProductoRespuesta?> ObtenerProductoAsync(int idProducto)
+        public async Task<ProductoResponse?> ObtenerProductoAsync(int idProducto)
         {
             var idParam = new SqlParameter("@Id_Producto", idProducto);
             return await Task.Run(() =>

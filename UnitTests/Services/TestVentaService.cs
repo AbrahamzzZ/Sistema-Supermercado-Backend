@@ -42,7 +42,7 @@ public class TestVentaService
     [TestMethod]
     public async Task ObtenerVentaAsync_SiNoExisteDebeRetornarError()
     {
-        _mockRepository.Setup(r => r.ObtenerVentaAsync("DOC-002")).ReturnsAsync((VentaRespuesta)null);
+        _mockRepository.Setup(r => r.ObtenerVentaAsync("DOC-002")).ReturnsAsync((VentaResponse)null);
         var result = await _service.ObtenerVentaAsync("DOC-002");
 
         Assert.IsFalse(result.IsSuccess);
@@ -52,7 +52,7 @@ public class TestVentaService
     [TestMethod]
     public async Task ObtenerVentaAsync_SiExisteDebeRetornarVenta()
     {
-        var venta = new VentaRespuesta { Id_Venta = 1, Numero_Documento = "DOC-003" };
+        var venta = new VentaResponse { Id_Venta = 1, Numero_Documento = "DOC-003" };
         _mockRepository.Setup(r => r.ObtenerVentaAsync("DOC-003")).ReturnsAsync(venta);
         var result = await _service.ObtenerVentaAsync("DOC-003");
 

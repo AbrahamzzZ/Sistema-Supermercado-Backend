@@ -53,16 +53,16 @@ namespace Infrastructure.Services
             return new ApiResponse<Paginacion<ProductoCategoria>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
         }
 
-        public async Task<ApiResponse<ProductoRespuesta>> ObtenerProductoAsync(int idProducto)
+        public async Task<ApiResponse<ProductoResponse>> ObtenerProductoAsync(int idProducto)
         {
             var producto = await _productoRepository.ObtenerProductoAsync(idProducto);
 
             if (producto == null)
             {
-                return new ApiResponse<ProductoRespuesta> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
+                return new ApiResponse<ProductoResponse> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
             }
 
-            return new ApiResponse<ProductoRespuesta> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = producto };
+            return new ApiResponse<ProductoResponse> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = producto };
         }
 
         public async Task<ApiResponse<object>> RegistrarProductoAsync(Producto producto)

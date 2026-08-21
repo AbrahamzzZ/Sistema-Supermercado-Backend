@@ -41,15 +41,15 @@ public class TestProductoController
     [TestMethod]
     public async Task GetProducto_CuandoExiste_DeberiaRetornarOk()
     {
-        var producto = new ProductoRespuesta { Id_Producto = 1, Nombre_Producto = "Snacks" };
+        var producto = new ProductoResponse { Id_Producto = 1, Nombre_Producto = "Snacks" };
         _mockService.Setup(s => s.ObtenerProductoAsync(1))
-            .ReturnsAsync(new ApiResponse<ProductoRespuesta> { IsSuccess = true, Data = producto });
+            .ReturnsAsync(new ApiResponse<ProductoResponse> { IsSuccess = true, Data = producto });
 
         var result = await _controller.GetProducto(1);
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
-        var response = okResult.Value as ApiResponse<ProductoRespuesta>;
+        var response = okResult.Value as ApiResponse<ProductoResponse>;
         Assert.IsTrue(response.IsSuccess);
         Assert.AreEqual("Snacks", response.Data.Nombre_Producto);
     }
@@ -58,13 +58,13 @@ public class TestProductoController
     public async Task GetProducto_CuandoNoExiste_DeberiaRetornarNotFound()
     {
         _mockService.Setup(s => s.ObtenerProductoAsync(999))
-            .ReturnsAsync(new ApiResponse<ProductoRespuesta> { IsSuccess = false, Message = "No encontrado" });
+            .ReturnsAsync(new ApiResponse<ProductoResponse> { IsSuccess = false, Message = "No encontrado" });
 
         var result = await _controller.GetProducto(999);
 
         var notFoundResult = result.Result as NotFoundObjectResult;
         Assert.IsNotNull(notFoundResult);
-        var response = notFoundResult.Value as ApiResponse<ProductoRespuesta>;
+        var response = notFoundResult.Value as ApiResponse<ProductoResponse>;
         Assert.IsFalse(response.IsSuccess);
     }
 

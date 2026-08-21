@@ -36,7 +36,7 @@ namespace Infrastructure.Repository
             return nuevoNumero;
         }
 
-        public async Task<CompraRespuesta?> ObtenerCompraAsync(string numeroDocumento)
+        public async Task<CompraResponse?> ObtenerCompraAsync(string numeroDocumento)
         {
             var resultado = await _context.CompraDto
                 .FromSqlRaw("EXEC PA_OBTENER_COMPRA @Numero_Documento", new SqlParameter("@Numero_Documento", numeroDocumento))
@@ -46,7 +46,7 @@ namespace Infrastructure.Repository
             return resultado.FirstOrDefault();
         }
 
-        public async Task<List<DetalleComprasRepuesta>> ObtenerDetallesCompraAsync(int idCompra)
+        public async Task<List<DetalleCompraReponse>> ObtenerDetallesCompraAsync(int idCompra)
         {
             return await _context.DetalleComprasRepuestaDto
                 .FromSqlRaw("EXEC PA_OBTENER_DETALLES_COMPRA @Id_Compra", new SqlParameter("@Id_Compra", idCompra))

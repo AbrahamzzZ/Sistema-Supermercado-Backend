@@ -1,6 +1,6 @@
 ﻿namespace Domain.Models.Dto.Compra
 {
-    public class CompraRespuesta
+    public class CompraResponse
     {
         public int Id_Compra { get; set; }
         public int Id_Usuario { get; set; }

@@ -25,7 +25,13 @@ public partial class Transportistum
 
     public bool? Estado { get; set; }
 
-    public DateTime? Fecha_Registro { get; set; }
+    public int? Usuario_Creacion { get; set; }
+
+    public DateTime? Fecha_Creacion { get; set; }
+
+    public int? Usuario_Modificacion { get; set; }
+
+    public DateTime? Fecha_Modificacion { get; set; }
 
     public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
 

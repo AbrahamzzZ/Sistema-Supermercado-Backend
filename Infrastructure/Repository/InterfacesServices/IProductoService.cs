@@ -8,7 +8,7 @@ namespace Infrastructure.Repository.InterfacesServices
     {
         Task<ApiResponse<List<ProductoCategoria>>> ListarProductosAsync();
         Task<ApiResponse<Paginacion<ProductoCategoria>>> ListarProductosPaginacionAsync(int pageNumber, int pageSize);
-        Task<ApiResponse<ProductoRespuesta>> ObtenerProductoAsync(int idProducto);
+        Task<ApiResponse<ProductoResponse>> ObtenerProductoAsync(int idProducto);
         Task<ApiResponse<object>> RegistrarProductoAsync(Producto producto);
         Task<ApiResponse<object>> EditarProductoAsync(Producto producto);
         Task<ApiResponse<int>> EliminarProductoAsync(int idProducto);

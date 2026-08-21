@@ -18,7 +18,13 @@ public partial class Cliente
 
     public string? Correo_Electronico { get; set; }
 
-    public DateTime? Fecha_Registro { get; set; }
+    public int? Usuario_Creacion { get; set; }
+
+    public DateTime? Fecha_Creacion { get; set; }
+
+    public int? Usuario_Modificacion { get; set; }
+
+    public DateTime? Fecha_Modificacion { get; set; }
 
     public virtual ICollection<Ventum> Venta { get; set; } = new List<Ventum>();
 
