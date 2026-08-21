@@ -1,10 +1,10 @@
 ﻿using Domain.Models;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Response.Usuario;
 
 namespace Infrastructure.Helpers
 {
     public interface IToken
     {
-        string GenerarToken(UsuarioRol usuario, List<Menu> permisos);
+        string GenerarToken(UsuarioRolResponse usuario, List<Menu> permisos);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Domain.Contexts;
 using Domain.Models;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Response.Oferta;
 using Infrastructure.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -18,14 +18,14 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<List<OfertaProducto>> ListarOfertasAsync()
+        public async Task<List<OfertaProductoResponse>> ListarOfertasAsync()
         {
             return await _context.OfertasDto
                 .FromSqlRaw("EXEC PA_LISTA_OFERTA")
                 .ToListAsync();
         }
 
-        public async Task<Paginacion<OfertaProducto>> ListarOfertasPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<Paginacion<OfertaProductoResponse>> ListarOfertasPaginacionAsync(int pageNumber, int pageSize)
         {
 
             using var command = _context.Database.GetDbConnection().CreateCommand();
@@ -36,14 +36,14 @@ namespace Infrastructure.Repository
 
             await _context.Database.OpenConnectionAsync();
 
-            var ofertas = new List<OfertaProducto>();
+            var ofertas = new List<OfertaProductoResponse>();
             int totalCount = 0;
 
             using (var reader = await command.ExecuteReaderAsync())
             {
                 while (await reader.ReadAsync())
                 {
-                    ofertas.Add(new OfertaProducto
+                    ofertas.Add(new OfertaProductoResponse
                     {
                         Id_Oferta = reader.GetInt32(0),
                         Codigo = reader.GetString(1),
@@ -65,7 +65,7 @@ namespace Infrastructure.Repository
                 }
             }
 
-            return new Paginacion<OfertaProducto> { Items = ofertas, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
+            return new Paginacion<OfertaProductoResponse> { Items = ofertas, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
         }
 
         public async Task<Ofertum?> ObtenerOfertaAsync(int idOferta)

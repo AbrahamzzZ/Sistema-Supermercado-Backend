@@ -1,11 +1,12 @@
 ﻿using Domain.Models;
-using Domain.Models.Dto;
 using Infrastructure.Repository.InterfacesRepository;
 using FluentValidation;
 using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.Data.SqlClient;
 using Utilities.Shared;
+using Domain.Models.Dto.Request;
+using Domain.Models.Dto.Response.Usuario;
 
 namespace Infrastructure.Services
 {
@@ -30,61 +31,61 @@ namespace Infrastructure.Services
             _validator = validator;
         }*/
 
-        public async Task<ApiResponse<List<UsuarioRol>>> ListarUsuariosAsync()
+        public async Task<ApiResponse<List<UsuarioRolResponse>>> ListarUsuariosAsync()
         {
             var listaUsuarios = await _usuarioRepository.ListarUsuariosAsync();
 
             if (listaUsuarios == null || listaUsuarios.Count == 0)
-                return new ApiResponse<List<UsuarioRol>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaUsuarios };
+                return new ApiResponse<List<UsuarioRolResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaUsuarios };
 
-            return new ApiResponse<List<UsuarioRol>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaUsuarios };
+            return new ApiResponse<List<UsuarioRolResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaUsuarios };
         }
 
-        public async Task<ApiResponse<Paginacion<UsuarioRol>>> ListarUsuariosPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<ApiResponse<Paginacion<UsuarioRolResponse>>> ListarUsuariosPaginacionAsync(int pageNumber, int pageSize)
         {
             var pagedResult = await _usuarioRepository.ListarUsuariosPaginacionAsync(pageNumber, pageSize);
 
             if (pagedResult.Items == null || pagedResult.Items.Count == 0)
             {
-                return new ApiResponse<Paginacion<UsuarioRol>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
+                return new ApiResponse<Paginacion<UsuarioRolResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
             }
 
-            return new ApiResponse<Paginacion<UsuarioRol>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
+            return new ApiResponse<Paginacion<UsuarioRolResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
         }
 
-        public async Task<ApiResponse<UsuarioRol>> ObtenerUsuarioAsync(int idUsuario)
+        public async Task<ApiResponse<UsuarioRolResponse>> ObtenerUsuarioAsync(int idUsuario)
         {
             var usuario = await _usuarioRepository.ObtenerUsuarioAsync(idUsuario);
 
             if (usuario == null)
             {
-                return new ApiResponse<UsuarioRol> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
+                return new ApiResponse<UsuarioRolResponse> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
             }
 
-            return new ApiResponse<UsuarioRol> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = usuario };
+            return new ApiResponse<UsuarioRolResponse> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = usuario };
         }
 
-        public async Task<ApiResponse<UsuarioRol>> IniciarSesionAsync(Login login)
+        public async Task<ApiResponse<UsuarioRolResponse>> IniciarSesionAsync(LoginRequest login)
         {
             if (login == null || string.IsNullOrWhiteSpace(login.Correo_Electronico) || string.IsNullOrWhiteSpace(login.Clave))
             {
-                return new ApiResponse<UsuarioRol> { IsSuccess = false, Message = "Correo y clave son obligatorios." };
+                return new ApiResponse<UsuarioRolResponse> { IsSuccess = false, Message = "Correo y clave son obligatorios." };
             }
 
             var usuario = await _usuarioRepository.IniciarSesionAsync(login);
 
             if (usuario == null)
             {
-                return new ApiResponse<UsuarioRol> { IsSuccess = false, Message = "Credenciales inválidas." };
+                return new ApiResponse<UsuarioRolResponse> { IsSuccess = false, Message = "Credenciales inválidas." };
             }
 
             if (usuario.Estado == false)
             {
-                return new ApiResponse<UsuarioRol>
+                return new ApiResponse<UsuarioRolResponse>
                 { IsSuccess = false, Message = "Usuario inactivo. Contacte con el administrador." };
             }
 
-            return new ApiResponse<UsuarioRol> { IsSuccess = true, Message = "Inicio de sesión exitoso.", Data = usuario};
+            return new ApiResponse<UsuarioRolResponse> { IsSuccess = true, Message = "Inicio de sesión exitoso.", Data = usuario};
         }
 
         public async Task<ApiResponse<object>> RegistrarUsuarioAsync(Usuario usuario)

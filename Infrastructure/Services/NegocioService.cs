@@ -1,5 +1,5 @@
 ﻿using Domain.Models;
-using Domain.Models.Dto.Negocio;
+using Domain.Models.Dto.Response.Negocio;
 using FluentValidation;
 using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesRepository;
@@ -67,24 +67,24 @@ namespace Infrastructure.Services
             return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_UPDATE_FAILLED };
         }
 
-        public async Task<ApiResponse<List<ProductoMasComprado>>> ObtenerProductoMasComprado()
+        public async Task<ApiResponse<List<ProductoMasCompradoResponse>>> ObtenerProductoMasComprado()
         {
             var lista = await _negocioRepository.ObtenerProductoMasComprado();
 
             if (lista == null || lista.Count == 0)
-                return new ApiResponse<List<ProductoMasComprado>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
+                return new ApiResponse<List<ProductoMasCompradoResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
 
-            return new ApiResponse<List<ProductoMasComprado>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
+            return new ApiResponse<List<ProductoMasCompradoResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
         }
 
-        public async Task<ApiResponse<List<ProductoMasVendido>>> ObtenerProductoMasVendido()
+        public async Task<ApiResponse<List<ProductoMasVendidoResponse>>> ObtenerProductoMasVendido()
         {
             var lista = await _negocioRepository.ObtenerProductoMasVendido();
 
             if (lista == null || lista.Count == 0)
-                return new ApiResponse<List<ProductoMasVendido>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
+                return new ApiResponse<List<ProductoMasVendidoResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
 
-            return new ApiResponse<List<ProductoMasVendido>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
+            return new ApiResponse<List<ProductoMasVendidoResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
         }
         
         public async Task<ApiResponse<object>> AnalisisIA(string promptUsuario)
@@ -148,44 +148,44 @@ namespace Infrastructure.Services
             };
         }
 
-        public async Task<ApiResponse<List<TopCliente>>> ObtenerTopClientes()
+        public async Task<ApiResponse<List<TopClienteResponse>>> ObtenerTopClientes()
         {
             var lista = await _negocioRepository.ObtenerTopClientes();
 
             if (lista == null || lista.Count == 0)
-                return new ApiResponse<List<TopCliente>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
+                return new ApiResponse<List<TopClienteResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
 
-            return new ApiResponse<List<TopCliente>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
+            return new ApiResponse<List<TopClienteResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
         }
 
-        public async Task<ApiResponse<List<TopProveedor>>> ObtenerTopProveedores()
+        public async Task<ApiResponse<List<TopProveedorResponse>>> ObtenerTopProveedores()
         {
             var lista = await _negocioRepository.ObtenerTopProveedores();
 
             if (lista == null || lista.Count == 0)
-                return new ApiResponse<List<TopProveedor>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
+                return new ApiResponse<List<TopProveedorResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
 
-            return new ApiResponse<List<TopProveedor>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
+            return new ApiResponse<List<TopProveedorResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
         }
 
-        public async Task<ApiResponse<List<ViajesTransportista>>> ObtenerViajesTransportista()
+        public async Task<ApiResponse<List<ViajesTransportistaResponse>>> ObtenerViajesTransportista()
         {
             var lista = await _negocioRepository.ObtenerViajesTransportista();
 
             if (lista == null || lista.Count == 0)
-                return new ApiResponse<List<ViajesTransportista>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
+                return new ApiResponse<List<ViajesTransportistaResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
 
-            return new ApiResponse<List<ViajesTransportista>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
+            return new ApiResponse<List<ViajesTransportistaResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
         }
 
-        public async Task<ApiResponse<List<EmpleadoProductivo>>> ObtenerEmpleadosProductivos()
+        public async Task<ApiResponse<List<EmpleadoProductivoResponse>>> ObtenerEmpleadosProductivos()
         {
             var lista = await _negocioRepository.ObtenerEmpleadosProductivos();
 
             if (lista == null || lista.Count == 0)
-                return new ApiResponse<List<EmpleadoProductivo>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
+                return new ApiResponse<List<EmpleadoProductivoResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
 
-            return new ApiResponse<List<EmpleadoProductivo>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
+            return new ApiResponse<List<EmpleadoProductivoResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = lista };
         }
     }
 }

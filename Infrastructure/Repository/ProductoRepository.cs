@@ -1,6 +1,6 @@
 ﻿using Domain.Contexts;
 using Domain.Models;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Response.Producto;
 using Infrastructure.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -18,14 +18,14 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<List<ProductoCategoria>> ListarProductosAsync()
+        public async Task<List<ProductoCategoriaResponse>> ListarProductosAsync()
         {
             return await _context.ProductosDto
                 .FromSqlRaw("EXEC PA_LISTA_PRODUCTO")
                 .ToListAsync();
         }
 
-        public async Task<Paginacion<ProductoCategoria>> ListarProductosPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<Paginacion<ProductoCategoriaResponse>> ListarProductosPaginacionAsync(int pageNumber, int pageSize)
         {
 
             using var command = _context.Database.GetDbConnection().CreateCommand();
@@ -36,14 +36,14 @@ namespace Infrastructure.Repository
 
             await _context.Database.OpenConnectionAsync();
 
-            var productos = new List<ProductoCategoria>();
+            var productos = new List<ProductoCategoriaResponse>();
             int totalCount = 0;
 
             using (var reader = await command.ExecuteReaderAsync())
             {
                 while (await reader.ReadAsync())
                 {
-                    productos.Add(new ProductoCategoria
+                    productos.Add(new ProductoCategoriaResponse
                     {
                         Id_Producto = reader.GetInt32(0),
                         Codigo = reader.GetString(1),
@@ -65,7 +65,7 @@ namespace Infrastructure.Repository
                 }
             }
 
-            return new Paginacion<ProductoCategoria> { Items = productos, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
+            return new Paginacion<ProductoCategoriaResponse> { Items = productos, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
         }
 
         public async Task<ProductoResponse?> ObtenerProductoAsync(int idProducto)

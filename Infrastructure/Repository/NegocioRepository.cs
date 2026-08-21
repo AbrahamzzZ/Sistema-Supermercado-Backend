@@ -1,7 +1,7 @@
 ﻿using Domain.Contexts;
 using Domain.Models;
-using Domain.Models.Dto.Negocio;
-using Domain.Models.Dto.Negocio.IA;
+using Domain.Models.Dto.Response.Negocio;
+using Domain.Models.Dto.Response.Negocio.IA;
 using Infrastructure.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -52,7 +52,7 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<List<ProductoMasComprado>> ObtenerProductoMasComprado()
+        public async Task<List<ProductoMasCompradoResponse>> ObtenerProductoMasComprado()
         {
             return await _context.ProductoMasComprados.FromSqlRaw("EXEC PA_PRODUCTOS_MAS_COMPRADOS").ToListAsync();
         }
@@ -62,7 +62,7 @@ namespace Infrastructure.Repository
             return await _context.ProductoMasCompradosAnalisis.FromSqlRaw("EXEC PA_TENDENCIA_PRODUCTOS_COMPRADOS").ToListAsync();
         }
 
-        public async Task<List<ProductoMasVendido>> ObtenerProductoMasVendido()
+        public async Task<List<ProductoMasVendidoResponse>> ObtenerProductoMasVendido()
         {
             return await _context.ProductoMasVendidos.FromSqlRaw("EXEC PA_PRODUCTOS_MAS_VENDIDOS").ToListAsync();
         }
@@ -72,22 +72,22 @@ namespace Infrastructure.Repository
             return await _context.ProductoMasVendidosAnalisis.FromSqlRaw("EXEC PA_TENDENCIA_PRODUCTOS_VENDIDOS").ToListAsync();
         }
 
-        public async Task<List<TopCliente>> ObtenerTopClientes()
+        public async Task<List<TopClienteResponse>> ObtenerTopClientes()
         {
             return await _context.TopClientes.FromSqlRaw("EXEC PA_TOP_CLIENTES").ToListAsync();
         }
 
-        public async Task<List<TopProveedor>> ObtenerTopProveedores()
+        public async Task<List<TopProveedorResponse>> ObtenerTopProveedores()
         {
             return await _context.TopProveedores.FromSqlRaw("EXEC PA_TOP_PROVEEDORES").ToListAsync();
         }
 
-        public async Task<List<ViajesTransportista>> ObtenerViajesTransportista()
+        public async Task<List<ViajesTransportistaResponse>> ObtenerViajesTransportista()
         {
             return await _context.ViajesTransportistas.FromSqlRaw("PA_VIAJES_TRANSPORTISTA").ToListAsync();
         }
 
-        public async Task<List<EmpleadoProductivo>> ObtenerEmpleadosProductivos()
+        public async Task<List<EmpleadoProductivoResponse>> ObtenerEmpleadosProductivos()
         {
             return await _context.EmpleadoProductivos.FromSqlRaw("EXEC PA_VENTAS_EMPLEADO").ToListAsync();
         }

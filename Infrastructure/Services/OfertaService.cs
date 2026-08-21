@@ -1,11 +1,11 @@
 ﻿using Domain.Models;
-using Domain.Models.Dto;
 using Infrastructure.Repository.InterfacesRepository;
 using FluentValidation;
 using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.Data.SqlClient;
 using Utilities.Shared;
+using Domain.Models.Dto.Response.Oferta;
 
 namespace Infrastructure.Services
 {
@@ -31,26 +31,26 @@ namespace Infrastructure.Services
             _validator = validator;
         }*/
 
-        public async Task<ApiResponse<List<OfertaProducto>>> ListarOfertasAsync()
+        public async Task<ApiResponse<List<OfertaProductoResponse>>> ListarOfertasAsync()
         {
             var listaOfertas = await _ofertaRepository.ListarOfertasAsync();
 
             if (listaOfertas == null || listaOfertas.Count == 0)
-                return new ApiResponse<List<OfertaProducto>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaOfertas };
+                return new ApiResponse<List<OfertaProductoResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaOfertas };
 
-            return new ApiResponse<List<OfertaProducto>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaOfertas };
+            return new ApiResponse<List<OfertaProductoResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaOfertas };
         }
 
-        public async Task<ApiResponse<Paginacion<OfertaProducto>>> ListarOfertasPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<ApiResponse<Paginacion<OfertaProductoResponse>>> ListarOfertasPaginacionAsync(int pageNumber, int pageSize)
         {
             var pagedResult = await _ofertaRepository.ListarOfertasPaginacionAsync(pageNumber, pageSize);
 
             if (pagedResult.Items == null || pagedResult.Items.Count == 0)
             {
-                return new ApiResponse<Paginacion<OfertaProducto>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
+                return new ApiResponse<Paginacion<OfertaProductoResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
             }
 
-            return new ApiResponse<Paginacion<OfertaProducto>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
+            return new ApiResponse<Paginacion<OfertaProductoResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
         }
 
         public async Task<ApiResponse<Ofertum>> ObtenerOfertaAsync(int idOferta)
