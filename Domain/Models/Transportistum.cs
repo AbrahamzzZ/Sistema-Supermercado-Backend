@@ -21,7 +21,7 @@ public partial class Transportistum
     [NotMapped]
     public string? ImagenBase64 { get; set; }
 
-    public byte[]? Imagen { get; set; }
+    public byte[]? Foto{ get; set; }
 
     public bool? Estado { get; set; }
 
