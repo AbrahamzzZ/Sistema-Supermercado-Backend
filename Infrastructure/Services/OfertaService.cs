@@ -13,11 +13,13 @@ namespace Infrastructure.Services
     {
         private readonly OfertaRepository _ofertaRepository;
         private readonly IValidator<Ofertum> _validator;
+        private readonly ICurrentUserService _currentUserService;
 
-        public OfertaService(OfertaRepository ofertaRepository, IValidator<Ofertum> validator)
+        public OfertaService(OfertaRepository ofertaRepository, IValidator<Ofertum> validator, ICurrentUserService currentUserService)
         {
             _ofertaRepository = ofertaRepository;
             _validator = validator;
+            _currentUserService = currentUserService;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -82,7 +84,9 @@ namespace Infrastructure.Services
             if (ofertas.Any(c => c.Nombre_Oferta?.ToLower() == oferta.Nombre_Oferta?.ToLower()))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe" };
 
-            var result = await _ofertaRepository.RegistrarOfertaAsync(oferta);
+            var idUsuario = _currentUserService.GetUserId();
+
+            var result = await _ofertaRepository.RegistrarOfertaAsync(oferta, idUsuario);
             if (result > 0)
                 return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
 

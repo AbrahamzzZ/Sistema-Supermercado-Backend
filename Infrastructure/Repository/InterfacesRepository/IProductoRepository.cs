@@ -9,7 +9,7 @@ namespace Infrastructure.Repository.InterfacesRepository
         Task<List<ProductoCategoriaResponse>> ListarProductosAsync();
         Task<Paginacion<ProductoCategoriaResponse>> ListarProductosPaginacionAsync(int pageNumber, int pageSize);
         Task<ProductoResponse?> ObtenerProductoAsync(int idProducto);
-        Task<int> RegistrarProductoAsync(Producto producto);
+        Task<int> RegistrarProductoAsync(Producto producto, int usuarioCreacion);
         Task<int> EditarProductoAsync(Producto producto);
         Task<int> EliminarProductoAsync(int idProducto);
     }

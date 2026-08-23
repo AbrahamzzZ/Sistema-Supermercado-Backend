@@ -95,18 +95,19 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<int> RegistrarUsuarioAsync(Usuario usuario)
+        public async Task<int> RegistrarUsuarioAsync(Usuario usuario, int usuarioCreacion)
         {
             string claveEncriptada = Encriptacion.EncriptarSHA256(usuario.Clave ?? "");
 
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_REGISTRAR_USUARIO @Codigo, @Nombre_Completo, @Correo_Electronico, @Clave, @Id_Rol, @Estado",
+                "EXEC PA_REGISTRAR_USUARIO @Codigo, @Nombre_Completo, @Correo_Electronico, @Clave, @Id_Rol, @Estado, @Usuario_Creacion",
                 new SqlParameter("@Codigo", usuario.Codigo ?? (object)DBNull.Value),
                 new SqlParameter("@Nombre_Completo", usuario.Nombre_Completo ?? (object)DBNull.Value),
                 new SqlParameter("@Correo_Electronico", usuario.Correo_Electronico ?? (object)DBNull.Value),
                 new SqlParameter("@Clave", claveEncriptada),
                 new SqlParameter("@Id_Rol", usuario.Id_Rol ?? (object)DBNull.Value),
-                new SqlParameter("@Estado", usuario.Estado ?? (object)DBNull.Value)
+                new SqlParameter("@Estado", usuario.Estado ?? (object)DBNull.Value),
+                new SqlParameter("@Usuario_Creacion", usuarioCreacion)
             );
         }
 

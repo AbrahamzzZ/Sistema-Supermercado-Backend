@@ -1,5 +1,6 @@
 using APIRestSistemaVentas.Controllers;
 using Domain.Models;
+using Domain.Models.Dto.Response.Cliente;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -23,7 +24,7 @@ public class TestClienteController
     [TestMethod]
     public async Task GetClientes_ReturnsOk_WithClientes()
     {
-        var expectedResponse = new ApiResponse<List<Cliente>> { IsSuccess = true, Data = new List<Cliente>() };
+        var expectedResponse = new ApiResponse<List<ClienteResponse>> { IsSuccess = true, Data = new List<ClienteResponse>() };
         _mockService.Setup(s => s.ListarClientesAsync()).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetClientes();

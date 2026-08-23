@@ -78,7 +78,7 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<int> RegistrarSucursalAsync(Sucursal sucursal)
+        public async Task<int> RegistrarSucursalAsync(Sucursal sucursal, int usuarioCreacion)
         {
             using var connection = _context.Database.GetDbConnection();
             await connection.OpenAsync();
@@ -111,6 +111,7 @@ namespace Infrastructure.Repository
 
             command.Parameters.Add(new SqlParameter("@Ciudad", sucursal.Ciudad_Sucursal ?? (object)DBNull.Value));
             command.Parameters.Add(new SqlParameter("@Estado", sucursal.Estado ?? (object)DBNull.Value));
+            command.Parameters.Add(new SqlParameter("@Usuario_Creacion", usuarioCreacion));
 
             return await command.ExecuteNonQueryAsync();
         }

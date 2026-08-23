@@ -3,6 +3,7 @@ using Domain.Models;
 using Infrastructure.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Domain.Models.Dto.Response.Categoria;
 using System.Data;
 using Utilities.Shared;
 
@@ -17,9 +18,9 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<List<Categorium>> ListarCategoriasAsync()
+        public async Task<List<CategoriaResponse>> ListarCategoriasAsync()
         {
-            return await _context.Categoria
+            return await _context.CategoriasDto
                 .FromSqlRaw("EXEC PA_LISTA_CATEGORIA")
                 .ToListAsync();
         }
@@ -71,13 +72,14 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<int> RegistrarCategoriaAsync(Categorium categoria)
+        public async Task<int> RegistrarCategoriaAsync(Categorium categoria, int usuarioCreacion)
         {
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_REGISTRAR_CATEGORIA @Codigo, @Nombre, @Estado",
+                "EXEC PA_REGISTRAR_CATEGORIA @Codigo, @Nombre, @Estado, @Usuario_Creacion",
                 new SqlParameter("@Codigo", categoria.Codigo ?? (object)DBNull.Value),
                 new SqlParameter("@Nombre", categoria.Nombre_Categoria ?? (object)DBNull.Value),
-                new SqlParameter("@Estado", categoria.Estado ?? false)
+                new SqlParameter("@Estado", categoria.Estado ?? false),
+                new SqlParameter("@Usuario_Creacion", usuarioCreacion)
             );
         }
 

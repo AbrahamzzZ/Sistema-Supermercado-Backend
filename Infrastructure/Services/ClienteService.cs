@@ -5,6 +5,7 @@ using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.Data.SqlClient;
 using Utilities.Shared;
+using Domain.Models.Dto.Response.Cliente;
 
 namespace Infrastructure.Services
 {
@@ -12,11 +13,13 @@ namespace Infrastructure.Services
     {
         private readonly ClienteRepository _clienteRepository;
         private readonly IValidator<Cliente> _validator;
+        private readonly ICurrentUserService _currentUserService;
 
-        public ClienteService(ClienteRepository clienteRepository, IValidator<Cliente> validator)
+        public ClienteService(ClienteRepository clienteRepository, IValidator<Cliente> validator, ICurrentUserService currentUserService)
         {
             _clienteRepository = clienteRepository;
             _validator = validator;
+            _currentUserService = currentUserService;
         }
 
 
@@ -30,14 +33,14 @@ namespace Infrastructure.Services
             _validator = validator;
         }*/
 
-        public async Task<ApiResponse<List<Cliente>>> ListarClientesAsync()
+        public async Task<ApiResponse<List<ClienteResponse>>> ListarClientesAsync()
         {
             var listaClientes = await _clienteRepository.ListarClientesAsync();
 
             if (listaClientes == null || listaClientes.Count == 0)
-                return new ApiResponse<List<Cliente>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaClientes };
+                return new ApiResponse<List<ClienteResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaClientes };
 
-            return new ApiResponse<List<Cliente>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaClientes };
+            return new ApiResponse<List<ClienteResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaClientes };
         }
 
         public async Task<ApiResponse<Paginacion<Cliente>>> ListarClientesPaginacionAsync(int pageNumber, int pageSize)
@@ -84,7 +87,9 @@ namespace Infrastructure.Services
             if (clientes.Any(c => c.Telefono == cliente.Telefono))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_PHONE_EXITS };
 
-            var result = await _clienteRepository.RegistrarClienteAsync(cliente);
+            var idUsuario = _currentUserService.GetUserId();
+
+            var result = await _clienteRepository.RegistrarClienteAsync(cliente, idUsuario);
             if (result > 0)
                 return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
 

@@ -1,5 +1,6 @@
 ﻿using Domain.Contexts;
 using Domain.Models;
+using Domain.Models.Dto.Response.Cliente;
 using Infrastructure.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -18,9 +19,9 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<List<Cliente>> ListarClientesAsync()
+        public async Task<List<ClienteResponse>> ListarClientesAsync()
         {
-            return await _context.Clientes
+            return await _context.ClientesDto
                 .FromSqlRaw("EXEC PA_LISTA_CLIENTE")
                 .ToListAsync();
         }
@@ -77,16 +78,17 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<int> RegistrarClienteAsync(Cliente cliente)
+        public async Task<int> RegistrarClienteAsync(Cliente cliente, int usuarioCreacion)
         {
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_REGISTRAR_CLIENTE @Codigo, @Nombres, @Apellidos, @Cedula, @Telefono, @Correo_Electronico",
+                "EXEC PA_REGISTRAR_CLIENTE @Codigo, @Nombres, @Apellidos, @Cedula, @Telefono, @Correo_Electronico, @Usuario_Creacion",
                 new SqlParameter("@Codigo", cliente.Codigo ?? (object)DBNull.Value),
                 new SqlParameter("@Nombres", cliente.Nombres ?? (object)DBNull.Value),
                 new SqlParameter("@Apellidos", cliente.Apellidos ?? (object)DBNull.Value),
                 new SqlParameter("@Cedula", cliente.Cedula ?? (object)DBNull.Value),
                 new SqlParameter("@Telefono", cliente.Telefono ?? (object)DBNull.Value),
-                new SqlParameter("@Correo_Electronico", cliente.Correo_Electronico ?? (object)DBNull.Value)
+                new SqlParameter("@Correo_Electronico", cliente.Correo_Electronico ?? (object)DBNull.Value),
+                new SqlParameter("@Usuario_Creacion", usuarioCreacion)
             );
         }
 

@@ -1,5 +1,6 @@
 ﻿using Domain.Contexts;
 using Domain.Models;
+using Domain.Models.Dto.Response.Provedor;
 using Infrastructure.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -17,9 +18,9 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<List<Proveedor>> ListarProveedoresAsync()
+        public async Task<List<ProveedorResponse>> ListarProveedoresAsync()
         {
-            return await _context.Proveedors
+            return await _context.ProveedorDto
                 .FromSqlRaw("EXEC PA_LISTA_PROVEEDOR")
                 .ToListAsync();
         }
@@ -77,17 +78,18 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<int> RegistrarProveedorAsync(Proveedor proveedor)
+        public async Task<int> RegistrarProveedorAsync(Proveedor proveedor, int usuarioCreacion)
         {
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_REGISTRAR_PROVEEDOR @Codigo, @Nombres, @Apellidos, @Cedula, @Telefono, @Correo_Electronico, @Estado",
+                "EXEC PA_REGISTRAR_PROVEEDOR @Codigo, @Nombres, @Apellidos, @Cedula, @Telefono, @Correo_Electronico, @Estado, @Usuario_Creacion",
                 new SqlParameter("@Codigo", proveedor.Codigo ?? (object)DBNull.Value),
                 new SqlParameter("@Nombres", proveedor.Nombres ?? (object)DBNull.Value),
                 new SqlParameter("@Apellidos", proveedor.Apellidos ?? (object)DBNull.Value),
                 new SqlParameter("@Cedula", proveedor.Cedula ?? (object)DBNull.Value),
                 new SqlParameter("@Telefono", proveedor.Telefono ?? (object)DBNull.Value),
                 new SqlParameter("@Correo_Electronico", proveedor.Correo_Electronico ?? (object)DBNull.Value),
-                new SqlParameter("@Estado", proveedor.Estado ?? (object)DBNull.Value)
+                new SqlParameter("@Estado", proveedor.Estado ?? (object)DBNull.Value),
+                new SqlParameter("@Usuario_Creacion", usuarioCreacion)
             );
         }
 

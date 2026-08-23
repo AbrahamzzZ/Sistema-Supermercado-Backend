@@ -41,6 +41,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<RolService>();
             services.AddScoped<TransportistaService>();
             services.AddScoped<ILogService, LogService>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<UsuarioService>();
             services.AddScoped<NegocioService>();
             services.AddScoped<ProductoService>();

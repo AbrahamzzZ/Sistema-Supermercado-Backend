@@ -1,5 +1,6 @@
 using APIRestSistemaVentas.Controllers;
 using Domain.Models;
+using Domain.Models.Dto.Response.Transportista;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -24,14 +25,10 @@ public class TestTranportistaController
     [TestMethod]
     public async Task GetTransportistas_ReturnsOkWithList()
     {
-        var response = new ApiResponse<List<Transportistum>>
-        {
-            IsSuccess = true,
-            Data = new List<Transportistum> { new Transportistum { Id_Transportista = 1, Nombres = "Juan Perez" } }
-        };
+        var response = new ApiResponse<List<TransportistaResponse>>
+        { IsSuccess = true, Data = new List<TransportistaResponse> { new TransportistaResponse { Id_Transportista = 1, Nombres = "Juan Perez" } }};
 
-        _mockService.Setup(s => s.ListarTransportistasAsync())
-                    .ReturnsAsync(response);
+        _mockService.Setup(s => s.ListarTransportistasAsync()).ReturnsAsync(response);
 
         var actionResult = await _controller.GetTransportistas();
         var okResult = actionResult.Result as OkObjectResult;

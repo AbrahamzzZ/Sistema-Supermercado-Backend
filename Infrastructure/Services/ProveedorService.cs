@@ -5,6 +5,7 @@ using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.Data.SqlClient;
 using Utilities.Shared;
+using Domain.Models.Dto.Response.Provedor;
 
 namespace Infrastructure.Services
 {
@@ -12,11 +13,13 @@ namespace Infrastructure.Services
     {
         private readonly ProveedorRepository _proveedorRepository;
         private readonly IValidator<Proveedor> _validator;
+        private readonly ICurrentUserService _currentUserService;
 
-        public ProveedorService(ProveedorRepository proveedorRepository, IValidator<Proveedor> validator)
+        public ProveedorService(ProveedorRepository proveedorRepository, IValidator<Proveedor> validator, ICurrentUserService currentUserService)
         {
             _proveedorRepository = proveedorRepository;
             _validator = validator;
+            _currentUserService = currentUserService;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -30,14 +33,14 @@ namespace Infrastructure.Services
             _validator = validator;
         }*/
 
-        public async Task<ApiResponse<List<Proveedor>>> ListarProveedoresAsync()
+        public async Task<ApiResponse<List<ProveedorResponse>>> ListarProveedoresAsync()
         {
             var listaProveedores = await _proveedorRepository.ListarProveedoresAsync();
 
             if (listaProveedores == null || listaProveedores.Count == 0)
-                return new ApiResponse<List<Proveedor>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaProveedores };
+                return new ApiResponse<List<ProveedorResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaProveedores };
 
-            return new ApiResponse<List<Proveedor>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaProveedores };
+            return new ApiResponse<List<ProveedorResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaProveedores };
         }
 
         public async Task<ApiResponse<Paginacion<Proveedor>>> ListarProveedoresPaginacionAsync(int pageNumber, int pageSize)
@@ -84,7 +87,9 @@ namespace Infrastructure.Services
             if (categorias.Any(c => c.Telefono == proveedor.Telefono))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_PHONE_EXITS };
 
-            var result = await _proveedorRepository.RegistrarProveedorAsync(proveedor);
+            var idUsuario = _currentUserService.GetUserId();
+
+            var result = await _proveedorRepository.RegistrarProveedorAsync(proveedor, idUsuario);
             if (result > 0)
                 return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
 
