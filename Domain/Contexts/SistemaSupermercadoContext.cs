@@ -6,8 +6,12 @@ using Domain.Models.Dto.Response.Oferta;
 using Domain.Models.Dto.Response.Producto;
 using Domain.Models.Dto.Response.Usuario;
 using Domain.Models.Dto.Response.Venta;
+using Domain.Models.Dto.Response.Categoria;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Domain.Models.Dto.Response.Cliente;
+using Domain.Models.Dto.Response.Provedor;
+using Domain.Models.Dto.Response.Transportista;
 
 namespace Domain.Contexts;
 
@@ -93,6 +97,14 @@ public partial class SistemaSupermercadoContext : DbContext
     public DbSet<ViajesTransportistaResponse> ViajesTransportistas { get; set; }
 
     public DbSet<EmpleadoProductivoResponse> EmpleadoProductivos { get; set; }
+
+    public DbSet<CategoriaResponse> CategoriasDto { get; set; }
+
+    public DbSet<ClienteResponse> ClientesDto { get; set; }
+
+    public DbSet<ProveedorResponse> ProveedorDto { get; set; }
+
+    public DbSet<TransportistaResponse> TransportistasDto { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -200,6 +212,30 @@ public partial class SistemaSupermercadoContext : DbContext
 
             entity.Property(e => e.Descuento)
                   .HasPrecision(18, 2);
+        });
+
+        modelBuilder.Entity<CategoriaResponse>(entity =>
+        {
+            entity.HasNoKey()
+                .ToView(null);
+        });
+
+        modelBuilder.Entity<ClienteResponse>(entity =>
+        {
+            entity.HasNoKey()
+                .ToView(null);
+        });
+
+        modelBuilder.Entity<ProveedorResponse>(entity =>
+        {
+            entity.HasNoKey()
+                .ToView(null);
+        });
+
+        modelBuilder.Entity<TransportistaResponse>(entity =>
+        {
+            entity.HasNoKey()
+                .ToView(null);
         });
 
         modelBuilder.Entity<ProductoMasCompradoResponse>().HasNoKey().ToView(null);
