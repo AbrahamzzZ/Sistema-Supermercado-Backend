@@ -1,4 +1,5 @@
 using Domain.Models;
+using Domain.Models.Dto.Response.Cliente;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
@@ -84,7 +85,7 @@ public class TestClienteService
     {
         var cliente = new Cliente { Codigo = "CLI01", Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Cliente>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Codigo", Mensajes.MESSAGE_CODE_EXITS) }));
-        _mockRepository.Setup(r => r.ListarClientesAsync()).ReturnsAsync(new List<Cliente> { new Cliente { Codigo = "CLI01" } });
+        _mockRepository.Setup(r => r.ListarClientesAsync()).ReturnsAsync(new List<ClienteResponse> { new ClienteResponse { Codigo = "CLI01" } });
         var result = await _service.RegistrarClienteAsync(cliente);
 
         Assert.IsFalse(result.IsSuccess);
@@ -165,7 +166,7 @@ public class TestClienteService
         var cliente = new Cliente { Id_Cliente = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Cliente>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerClienteAsync(1)).ReturnsAsync(new Cliente());
-        _mockRepository.Setup(r => r.ListarClientesAsync()).ReturnsAsync(new List<Cliente>{ new Cliente { Id_Cliente = 2, Cedula = "1234567890" }});
+        _mockRepository.Setup(r => r.ListarClientesAsync()).ReturnsAsync(new List<ClienteResponse>{ new ClienteResponse { Id_Cliente = 2, Cedula = "1234567890" }});
         var result = await _service.EditarClienteAsync(cliente);
 
         Assert.IsFalse(result.IsSuccess);
@@ -178,7 +179,7 @@ public class TestClienteService
         var cliente = new Cliente { Id_Cliente = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Cliente>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerClienteAsync(1)).ReturnsAsync(new Cliente());
-        _mockRepository.Setup(r => r.ListarClientesAsync()).ReturnsAsync(new List<Cliente>());
+        _mockRepository.Setup(r => r.ListarClientesAsync()).ReturnsAsync(new List<ClienteResponse>());
         _mockRepository.Setup(r => r.EditarClienteAsync(cliente)).ReturnsAsync(1);
         var result = await _service.EditarClienteAsync(cliente);
 

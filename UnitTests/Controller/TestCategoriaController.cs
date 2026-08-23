@@ -1,5 +1,6 @@
 using APIRestSistemaVentas.Controllers;
 using Domain.Models;
+using Domain.Models.Dto.Response.Categoria;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -24,13 +25,13 @@ public class TestCategoriaController
     public async Task GetCategorias_DeberiaRetornarOk()
     {
         _mockService.Setup(s => s.ListarCategoriasAsync())
-            .ReturnsAsync(new ApiResponse<List<Categorium>> { IsSuccess = true,Data = new List<Categorium> { new Categorium { Id_Categoria = 1, Nombre_Categoria = "Snacks" } }});
+            .ReturnsAsync(new ApiResponse<List<CategoriaResponse>> { IsSuccess = true,Data = new List<CategoriaResponse> { new CategoriaResponse { Id_Categoria = 1, Nombre_Categoria = "Snacks" } }});
 
         var result = await _controller.GetCategorias();
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
-        var response = okResult.Value as ApiResponse<List<Categorium>>;
+        var response = okResult.Value as ApiResponse<List<CategoriaResponse>>;
         Assert.IsTrue(response.IsSuccess);
         Assert.AreEqual(1, response.Data.Count);
     }

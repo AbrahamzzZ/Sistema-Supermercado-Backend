@@ -1,4 +1,5 @@
 using Domain.Models;
+using Domain.Models.Dto.Response.Categoria;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
@@ -31,7 +32,7 @@ public class TestCategoriaService
     {
         var categoria = new Categorium { Codigo = "CAT01", Nombre_Categoria = "Bebidas", Estado = true };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Categorium>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Codigo", Mensajes.MESSAGE_CODE_EXITS) }));
-        _mockRepository.Setup(r => r.ListarCategoriasAsync()).ReturnsAsync(new List<Categorium>{ new Categorium { Id_Categoria = 1, Codigo = "CAT01", Nombre_Categoria = "Snacks", Estado = true }});
+        _mockRepository.Setup(r => r.ListarCategoriasAsync()).ReturnsAsync(new List<CategoriaResponse>{ new CategoriaResponse { Id_Categoria = 1, Codigo = "CAT01", Nombre_Categoria = "Snacks", Estado = true }});
         var resultado = await _service.RegistrarCategoriaAsync(categoria);
 
         Assert.IsFalse(resultado.IsSuccess);
@@ -43,7 +44,7 @@ public class TestCategoriaService
     {
         var categoria = new Categorium { Codigo = "CAT02", Nombre_Categoria = "Snacks", Estado = true };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Categorium>(), default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
-        _mockRepository.Setup(r => r.ListarCategoriasAsync()).ReturnsAsync(new List<Categorium>{ new Categorium { Id_Categoria = 1, Codigo = "CAT01", Nombre_Categoria = "Snacks", Estado = true }});
+        _mockRepository.Setup(r => r.ListarCategoriasAsync()).ReturnsAsync(new List<CategoriaResponse>{ new CategoriaResponse { Id_Categoria = 1, Codigo = "CAT01", Nombre_Categoria = "Snacks", Estado = true }});
         var resultado = await _service.RegistrarCategoriaAsync(categoria);
 
         Assert.IsFalse(resultado.IsSuccess);
@@ -55,7 +56,7 @@ public class TestCategoriaService
     {
         var categoria = new Categorium { Codigo = "CAT02", Nombre_Categoria = "Lácteos", Estado = true };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Categorium>(), default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
-        _mockRepository.Setup(r => r.ListarCategoriasAsync()).ReturnsAsync(new List<Categorium>());
+        _mockRepository.Setup(r => r.ListarCategoriasAsync()).ReturnsAsync(new List<CategoriaResponse>());
         _mockRepository.Setup(r => r.RegistrarCategoriaAsync(It.IsAny<Categorium>())).ReturnsAsync(1);
         var resultado = await _service.RegistrarCategoriaAsync(categoria);
 
@@ -102,7 +103,7 @@ public class TestCategoriaService
         var categoria = new Categorium { Id_Categoria = 1, Nombre_Categoria = "Bebidas", Estado = true };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Categorium>(), default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _mockRepository.Setup(r => r.ObtenerCategoriaAsync(1)).ReturnsAsync(new Categorium { Id_Categoria = 1, Nombre_Categoria = "Viejo", Estado = true });
-        _mockRepository.Setup(r => r.ListarCategoriasAsync()).ReturnsAsync(new List<Categorium>());
+        _mockRepository.Setup(r => r.ListarCategoriasAsync()).ReturnsAsync(new List<CategoriaResponse>());
         _mockRepository.Setup(r => r.EditarCategoriaAsync(It.IsAny<Categorium>())).ReturnsAsync(1);
         var resultado = await _service.EditarCategoriaAsync(categoria);
 

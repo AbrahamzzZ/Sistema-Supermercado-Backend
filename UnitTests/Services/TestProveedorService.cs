@@ -1,4 +1,5 @@
 using Domain.Models;
+using Domain.Models.Dto.Response.Provedor;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
@@ -84,7 +85,7 @@ public class TestProveedorService
     {
         var proveedor = new Proveedor { Codigo = "CLI01", Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Codigo", Mensajes.MESSAGE_CODE_EXITS) }));
-        _mockRepository.Setup(r => r.ListarProveedoresAsync()).ReturnsAsync(new List<Proveedor> { new Proveedor { Codigo = "CLI01" } });
+        _mockRepository.Setup(r => r.ListarProveedoresAsync()).ReturnsAsync(new List<ProveedorResponse> { new ProveedorResponse { Codigo = "CLI01" } });
 
         var result = await _service.RegistrarProveedorAsync(proveedor);
 
@@ -166,7 +167,7 @@ public class TestProveedorService
         var proveedor = new Proveedor { Id_Proveedor = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new Proveedor());
-        _mockRepository.Setup(r => r.ListarProveedoresAsync()).ReturnsAsync(new List<Proveedor>{ new Proveedor { Id_Proveedor = 2, Cedula = "1234567890" } });
+        _mockRepository.Setup(r => r.ListarProveedoresAsync()).ReturnsAsync(new List<ProveedorResponse>{ new ProveedorResponse { Id_Proveedor = 2, Cedula = "1234567890" } });
         var result = await _service.EditarProveedorAsync(proveedor);
 
         Assert.IsFalse(result.IsSuccess);
@@ -179,7 +180,7 @@ public class TestProveedorService
         var proveedor = new Proveedor { Id_Proveedor = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new Proveedor());
-        _mockRepository.Setup(r => r.ListarProveedoresAsync()).ReturnsAsync(new List<Proveedor>());
+        _mockRepository.Setup(r => r.ListarProveedoresAsync()).ReturnsAsync(new List<ProveedorResponse>());
         _mockRepository.Setup(r => r.EditarProveedorAsync(proveedor)).ReturnsAsync(1);
         var result = await _service.EditarProveedorAsync(proveedor);
 

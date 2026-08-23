@@ -1,5 +1,6 @@
 using APIRestSistemaVentas.Controllers;
 using Domain.Models;
+using Domain.Models.Dto.Response.Provedor;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -23,7 +24,7 @@ public class TestProveedorController
     [TestMethod]
     public async Task GetProveedores_ReturnsOk_WithProveedores()
     {
-        var expectedResponse = new ApiResponse<List<Proveedor>> { IsSuccess = true, Data = new List<Proveedor>() };
+        var expectedResponse = new ApiResponse<List<ProveedorResponse>> { IsSuccess = true, Data = new List<ProveedorResponse>() };
         _mockService.Setup(s => s.ListarProveedoresAsync()).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetProveedores();
