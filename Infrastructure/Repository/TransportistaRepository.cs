@@ -1,5 +1,6 @@
 ﻿using Domain.Contexts;
 using Domain.Models;
+using Domain.Models.Dto.Response.Transportista;
 using Infrastructure.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -17,9 +18,9 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<List<Transportistum>> ListarTransportistasAsync()
+        public async Task<List<TransportistaResponse>> ListarTransportistasAsync()
         {
-            return await _context.Transportista
+            return await _context.TransportistasDto
                 .FromSqlRaw("EXEC PA_LISTA_TRANSPORTISTA")
                 .ToListAsync();
         }
@@ -88,7 +89,7 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<int> RegistrarTransportistaAsync(Transportistum transportista)
+        public async Task<int> RegistrarTransportistaAsync(Transportistum transportista, int usuarioCreacion)
         {
             if (!string.IsNullOrWhiteSpace(transportista.ImagenBase64))
             {
@@ -101,7 +102,7 @@ namespace Infrastructure.Repository
             }
 
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_REGISTRAR_TRANSPORTISTA @Codigo, @Nombres, @Apellidos, @Cedula, @Telefono, @Correo_Electronico, @Foto, @Estado",
+                "EXEC PA_REGISTRAR_TRANSPORTISTA @Codigo, @Nombres, @Apellidos, @Cedula, @Telefono, @Correo_Electronico, @Foto, @Estado, @Usuario_Creacion",
                 new SqlParameter("@Codigo", transportista.Codigo ?? (object)DBNull.Value),
                 new SqlParameter("@Nombres", transportista.Nombres ?? (object)DBNull.Value),
                 new SqlParameter("@Apellidos", transportista.Apellidos ?? (object)DBNull.Value),
@@ -109,7 +110,8 @@ namespace Infrastructure.Repository
                 new SqlParameter("@Telefono", transportista.Telefono ?? (object)DBNull.Value),
                 new SqlParameter("@Correo_Electronico", transportista.Correo_Electronico ?? (object)DBNull.Value),
                 new SqlParameter("@Foto", transportista.Foto ?? (object)DBNull.Value),
-                new SqlParameter("@Estado", transportista.Estado ?? (object)DBNull.Value)
+                new SqlParameter("@Estado", transportista.Estado ?? (object)DBNull.Value),
+                new SqlParameter("@Usuario_Creacion", usuarioCreacion)
             );
         }
 

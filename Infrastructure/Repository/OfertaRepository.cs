@@ -80,11 +80,11 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<int> RegistrarOfertaAsync(Ofertum oferta)
+        public async Task<int> RegistrarOfertaAsync(Ofertum oferta, int usuarioCreacion)
         {
 
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_REGISTRAR_OFERTA @Codigo, @Nombre_Oferta, @Id_Producto, @Descripcion, @Fecha_Inicio, @Fecha_Fin, @Descuento, @Estado",
+                "EXEC PA_REGISTRAR_OFERTA @Codigo, @Nombre_Oferta, @Id_Producto, @Descripcion, @Fecha_Inicio, @Fecha_Fin, @Descuento, @Estado, @Usuario_Creacion",
                 new SqlParameter("@Codigo", oferta.Codigo ?? (object)DBNull.Value),
                 new SqlParameter("@Nombre_Oferta", oferta.Nombre_Oferta ?? (object)DBNull.Value),
                 new SqlParameter("@Id_Producto", oferta.Id_Producto ?? (object)DBNull.Value),
@@ -92,7 +92,8 @@ namespace Infrastructure.Repository
                 new SqlParameter("@Fecha_Inicio", oferta.Fecha_Inicio ?? (object)DBNull.Value),
                 new SqlParameter("@Fecha_Fin", oferta.Fecha_Fin ?? (object)DBNull.Value),
                 new SqlParameter("@Descuento", oferta.Descuento ?? (object)DBNull.Value),
-                new SqlParameter("@Estado", oferta.Estado ?? (object)DBNull.Value)
+                new SqlParameter("@Estado", oferta.Estado ?? (object)DBNull.Value),
+                new SqlParameter("@Usuario_Creacion", usuarioCreacion)
             );
         }
 

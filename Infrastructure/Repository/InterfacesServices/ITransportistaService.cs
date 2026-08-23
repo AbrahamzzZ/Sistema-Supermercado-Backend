@@ -1,11 +1,12 @@
 ﻿using Domain.Models;
+using Domain.Models.Dto.Response.Transportista;
 using Utilities.Shared;
 
 namespace Infrastructure.Repository.InterfacesServices
 {
     public interface ITransportistaService
     {
-        Task<ApiResponse<List<Transportistum>>> ListarTransportistasAsync();
+        Task<ApiResponse<List<TransportistaResponse>>> ListarTransportistasAsync();
         Task<ApiResponse<Paginacion<Transportistum>>> ListarTransportistasPaginacionAsync(int pageNumber, int pageSize);
         Task<ApiResponse<Transportistum>> ObtenerTransportistaAsync(int idTranportista);
         Task<ApiResponse<object>> RegistrarTransportistaAsync(Transportistum transportista);

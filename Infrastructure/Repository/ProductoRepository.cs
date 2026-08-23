@@ -80,17 +80,18 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<int> RegistrarProductoAsync(Producto producto)
+        public async Task<int> RegistrarProductoAsync(Producto producto, int usuarioCreacion)
         {
 
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_REGISTRAR_PRODUCTO @Codigo, @Descripcion, @Nombre_Producto, @Id_Categoria, @Pais_Origen, @Estado",
+                "EXEC PA_REGISTRAR_PRODUCTO @Codigo, @Descripcion, @Nombre_Producto, @Id_Categoria, @Pais_Origen, @Estado, @Usuario_Creacion",
                 new SqlParameter("@Codigo", producto.Codigo ?? (object)DBNull.Value),
                 new SqlParameter("@Descripcion", producto.Descripcion ?? (object)DBNull.Value),
                 new SqlParameter("@Nombre_Producto", producto.Nombre_Producto ?? (object)DBNull.Value),
                 new SqlParameter("@Id_Categoria", producto.Id_Categoria ?? (object)DBNull.Value),
                 new SqlParameter("@Pais_Origen", producto.Pais_Origen ?? (object)DBNull.Value),
-                new SqlParameter("@Estado", producto.Estado ?? (object)DBNull.Value)
+                new SqlParameter("@Estado", producto.Estado ?? (object)DBNull.Value),
+                new SqlParameter("@Usuario_Creacion", usuarioCreacion)
             );
         }
 

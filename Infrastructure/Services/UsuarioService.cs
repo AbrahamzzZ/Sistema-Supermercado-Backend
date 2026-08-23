@@ -14,11 +14,13 @@ namespace Infrastructure.Services
     {
         private readonly UsuarioRepository _usuarioRepository;
         private readonly IValidator<Usuario> _validator;
+        private readonly ICurrentUserService _currentUserService;
 
-        public UsuarioService(UsuarioRepository usuarioRepository, IValidator<Usuario> validator)
+        public UsuarioService(UsuarioRepository usuarioRepository, IValidator<Usuario> validator, ICurrentUserService currentUserService)
         {
             _usuarioRepository = usuarioRepository;
             _validator = validator;
+            _currentUserService = currentUserService;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -105,7 +107,9 @@ namespace Infrastructure.Services
             if (usuarios.Any(c => c.Nombre_Completo == usuario.Nombre_Completo))
                 return new ApiResponse<object> { IsSuccess = false, Message = "Ese nombre ya existe" };
 
-            var result = await _usuarioRepository.RegistrarUsuarioAsync(usuario);
+            var idUsuario = _currentUserService.GetUserId();
+
+            var result = await _usuarioRepository.RegistrarUsuarioAsync(usuario, idUsuario);
             if (result > 0)
                 return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
 

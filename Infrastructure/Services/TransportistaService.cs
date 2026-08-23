@@ -5,6 +5,7 @@ using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.Data.SqlClient;
 using Utilities.Shared;
+using Domain.Models.Dto.Response.Transportista;
 
 namespace Infrastructure.Services
 {
@@ -12,11 +13,13 @@ namespace Infrastructure.Services
     {
         private readonly TransportistaRepository _transportistaRepository;
         private readonly IValidator<Transportistum> _validator;
+        private readonly ICurrentUserService _currentUserService;
 
-        public TransportistaService(TransportistaRepository transportistaRepository, IValidator<Transportistum> validator)
+        public TransportistaService(TransportistaRepository transportistaRepository, IValidator<Transportistum> validator, ICurrentUserService currentUserService)
         {
             _transportistaRepository = transportistaRepository;
             _validator = validator;
+            _currentUserService = currentUserService;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -29,14 +32,14 @@ namespace Infrastructure.Services
             _validator = validator;
         }*/
 
-        public async Task<ApiResponse<List<Transportistum>>> ListarTransportistasAsync()
+        public async Task<ApiResponse<List<TransportistaResponse>>> ListarTransportistasAsync()
         {
             var listaTransportistas = await _transportistaRepository.ListarTransportistasAsync();
 
             if (listaTransportistas == null || listaTransportistas.Count == 0)
-                return new ApiResponse<List<Transportistum>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaTransportistas };
+                return new ApiResponse<List<TransportistaResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaTransportistas };
 
-            return new ApiResponse<List<Transportistum>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaTransportistas };
+            return new ApiResponse<List<TransportistaResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaTransportistas };
         }
 
         public async Task<ApiResponse<Paginacion<Transportistum>>> ListarTransportistasPaginacionAsync(int pageNumber, int pageSize)
@@ -83,7 +86,9 @@ namespace Infrastructure.Services
             if (transportistas.Any(c => c.Telefono == transportista.Telefono))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_PHONE_EXITS };
 
-            var result = await _transportistaRepository.RegistrarTransportistaAsync(transportista);
+            var idUsuario = _currentUserService.GetUserId();
+
+            var result = await _transportistaRepository.RegistrarTransportistaAsync(transportista, idUsuario);
             if (result > 0)
                 return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
 

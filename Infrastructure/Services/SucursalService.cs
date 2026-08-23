@@ -11,11 +11,13 @@ namespace Infrastructure.Services
     {
         private readonly SucursalRepository _sucursalRepository;
         private readonly IValidator<Sucursal> _validator;
+        private readonly ICurrentUserService _currentUserService;
 
-        public SucursalService(SucursalRepository sucursalRepository, IValidator<Sucursal> validator)
+        public SucursalService(SucursalRepository sucursalRepository, IValidator<Sucursal> validator, ICurrentUserService currentUserService)
         {
             _sucursalRepository = sucursalRepository;
             _validator = validator;
+            _currentUserService = currentUserService;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -81,7 +83,9 @@ namespace Infrastructure.Services
             if (sucursales.Any(c => c.Nombre_Sucursal?.ToLower() == sucursal.Nombre_Sucursal?.ToLower()))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe" };
 
-            var result = await _sucursalRepository.RegistrarSucursalAsync(sucursal);
+            var idUsuario = _currentUserService.GetUserId();
+
+            var result = await _sucursalRepository.RegistrarSucursalAsync(sucursal, idUsuario);
             if (result > 0)
                 return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
 

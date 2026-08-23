@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using Infrastructure.Repository.InterfacesRepository;
 using FluentValidation;
+using Domain.Models.Dto.Response.Categoria;
 using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.Data.SqlClient;
@@ -12,11 +13,13 @@ namespace Infrastructure.Services
     {
         private readonly CategoriaRepository _categoriaRepository;
         private readonly IValidator<Categorium> _validator;
+        private readonly ICurrentUserService _currentUserService;
 
-        public CategoriaService(CategoriaRepository categoriaRepository, IValidator<Categorium> validator)
+        public CategoriaService(CategoriaRepository categoriaRepository, IValidator<Categorium> validator, ICurrentUserService currentUserService)
         {
             _categoriaRepository = categoriaRepository;
             _validator = validator;
+            _currentUserService = currentUserService;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -30,14 +33,14 @@ namespace Infrastructure.Services
             _validator = validator;
         }*/
 
-        public async Task<ApiResponse<List<Categorium>>> ListarCategoriasAsync()
+        public async Task<ApiResponse<List<CategoriaResponse>>> ListarCategoriasAsync()
         {
             var listaCategorias = await _categoriaRepository.ListarCategoriasAsync();
 
             if (listaCategorias == null || listaCategorias.Count == 0)
-                return new ApiResponse<List<Categorium>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaCategorias };
+                return new ApiResponse<List<CategoriaResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaCategorias };
 
-            return new ApiResponse<List<Categorium>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaCategorias };
+            return new ApiResponse<List<CategoriaResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaCategorias };
         }
 
         public async Task<ApiResponse<Paginacion<Categorium>>> ListarCategoriasPaginacionAsync(int pageNumber, int pageSize)
@@ -78,7 +81,9 @@ namespace Infrastructure.Services
             if (categorias.Any(c => c.Nombre_Categoria?.ToLower() == categoria.Nombre_Categoria?.ToLower()))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe" };
 
-            var result = await _categoriaRepository.RegistrarCategoriaAsync(categoria);
+            var idUsuario = _currentUserService.GetUserId();
+
+            var result = await _categoriaRepository.RegistrarCategoriaAsync(categoria, idUsuario);
             if (result > 0)
                 return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
 

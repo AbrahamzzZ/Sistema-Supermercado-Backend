@@ -13,11 +13,13 @@ namespace Infrastructure.Services
     {
         private readonly ProductoRepository _productoRepository;
         private readonly IValidator<Producto> _validator;
+        private readonly ICurrentUserService _currentUserService;
 
-        public ProductoService(ProductoRepository productoRepository, IValidator<Producto> validator)
+        public ProductoService(ProductoRepository productoRepository, IValidator<Producto> validator, ICurrentUserService currentUserService)
         {
             _productoRepository = productoRepository;
             _validator = validator;
+            _currentUserService = currentUserService;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -82,7 +84,9 @@ namespace Infrastructure.Services
             if (productos.Any(c => c.Nombre_Producto?.ToLower() == producto.Nombre_Producto?.ToLower()))
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe" };
 
-            var result = await _productoRepository.RegistrarProductoAsync(producto);
+            var idUsuario = _currentUserService.GetUserId();
+
+            var result = await _productoRepository.RegistrarProductoAsync(producto, idUsuario);
             if (result > 0)
                 return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
 
