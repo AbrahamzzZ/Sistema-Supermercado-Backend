@@ -37,7 +37,7 @@ public class TestClienteController
     [TestMethod]
     public async Task GetClientesPaginacion_ReturnsOk_WithData()
     {
-        var expectedResponse = new ApiResponse<Paginacion<Cliente>> { IsSuccess = true, Data = new Paginacion<Cliente>() };
+        var expectedResponse = new ApiResponse<Paginacion<ClienteResponse>> { IsSuccess = true, Data = new Paginacion<ClienteResponse>() };
         _mockService.Setup(s => s.ListarClientesPaginacionAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetClientesPaginacion();
@@ -50,7 +50,7 @@ public class TestClienteController
     [TestMethod]
     public async Task GetCliente_ReturnsOk_WhenFound()
     {
-        var expectedResponse = new ApiResponse<Cliente> { IsSuccess = true, Data = new Cliente() };
+        var expectedResponse = new ApiResponse<ClienteResponse> { IsSuccess = true, Data = new ClienteResponse() };
         _mockService.Setup(s => s.ObtenerClienteAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetCliente(1);
@@ -64,7 +64,7 @@ public class TestClienteController
     [TestMethod]
     public async Task GetCliente_ReturnsNotFound_WhenNotFound()
     {
-        var expectedResponse = new ApiResponse<Cliente> { IsSuccess = false, Message = "Not Found" };
+        var expectedResponse = new ApiResponse<ClienteResponse> { IsSuccess = false, Message = "Not Found" };
         _mockService.Setup(s => s.ObtenerClienteAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetCliente(1);

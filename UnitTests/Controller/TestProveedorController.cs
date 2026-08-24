@@ -38,7 +38,7 @@ public class TestProveedorController
     [TestMethod]
     public async Task GetProveedor_ReturnsOk_WhenFound()
     {
-        var expectedResponse = new ApiResponse<Proveedor> { IsSuccess = true, Data = new Proveedor() };
+        var expectedResponse = new ApiResponse<ProveedorResponse> { IsSuccess = true, Data = new ProveedorResponse() };
         _mockService.Setup(s => s.ObtenerProveedorAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetProveedor(1);
@@ -52,7 +52,7 @@ public class TestProveedorController
     [TestMethod]
     public async Task GetProveedor_ReturnsNotFound_WhenNotFound()
     {
-        var expectedResponse = new ApiResponse<Proveedor> { IsSuccess = false, Message = "Not Found" };
+        var expectedResponse = new ApiResponse<ProveedorResponse> { IsSuccess = false, Message = "Not Found" };
         _mockService.Setup(s => s.ObtenerProveedorAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetProveedor(1);
@@ -65,7 +65,7 @@ public class TestProveedorController
     [TestMethod]
     public async Task GetProveedoresPaginacion_ReturnsOk_WithData()
     {
-        var expectedResponse = new ApiResponse<Paginacion<Proveedor>> { IsSuccess = true, Data = new Paginacion<Proveedor>() };
+        var expectedResponse = new ApiResponse<Paginacion<ProveedorResponse>> { IsSuccess = true, Data = new Paginacion<ProveedorResponse>() };
         _mockService.Setup(s => s.ListarProveedoresPaginacionAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetProveedoresPaginacion();

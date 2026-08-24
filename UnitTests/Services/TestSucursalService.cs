@@ -1,4 +1,5 @@
 using Domain.Models;
+using Domain.Models.Dto.Response.Sucursal;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
@@ -29,13 +30,12 @@ public class TestSucursalService
     [TestMethod]
     public async Task ListarSucursalesAsync_ReturnsSuccess_WhenDataExists()
     {
-        var sucursales = new List<Sucursal>
+        var sucursales = new List<SucursalResponse>
             {
-                new Sucursal { Id_Sucursal = 1, Nombre_Sucursal = "Sucursal A" }
+                new SucursalResponse { Id_Sucursal = 1, Nombre_Sucursal = "Sucursal A" }
             };
 
-        _mockRepository.Setup(r => r.ListarSucursalesAsync())
-            .ReturnsAsync(sucursales);
+        _mockRepository.Setup(r => r.ListarSucursalesAsync()).ReturnsAsync(sucursales);
 
         var result = await _service.ListarSucursalesAsync();
 
@@ -47,8 +47,7 @@ public class TestSucursalService
     [TestMethod]
     public async Task ListarSucursalesAsync_ReturnsEmpty_WhenNoData()
     {
-        _mockRepository.Setup(r => r.ListarSucursalesAsync())
-            .ReturnsAsync(new List<Sucursal>());
+        _mockRepository.Setup(r => r.ListarSucursalesAsync()).ReturnsAsync(new List<SucursalResponse>());
 
         var result = await _service.ListarSucursalesAsync();
 
@@ -59,10 +58,9 @@ public class TestSucursalService
     [TestMethod]
     public async Task ObtenerSucursalAsync_ReturnsSuccess_WhenFound()
     {
-        var sucursal = new Sucursal { Id_Sucursal = 1, Nombre_Sucursal = "Sucursal A" };
+        var sucursal = new SucursalResponse { Id_Sucursal = 1, Nombre_Sucursal = "Sucursal A" };
 
-        _mockRepository.Setup(r => r.ObtenerSucursalAsync(1))
-            .ReturnsAsync(sucursal);
+        _mockRepository.Setup(r => r.ObtenerSucursalAsync(1)).ReturnsAsync(sucursal);
 
         var result = await _service.ObtenerSucursalAsync(1);
 
@@ -73,7 +71,7 @@ public class TestSucursalService
     [TestMethod]
     public async Task ObtenerSucursalAsync_ReturnsNotFound_WhenNotExists()
     {
-        _mockRepository.Setup(r => r.ObtenerSucursalAsync(99)).ReturnsAsync((Sucursal)null);
+        _mockRepository.Setup(r => r.ObtenerSucursalAsync(99)).ReturnsAsync((SucursalResponse)null);
         var result = await _service.ObtenerSucursalAsync(99);
 
         Assert.IsFalse(result.IsSuccess);
@@ -105,8 +103,8 @@ public class TestSucursalService
     {
         var sucursal = new Sucursal{ Codigo = "S001", Nombre_Sucursal = "Sucursal Test", Direccion_Sucursal = "Av. Central", Ciudad_Sucursal = "Quito", Latitud = -2.1, Longitud = -79.8};
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Sucursal>(), default)).ReturnsAsync(new ValidationResult());
-        _mockRepository.Setup(r => r.ListarSucursalesAsync()).ReturnsAsync(new List<Sucursal>());
-        _mockRepository.Setup(r => r.RegistrarSucursalAsync(sucursal)).ReturnsAsync(1);
+        _mockRepository.Setup(r => r.ListarSucursalesAsync()).ReturnsAsync(new List<SucursalResponse>());
+        _mockRepository.Setup(r => r.RegistrarSucursalAsync(sucursal, 1)).ReturnsAsync(1);
         var result = await _service.RegistrarSucursalAsync(sucursal);
 
         Assert.IsTrue(result.IsSuccess);
@@ -118,7 +116,7 @@ public class TestSucursalService
     {
         var sucursal = new Sucursal { Id_Sucursal = 1, Nombre_Sucursal = "Sucursal A", Direccion_Sucursal = "Av. Central", Ciudad_Sucursal = "Quito" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Sucursal>(), default)).ReturnsAsync(new ValidationResult());
-        _mockRepository.Setup(r => r.ObtenerSucursalAsync(1)).ReturnsAsync((Sucursal)null);
+        _mockRepository.Setup(r => r.ObtenerSucursalAsync(1)).ReturnsAsync((SucursalResponse)null);
         var result = await _service.EditarSucursalAsync(sucursal);
 
         Assert.IsFalse(result.IsSuccess);
@@ -130,8 +128,8 @@ public class TestSucursalService
     {
         var sucursal = new Sucursal { Id_Sucursal = 1, Nombre_Sucursal = "Sucursal Editada", Direccion_Sucursal = "Av. Central", Ciudad_Sucursal = "Guayaquil", Latitud = -2.1, Longitud = -79.8  };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Sucursal>(), default)).ReturnsAsync(new ValidationResult());
-        _mockRepository.Setup(r => r.ObtenerSucursalAsync(1)).ReturnsAsync(sucursal);
-        _mockRepository.Setup(r => r.ListarSucursalesAsync()).ReturnsAsync(new List<Sucursal>());
+        _mockRepository.Setup(r => r.ObtenerSucursalAsync(1)).ReturnsAsync((SucursalResponse)null);
+        _mockRepository.Setup(r => r.ListarSucursalesAsync()).ReturnsAsync(new List<SucursalResponse>());
         _mockRepository.Setup(r => r.EditarSucursalAsync(sucursal)).ReturnsAsync(1);
         var result = await _service.EditarSucursalAsync(sucursal);
 
@@ -142,7 +140,7 @@ public class TestSucursalService
     [TestMethod]
     public async Task EliminarSucursalAsync_ReturnsNotFound_WhenSucursalDoesNotExist()
     {
-        _mockRepository.Setup(r => r.ObtenerSucursalAsync(99)).ReturnsAsync((Sucursal)null);
+        _mockRepository.Setup(r => r.ObtenerSucursalAsync(99)).ReturnsAsync((SucursalResponse)null);
         var result = await _service.EliminarSucursalAsync(99);
 
         Assert.IsFalse(result.IsSuccess);
@@ -152,7 +150,7 @@ public class TestSucursalService
     [TestMethod]
     public async Task EliminarSucursalAsync_ReturnsSuccess_WhenDeleted()
     {
-        var sucursal = new Sucursal { Id_Sucursal = 1, Nombre_Sucursal = "Sucursal A" };
+        var sucursal = new SucursalResponse { Id_Sucursal = 1, Nombre_Sucursal = "Sucursal A" };
         _mockRepository.Setup(r => r.ObtenerSucursalAsync(1)).ReturnsAsync(sucursal);
         _mockRepository.Setup(r => r.EliminarSucursalAsync(1)).ReturnsAsync(1);
         var result = await _service.EliminarSucursalAsync(1);

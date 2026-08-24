@@ -118,7 +118,7 @@ public class TestProveedorService
     {
         var proveedor = new Proveedor { Id_Proveedor = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult());
-        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync((Proveedor)null);
+        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync((ProveedorResponse)null);
         var result = await _service.EditarProveedorAsync(proveedor);
 
         Assert.IsFalse(result.IsSuccess);
@@ -130,7 +130,7 @@ public class TestProveedorService
     {
         var proveedor = new Proveedor { Id_Proveedor = 1, Nombres = "Juan123", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Nombres Apellidos", "Los nombres y apellidos solo puede contener letras y espacios") }));
-        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new Proveedor());
+        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new ProveedorResponse());
         var result = await _service.EditarProveedorAsync(proveedor);
 
         Assert.IsFalse(result.IsSuccess);
@@ -142,7 +142,7 @@ public class TestProveedorService
     {
         var proveedor = new Proveedor { Id_Proveedor = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "123", Telefono = "098", Correo_Electronico = "test@mail.com" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Cedula", "La cédula y el teléfono deben contener exactamente 10 dígitos numéricos") }));
-        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new Proveedor());
+        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new ProveedorResponse());
         var result = await _service.EditarProveedorAsync(proveedor);
 
         Assert.IsFalse(result.IsSuccess);
@@ -154,7 +154,7 @@ public class TestProveedorService
     {
         var proveedor = new Proveedor { Id_Proveedor = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "correo_invalido" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Correo Electronico", "El correo electrónico no tiene un formato válido") }));
-        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new Proveedor());
+        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new ProveedorResponse());
         var result = await _service.EditarProveedorAsync(proveedor);
 
         Assert.IsFalse(result.IsSuccess);
@@ -166,7 +166,7 @@ public class TestProveedorService
     {
         var proveedor = new Proveedor { Id_Proveedor = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult());
-        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new Proveedor());
+        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new ProveedorResponse());
         _mockRepository.Setup(r => r.ListarProveedoresAsync()).ReturnsAsync(new List<ProveedorResponse>{ new ProveedorResponse { Id_Proveedor = 2, Cedula = "1234567890" } });
         var result = await _service.EditarProveedorAsync(proveedor);
 
@@ -179,7 +179,7 @@ public class TestProveedorService
     {
         var proveedor = new Proveedor { Id_Proveedor = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "test@mail.com" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult());
-        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new Proveedor());
+        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new ProveedorResponse());
         _mockRepository.Setup(r => r.ListarProveedoresAsync()).ReturnsAsync(new List<ProveedorResponse>());
         _mockRepository.Setup(r => r.EditarProveedorAsync(proveedor)).ReturnsAsync(1);
         var result = await _service.EditarProveedorAsync(proveedor);
@@ -191,7 +191,7 @@ public class TestProveedorService
     [TestMethod]
     public async Task EliminarProveedo_DeberiaFallar_SiProveedorNoExiste()
     {
-        _mockRepository.Setup(r => r.ObtenerProveedorAsync(99)).ReturnsAsync((Proveedor)null);
+        _mockRepository.Setup(r => r.ObtenerProveedorAsync(99)).ReturnsAsync((ProveedorResponse)null);
         var result = await _service.EliminarProveedorAsync(99);
 
         Assert.IsFalse(result.IsSuccess);
@@ -201,7 +201,7 @@ public class TestProveedorService
     [TestMethod]
     public async Task EliminarProveedor_DeberiaSerExitoso()
     {
-        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new Proveedor());
+        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new ProveedorResponse());
         _mockRepository.Setup(r => r.EliminarProveedorAsync(1)).ReturnsAsync(1);
         var result = await _service.EliminarProveedorAsync(1);
 
@@ -212,7 +212,7 @@ public class TestProveedorService
     [TestMethod]
     public async Task EliminarProveedor_DeberiaFallar_SiOperacionDevuelveCero()
     {
-        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new Proveedor());
+        _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new ProveedorResponse());
         _mockRepository.Setup(r => r.EliminarProveedorAsync(1)).ReturnsAsync(0);
 
         var result = await _service.EliminarProveedorAsync(1);

@@ -42,10 +42,9 @@ public class TestTranportistaController
     [TestMethod]
     public async Task GetTransportista_ReturnsOk_WhenFound()
     {
-        var response = new ApiResponse<Transportistum> { IsSuccess = true, Data = new Transportistum { Id_Transportista = 1, Nombres = "Juan Perez" } };
+        var response = new ApiResponse<TransportistaResponse> { IsSuccess = true, Data = new TransportistaResponse { Id_Transportista = 1, Nombres = "Juan Perez" } };
 
-        _mockService.Setup(s => s.ObtenerTransportistaAsync(1))
-                    .ReturnsAsync(response);
+        _mockService.Setup(s => s.ObtenerTransportistaAsync(1)).ReturnsAsync(response);
 
         var actionResult = await _controller.GetTransportista(1);
         var okResult = actionResult.Result as OkObjectResult;
@@ -58,10 +57,9 @@ public class TestTranportistaController
     [TestMethod]
     public async Task GetTransportista_ReturnsNotFound_WhenNotFound()
     {
-        var response = new ApiResponse<Transportistum> { IsSuccess = false, Message = "No encontrado" };
+        var response = new ApiResponse<TransportistaResponse> { IsSuccess = false, Message = "No encontrado" };
 
-        _mockService.Setup(s => s.ObtenerTransportistaAsync(99))
-                    .ReturnsAsync(response);
+        _mockService.Setup(s => s.ObtenerTransportistaAsync(99)).ReturnsAsync(response);
 
         var actionResult = await _controller.GetTransportista(99);
         var notFoundResult = actionResult.Result as NotFoundObjectResult;

@@ -60,9 +60,8 @@ public class TestOfertaController
     [TestMethod]
     public async Task GetOferta_Existe_DeberiaRetornarOk()
     {
-        var oferta = new Ofertum { Id_Oferta = 1, Nombre_Oferta = "Descuento 50%" };
-        _mockService.Setup(s => s.ObtenerOfertaAsync(1))
-            .ReturnsAsync(new ApiResponse<Ofertum> { IsSuccess = true, Data = oferta });
+        var oferta = new OfertaProductoResponse { Id_Oferta = 1, Nombre_Oferta = "Descuento 50%" };
+        _mockService.Setup(s => s.ObtenerOfertaAsync(1)).ReturnsAsync(new ApiResponse<OfertaProductoResponse> { IsSuccess = true, Data = oferta });
 
         var result = await _controller.GetOferta(1);
 
@@ -76,8 +75,7 @@ public class TestOfertaController
     [TestMethod]
     public async Task GetOferta_NoExiste_DeberiaRetornarNotFound()
     {
-        _mockService.Setup(s => s.ObtenerOfertaAsync(99))
-            .ReturnsAsync(new ApiResponse<Ofertum> { IsSuccess = false, Message = "No se encontró la oferta" });
+        _mockService.Setup(s => s.ObtenerOfertaAsync(99)).ReturnsAsync(new ApiResponse<OfertaProductoResponse> { IsSuccess = false, Message = "No se encontró la oferta" });
 
         var result = await _controller.GetOferta(99);
 

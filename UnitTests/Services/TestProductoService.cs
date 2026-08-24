@@ -96,7 +96,7 @@ public class TestProductoService
         var producto = new Producto { Codigo = "P001", Id_Categoria = 1, Nombre_Producto = "Producto Test", Descripcion = "Desc", Pais_Origen = "Ecuador" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Producto>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ListarProductosAsync()).ReturnsAsync(new List<ProductoCategoriaResponse>());
-        _mockRepository.Setup(r => r.RegistrarProductoAsync(producto)).ReturnsAsync(1);
+        _mockRepository.Setup(r => r.RegistrarProductoAsync(producto, 1)).ReturnsAsync(1);
         var result = await _service.RegistrarProductoAsync(producto);
 
         Assert.IsTrue(result.IsSuccess);
