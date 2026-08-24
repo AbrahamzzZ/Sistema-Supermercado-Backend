@@ -55,16 +55,16 @@ namespace Infrastructure.Services
             return new ApiResponse<Paginacion<OfertaProductoResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
         }
 
-        public async Task<ApiResponse<Ofertum>> ObtenerOfertaAsync(int idOferta)
+        public async Task<ApiResponse<OfertaProductoResponse>> ObtenerOfertaAsync(int idOferta)
         {
             var oferta = await _ofertaRepository.ObtenerOfertaAsync(idOferta);
 
             if (oferta == null)
             {
-                return new ApiResponse<Ofertum> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
+                return new ApiResponse<OfertaProductoResponse> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
             }
 
-            return new ApiResponse<Ofertum> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = oferta };
+            return new ApiResponse<OfertaProductoResponse> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = oferta };
         }
 
         public async Task<ApiResponse<object>> RegistrarOfertaAsync(Ofertum oferta)

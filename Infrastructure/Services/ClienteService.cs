@@ -43,28 +43,28 @@ namespace Infrastructure.Services
             return new ApiResponse<List<ClienteResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaClientes };
         }
 
-        public async Task<ApiResponse<Paginacion<Cliente>>> ListarClientesPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<ApiResponse<Paginacion<ClienteResponse>>> ListarClientesPaginacionAsync(int pageNumber, int pageSize)
         {
             var pagedResult = await _clienteRepository.ListarClientesPaginacionAsync(pageNumber, pageSize);
 
             if (pagedResult.Items == null || pagedResult.Items.Count == 0)
             {
-                return new ApiResponse<Paginacion<Cliente>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
+                return new ApiResponse<Paginacion<ClienteResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
             }
 
-            return new ApiResponse<Paginacion<Cliente>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
+            return new ApiResponse<Paginacion<ClienteResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
         }
 
-        public async Task<ApiResponse<Cliente>> ObtenerClienteAsync(int idCliente)
+        public async Task<ApiResponse<ClienteResponse>> ObtenerClienteAsync(int idCliente)
         {
             var cliente = await _clienteRepository.ObtenerClienteAsync(idCliente);
 
             if (cliente == null)
             {
-                return new ApiResponse<Cliente> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
+                return new ApiResponse<ClienteResponse> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
             }
 
-            return new ApiResponse<Cliente> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = cliente };
+            return new ApiResponse<ClienteResponse> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = cliente };
         }
 
         public async Task<ApiResponse<object>> RegistrarClienteAsync(Cliente cliente)

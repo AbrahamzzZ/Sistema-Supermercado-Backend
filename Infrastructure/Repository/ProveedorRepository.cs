@@ -25,7 +25,7 @@ namespace Infrastructure.Repository
                 .ToListAsync();
         }
 
-        public async Task<Paginacion<Proveedor>> ListarProveedoresPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<Paginacion<ProveedorResponse>> ListarProveedoresPaginacionAsync(int pageNumber, int pageSize)
         {
 
             using var command = _context.Database.GetDbConnection().CreateCommand();
@@ -36,14 +36,14 @@ namespace Infrastructure.Repository
 
             await _context.Database.OpenConnectionAsync();
 
-            var proveedores = new List<Proveedor>();
+            var proveedores = new List<ProveedorResponse>();
             int totalCount = 0;
 
             using (var reader = await command.ExecuteReaderAsync())
             {
                 while (await reader.ReadAsync())
                 {
-                    proveedores.Add(new Proveedor
+                    proveedores.Add(new ProveedorResponse
                     {
                         Id_Proveedor = reader.GetInt32(0),
                         Codigo = reader.GetString(1),
@@ -63,14 +63,14 @@ namespace Infrastructure.Repository
                 }
             }
 
-            return new Paginacion<Proveedor> { Items = proveedores, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
+            return new Paginacion<ProveedorResponse> { Items = proveedores, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
         }
 
-        public async Task<Proveedor?> ObtenerProveedorAsync(int idProveedor)
+        public async Task<ProveedorResponse?> ObtenerProveedorAsync(int idProveedor)
         {
             var idParam = new SqlParameter("@Id_Proveedor", idProveedor);
             return await Task.Run(() =>
-                _context.Proveedors
+                _context.ProveedorDto
                 .FromSqlRaw("EXEC PA_OBTENER_PROVEEDOR @Id_Proveedor", idParam)
                 .AsNoTracking()
                 .AsEnumerable()

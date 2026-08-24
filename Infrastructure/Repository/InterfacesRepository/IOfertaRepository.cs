@@ -8,7 +8,7 @@ namespace Infrastructure.Repository.InterfacesRepository
     {
         Task<List<OfertaProductoResponse>> ListarOfertasAsync();
         Task<Paginacion<OfertaProductoResponse>> ListarOfertasPaginacionAsync(int pageNumber, int pageSize);
-        Task<Ofertum?> ObtenerOfertaAsync(int idOferta);
+        Task<OfertaProductoResponse?> ObtenerOfertaAsync(int idOferta);
         Task<int> RegistrarOfertaAsync(Ofertum oferta, int usuarioCreacion);
         Task<int> EditarOfertaAsync(Ofertum oferta);
         Task<int> EliminarOfertaAsync(int idOferta);

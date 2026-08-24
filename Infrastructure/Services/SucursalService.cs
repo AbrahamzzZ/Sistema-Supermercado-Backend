@@ -4,6 +4,7 @@ using FluentValidation;
 using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesServices;
 using Utilities.Shared;
+using Domain.Models.Dto.Response.Sucursal;
 
 namespace Infrastructure.Services
 {
@@ -31,38 +32,38 @@ namespace Infrastructure.Services
             _validator = validator;
         }*/
 
-        public async Task<ApiResponse<List<Sucursal>>> ListarSucursalesAsync()
+        public async Task<ApiResponse<List<SucursalResponse>>> ListarSucursalesAsync()
         {
             var listaSucursales = await _sucursalRepository.ListarSucursalesAsync();
 
             if (listaSucursales == null || listaSucursales.Count == 0)
-                return new ApiResponse<List<Sucursal>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaSucursales };
+                return new ApiResponse<List<SucursalResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaSucursales };
 
-            return new ApiResponse<List<Sucursal>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaSucursales };
+            return new ApiResponse<List<SucursalResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaSucursales };
         }
 
-        public async Task<ApiResponse<Paginacion<Sucursal>>> ListarSucursalesPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<ApiResponse<Paginacion<SucursalResponse>>> ListarSucursalesPaginacionAsync(int pageNumber, int pageSize)
         {
             var pagedResult = await _sucursalRepository.ListarSucursalesPaginacionAsync(pageNumber, pageSize);
 
             if (pagedResult.Items == null || pagedResult.Items.Count == 0)
             {
-                return new ApiResponse<Paginacion<Sucursal>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
+                return new ApiResponse<Paginacion<SucursalResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
             }
 
-            return new ApiResponse<Paginacion<Sucursal>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
+            return new ApiResponse<Paginacion<SucursalResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
         }
 
-        public async Task<ApiResponse<Sucursal>> ObtenerSucursalAsync(int idSucursal)
+        public async Task<ApiResponse<SucursalResponse>> ObtenerSucursalAsync(int idSucursal)
         {
             var sucursal = await _sucursalRepository.ObtenerSucursalAsync(idSucursal); 
 
             if (sucursal == null)
             {
-                return new ApiResponse<Sucursal> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
+                return new ApiResponse<SucursalResponse> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
             }
 
-            return new ApiResponse<Sucursal> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = sucursal };
+            return new ApiResponse<SucursalResponse> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = sucursal };
         }
 
         public async Task<ApiResponse<object>> RegistrarSucursalAsync(Sucursal sucursal)

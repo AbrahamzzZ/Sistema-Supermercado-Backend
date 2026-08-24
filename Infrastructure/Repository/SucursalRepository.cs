@@ -1,6 +1,7 @@
 ﻿using Domain.Contexts;
 using Domain.Models;
 using Domain.Models.Dto;
+using Domain.Models.Dto.Response.Sucursal;
 using Infrastructure.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -19,14 +20,14 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<List<Sucursal>> ListarSucursalesAsync()
+        public async Task<List<SucursalResponse>> ListarSucursalesAsync()
         {
-            return await _context.Sucursals
+            return await _context.SucursalesDto
                 .FromSqlRaw("EXEC PA_LISTA_SUCURSAL")
                 .ToListAsync();
         }
 
-        public async Task<Paginacion<Sucursal>> ListarSucursalesPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<Paginacion<SucursalResponse>> ListarSucursalesPaginacionAsync(int pageNumber, int pageSize)
         {
             using var command = _context.Database.GetDbConnection().CreateCommand();
             command.CommandText = "PA_LISTA_SUCURSAL_PAGINACION";
@@ -36,7 +37,7 @@ namespace Infrastructure.Repository
 
             await _context.Database.OpenConnectionAsync();
 
-            var sucursales = new List<Sucursal>();
+            var sucursales = new List<SucursalResponse>();
             int totalCount = 0;
 
 
@@ -44,7 +45,7 @@ namespace Infrastructure.Repository
             {
                 while (await reader.ReadAsync())
                 {
-                    sucursales.Add(new Sucursal
+                    sucursales.Add(new SucursalResponse
                     {
                         Id_Sucursal = reader.GetInt32(0),
                         Codigo = reader.GetString(1),
@@ -63,14 +64,14 @@ namespace Infrastructure.Repository
                     totalCount = reader.GetInt32(0);
                 }
             }
-            return new Paginacion<Sucursal> { Items = sucursales, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
+            return new Paginacion<SucursalResponse> { Items = sucursales, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
         }
 
-        public async Task<Sucursal?> ObtenerSucursalAsync(int idSucursal)
+        public async Task<SucursalResponse?> ObtenerSucursalAsync(int idSucursal)
         {
             var idParam = new SqlParameter("@Id_Sucursal", idSucursal);
             return await Task.Run(() =>
-                _context.Sucursals
+                _context.SucursalesDto
                 .FromSqlRaw("EXEC PA_OBTENER_SUCURSAL @Id_Sucursal", idParam)
                 .AsNoTracking()
                 .AsEnumerable()
