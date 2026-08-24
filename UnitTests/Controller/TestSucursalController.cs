@@ -1,5 +1,6 @@
 using APIRestSistemaVentas.Controllers;
 using Domain.Models;
+using Domain.Models.Dto.Response.Sucursal;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -23,7 +24,7 @@ public class TestSucursalController
     [TestMethod]
     public async Task GetSucursales_ReturnsOk_WithSucursales()
     {
-        var expectedResponse = new ApiResponse<List<Sucursal>> { IsSuccess = true, Data = new List<Sucursal>() };
+        var expectedResponse = new ApiResponse<List<SucursalResponse>> { IsSuccess = true, Data = new List<SucursalResponse>() };
         _mockService.Setup(s => s.ListarSucursalesAsync()).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetSucursales();
@@ -37,7 +38,7 @@ public class TestSucursalController
     [TestMethod]
     public async Task GetSucursalesPaginacion_ReturnsOk_WithData()
     {
-        var expectedResponse = new ApiResponse<Paginacion<Sucursal>> { IsSuccess = true, Data = new Paginacion<Sucursal>() };
+        var expectedResponse = new ApiResponse<Paginacion<SucursalResponse>> { IsSuccess = true, Data = new Paginacion<SucursalResponse>() };
         _mockService.Setup(s => s.ListarSucursalesPaginacionAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetSucursalesPaginacion();
@@ -51,7 +52,7 @@ public class TestSucursalController
     [TestMethod]
     public async Task GetSucursal_ReturnsOk_WhenFound()
     {
-        var expectedResponse = new ApiResponse<Sucursal> { IsSuccess = true, Data = new Sucursal() };
+        var expectedResponse = new ApiResponse<SucursalResponse> { IsSuccess = true, Data = new SucursalResponse() };
         _mockService.Setup(s => s.ObtenerSucursalAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetSucursal(1);
@@ -65,7 +66,7 @@ public class TestSucursalController
     [TestMethod]
     public async Task GetSucursal_ReturnsNotFound_WhenNotFound()
     {
-        var expectedResponse = new ApiResponse<Sucursal> { IsSuccess = false, Message = "Not Found" };
+        var expectedResponse = new ApiResponse<SucursalResponse> { IsSuccess = false, Message = "Not Found" };
         _mockService.Setup(s => s.ObtenerSucursalAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetSucursal(1);

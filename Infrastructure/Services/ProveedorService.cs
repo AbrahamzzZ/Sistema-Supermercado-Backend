@@ -43,28 +43,28 @@ namespace Infrastructure.Services
             return new ApiResponse<List<ProveedorResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaProveedores };
         }
 
-        public async Task<ApiResponse<Paginacion<Proveedor>>> ListarProveedoresPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<ApiResponse<Paginacion<ProveedorResponse>>> ListarProveedoresPaginacionAsync(int pageNumber, int pageSize)
         {
             var pagedResult = await _proveedorRepository.ListarProveedoresPaginacionAsync(pageNumber, pageSize);
 
             if (pagedResult.Items == null || pagedResult.Items.Count == 0)
             {
-                return new ApiResponse<Paginacion<Proveedor>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
+                return new ApiResponse<Paginacion<ProveedorResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
             }
 
-            return new ApiResponse<Paginacion<Proveedor>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
+            return new ApiResponse<Paginacion<ProveedorResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
         }
 
-        public async Task<ApiResponse<Proveedor>> ObtenerProveedorAsync(int idProveedor)
+        public async Task<ApiResponse<ProveedorResponse>> ObtenerProveedorAsync(int idProveedor)
         {
             var proveedor = await _proveedorRepository.ObtenerProveedorAsync(idProveedor);
 
             if (proveedor == null)
             {
-                return new ApiResponse<Proveedor> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
+                return new ApiResponse<ProveedorResponse> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
             }
 
-            return new ApiResponse<Proveedor> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = proveedor };
+            return new ApiResponse<ProveedorResponse> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = proveedor };
         }
 
         public async Task<ApiResponse<object>> RegistrarProveedorAsync(Proveedor proveedor)

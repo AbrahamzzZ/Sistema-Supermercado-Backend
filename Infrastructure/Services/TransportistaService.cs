@@ -42,28 +42,28 @@ namespace Infrastructure.Services
             return new ApiResponse<List<TransportistaResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaTransportistas };
         }
 
-        public async Task<ApiResponse<Paginacion<Transportistum>>> ListarTransportistasPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<ApiResponse<Paginacion<TransportistaResponse>>> ListarTransportistasPaginacionAsync(int pageNumber, int pageSize)
         {
             var pagedResult = await _transportistaRepository.ListarTransportistasPaginacionAsync(pageNumber, pageSize);
 
             if (pagedResult.Items == null || !pagedResult.Items.Any())
             {
-                return new ApiResponse<Paginacion<Transportistum>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
+                return new ApiResponse<Paginacion<TransportistaResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
             }
 
-            return new ApiResponse<Paginacion<Transportistum>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
+            return new ApiResponse<Paginacion<TransportistaResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
         }
 
-        public async Task<ApiResponse<Transportistum>> ObtenerTransportistaAsync(int idTranportista)
+        public async Task<ApiResponse<TransportistaResponse>> ObtenerTransportistaAsync(int idTranportista)
         {
             var transportista = await _transportistaRepository.ObtenerTransportistaAsync(idTranportista);
 
             if (transportista == null)
             {
-                return new ApiResponse<Transportistum> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
+                return new ApiResponse<TransportistaResponse> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
             }
 
-            return new ApiResponse<Transportistum> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = transportista };
+            return new ApiResponse<TransportistaResponse> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = transportista };
         }
 
         public async Task<ApiResponse<object>> RegistrarTransportistaAsync(Transportistum transportista)

@@ -40,13 +40,13 @@ public class TestCategoriaController
     public async Task GetCategoria_DeberiaRetornarOk_SiExiste()
     {
         _mockService.Setup(s => s.ObtenerCategoriaAsync(1))
-            .ReturnsAsync(new ApiResponse<Categorium> { IsSuccess = true, Data = new Categorium { Id_Categoria = 1, Nombre_Categoria = "Snacks" } });
+            .ReturnsAsync(new ApiResponse<CategoriaResponse> { IsSuccess = true, Data = new CategoriaResponse { Id_Categoria = 1, Nombre_Categoria = "Snacks" } });
 
         var result = await _controller.GetCategoria(1);
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
-        var response = okResult.Value as ApiResponse<Categorium>;
+        var response = okResult.Value as ApiResponse<CategoriaResponse>;
         Assert.IsTrue(response.IsSuccess);
         Assert.AreEqual("Snacks", response.Data.Nombre_Categoria);
     }
@@ -55,7 +55,7 @@ public class TestCategoriaController
     public async Task GetCategoria_DeberiaRetornarNotFound_SiNoExiste()
     {
         _mockService.Setup(s => s.ObtenerCategoriaAsync(99))
-            .ReturnsAsync(new ApiResponse<Categorium> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND });
+            .ReturnsAsync(new ApiResponse<CategoriaResponse> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND });
 
         var result = await _controller.GetCategoria(99);
 

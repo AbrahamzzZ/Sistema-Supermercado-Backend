@@ -25,7 +25,7 @@ namespace Infrastructure.Repository
                 .ToListAsync();
         }
 
-        public async Task<Paginacion<Transportistum>> ListarTransportistasPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<Paginacion<TransportistaResponse>> ListarTransportistasPaginacionAsync(int pageNumber, int pageSize)
         {
             using var command = _context.Database.GetDbConnection().CreateCommand();
             command.CommandText = "PA_LISTA_TRANSPORTISTA_PAGINACION";
@@ -35,7 +35,7 @@ namespace Infrastructure.Repository
 
             await _context.Database.OpenConnectionAsync();
 
-            var transportistas = new List<Transportistum>();
+            var transportistas = new List<TransportistaResponse>();
             int totalCount = 0;
 
 
@@ -53,7 +53,7 @@ namespace Infrastructure.Repository
                         reader.GetBytes(7, 0, imagen, 0, (int)length);
                     }
 
-                    transportistas.Add(new Transportistum
+                    transportistas.Add(new TransportistaResponse
                     {
                         Id_Transportista = reader.GetInt32(0),
                         Codigo = reader.GetString(1),
@@ -74,14 +74,13 @@ namespace Infrastructure.Repository
                 }
             }
 
-            return new Paginacion<Transportistum> { Items = transportistas, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
+            return new Paginacion<TransportistaResponse> { Items = transportistas, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
         }
 
-        public async Task<Transportistum?> ObtenerTransportistaAsync(int idTranportista)
+        public async Task<TransportistaResponse?> ObtenerTransportistaAsync(int idTranportista)
         {
             var idParam = new SqlParameter("@Id_Transportista", idTranportista);
-            return await Task.Run(() =>
-                _context.Transportista
+            return await Task.Run(() => _context.TransportistasDto
                 .FromSqlRaw("EXEC PA_OBTENER_TRANSPORTISTA @Id_Transportista", idParam)
                 .AsNoTracking()
                 .AsEnumerable()

@@ -68,11 +68,10 @@ namespace Infrastructure.Repository
             return new Paginacion<OfertaProductoResponse> { Items = ofertas, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
         }
 
-        public async Task<Ofertum?> ObtenerOfertaAsync(int idOferta)
+        public async Task<OfertaProductoResponse?> ObtenerOfertaAsync(int idOferta)
         {
             var idParam = new SqlParameter("@Id_Oferta", idOferta);
-            return await Task.Run(() =>
-                _context.Oferta
+            return await Task.Run(() => _context.OfertasDto
                 .FromSqlRaw("EXEC PA_OBTENER_OFERTA @Id_Oferta", idParam)
                 .AsNoTracking()
                 .AsEnumerable()

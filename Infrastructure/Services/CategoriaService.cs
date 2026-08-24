@@ -43,28 +43,28 @@ namespace Infrastructure.Services
             return new ApiResponse<List<CategoriaResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaCategorias };
         }
 
-        public async Task<ApiResponse<Paginacion<Categorium>>> ListarCategoriasPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<ApiResponse<Paginacion<CategoriaResponse>>> ListarCategoriasPaginacionAsync(int pageNumber, int pageSize)
         {
             var pagedResult = await _categoriaRepository.ListarCategoriasPaginacionAsync(pageNumber, pageSize);
 
             if (pagedResult.Items == null || pagedResult.Items.Count == 0)
             {
-                return new ApiResponse<Paginacion<Categorium>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
+                return new ApiResponse<Paginacion<CategoriaResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
             }
 
-            return new ApiResponse<Paginacion<Categorium>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
+            return new ApiResponse<Paginacion<CategoriaResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
         }
 
-        public async Task<ApiResponse<Categorium>> ObtenerCategoriaAsync(int idCategoria)
+        public async Task<ApiResponse<CategoriaResponse>> ObtenerCategoriaAsync(int idCategoria)
         {
             var categoria = await _categoriaRepository.ObtenerCategoriaAsync(idCategoria);
 
             if (categoria == null)
             {
-                return new ApiResponse<Categorium> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
+                return new ApiResponse<CategoriaResponse> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
             }
 
-            return new ApiResponse<Categorium> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = categoria };
+            return new ApiResponse<CategoriaResponse> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = categoria };
         }
 
         public async Task<ApiResponse<object>> RegistrarCategoriaAsync(Categorium categoria)

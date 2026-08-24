@@ -12,6 +12,7 @@ using System.Reflection;
 using Domain.Models.Dto.Response.Cliente;
 using Domain.Models.Dto.Response.Provedor;
 using Domain.Models.Dto.Response.Transportista;
+using Domain.Models.Dto.Response.Sucursal;
 
 namespace Domain.Contexts;
 
@@ -105,6 +106,8 @@ public partial class SistemaSupermercadoContext : DbContext
     public DbSet<ProveedorResponse> ProveedorDto { get; set; }
 
     public DbSet<TransportistaResponse> TransportistasDto { get; set; }
+
+    public DbSet<SucursalResponse> SucursalesDto { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -233,6 +236,12 @@ public partial class SistemaSupermercadoContext : DbContext
         });
 
         modelBuilder.Entity<TransportistaResponse>(entity =>
+        {
+            entity.HasNoKey()
+                .ToView(null);
+        });
+
+        modelBuilder.Entity<SucursalResponse>(entity =>
         {
             entity.HasNoKey()
                 .ToView(null);

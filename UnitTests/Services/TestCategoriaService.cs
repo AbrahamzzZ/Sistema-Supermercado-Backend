@@ -57,7 +57,7 @@ public class TestCategoriaService
         var categoria = new Categorium { Codigo = "CAT02", Nombre_Categoria = "Lácteos", Estado = true };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Categorium>(), default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _mockRepository.Setup(r => r.ListarCategoriasAsync()).ReturnsAsync(new List<CategoriaResponse>());
-        _mockRepository.Setup(r => r.RegistrarCategoriaAsync(It.IsAny<Categorium>())).ReturnsAsync(1);
+        _mockRepository.Setup(r => r.RegistrarCategoriaAsync(It.IsAny<Categorium>(), It.IsAny<int>())).ReturnsAsync(1);
         var resultado = await _service.RegistrarCategoriaAsync(categoria);
 
         Assert.IsTrue(resultado.IsSuccess);
@@ -67,7 +67,7 @@ public class TestCategoriaService
     [TestMethod]
     public async Task ObtenerCategoria_DeberiaFallar_SiNoExiste()
     {
-        _mockRepository.Setup(r => r.ObtenerCategoriaAsync(99)).ReturnsAsync((Categorium)null);
+        _mockRepository.Setup(r => r.ObtenerCategoriaAsync(99)).ReturnsAsync((CategoriaResponse)null);
         var resultado = await _service.ObtenerCategoriaAsync(99);
 
         Assert.IsFalse(resultado.IsSuccess);
@@ -77,7 +77,7 @@ public class TestCategoriaService
     [TestMethod]
     public async Task ObtenerCategoria_DeberiaDevolver_SiExiste()
     {
-        var categoria = new Categorium { Id_Categoria = 1, Codigo = "CAT01", Nombre_Categoria = "Snacks", Estado = true };
+        var categoria = new CategoriaResponse { Id_Categoria = 1, Codigo = "CAT01", Nombre_Categoria = "Snacks", Estado = true };
         _mockRepository.Setup(r => r.ObtenerCategoriaAsync(1)).ReturnsAsync(categoria);
         var resultado = await _service.ObtenerCategoriaAsync(1);
 
@@ -90,7 +90,7 @@ public class TestCategoriaService
     {
         var categoria = new Categorium { Id_Categoria = 99, Nombre_Categoria = "Snacks" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Categorium>(), default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
-        _mockRepository.Setup(r => r.ObtenerCategoriaAsync(99)).ReturnsAsync((Categorium)null);
+        _mockRepository.Setup(r => r.ObtenerCategoriaAsync(99)).ReturnsAsync((CategoriaResponse)null);
         var resultado = await _service.EditarCategoriaAsync(categoria);
 
         Assert.IsFalse(resultado.IsSuccess);
@@ -102,7 +102,7 @@ public class TestCategoriaService
     {
         var categoria = new Categorium { Id_Categoria = 1, Nombre_Categoria = "Bebidas", Estado = true };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Categorium>(), default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
-        _mockRepository.Setup(r => r.ObtenerCategoriaAsync(1)).ReturnsAsync(new Categorium { Id_Categoria = 1, Nombre_Categoria = "Viejo", Estado = true });
+        _mockRepository.Setup(r => r.ObtenerCategoriaAsync(1)).ReturnsAsync(new CategoriaResponse { Id_Categoria = 1, Nombre_Categoria = "Viejo", Estado = true });
         _mockRepository.Setup(r => r.ListarCategoriasAsync()).ReturnsAsync(new List<CategoriaResponse>());
         _mockRepository.Setup(r => r.EditarCategoriaAsync(It.IsAny<Categorium>())).ReturnsAsync(1);
         var resultado = await _service.EditarCategoriaAsync(categoria);
@@ -114,7 +114,7 @@ public class TestCategoriaService
     [TestMethod]
     public async Task EliminarCategoria_DeberiaFallar_SiNoExiste()
     {
-        _mockRepository.Setup(r => r.ObtenerCategoriaAsync(99)).ReturnsAsync((Categorium)null);
+        _mockRepository.Setup(r => r.ObtenerCategoriaAsync(99)).ReturnsAsync((CategoriaResponse)null);
         var resultado = await _service.EliminarCategoriaAsync(99);
 
         Assert.IsFalse(resultado.IsSuccess);
@@ -124,7 +124,7 @@ public class TestCategoriaService
     [TestMethod]
     public async Task EliminarCategoria_DeberiaEliminar_SiExiste()
     {
-        _mockRepository.Setup(r => r.ObtenerCategoriaAsync(1)).ReturnsAsync(new Categorium { Id_Categoria = 1, Nombre_Categoria = "Snacks" });
+        _mockRepository.Setup(r => r.ObtenerCategoriaAsync(1)).ReturnsAsync(new CategoriaResponse { Id_Categoria = 1, Nombre_Categoria = "Snacks" });
         _mockRepository.Setup(r => r.EliminarCategoriaAsync(1)).ReturnsAsync(1);
         var resultado = await _service.EliminarCategoriaAsync(1);
 

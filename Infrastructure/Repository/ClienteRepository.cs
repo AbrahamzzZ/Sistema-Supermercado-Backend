@@ -26,7 +26,7 @@ namespace Infrastructure.Repository
                 .ToListAsync();
         }
 
-        public async Task<Paginacion<Cliente>> ListarClientesPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<Paginacion<ClienteResponse>> ListarClientesPaginacionAsync(int pageNumber, int pageSize)
         {
             using var command = _context.Database.GetDbConnection().CreateCommand();
             command.CommandText = "PA_LISTA_CLIENTE_PAGINACION";
@@ -36,14 +36,14 @@ namespace Infrastructure.Repository
 
             await _context.Database.OpenConnectionAsync();
 
-            var clientes = new List<Cliente>();
+            var clientes = new List<ClienteResponse>();
             int totalCount = 0;
 
             using (var reader = await command.ExecuteReaderAsync())
             {
                 while (await reader.ReadAsync())
                 {
-                    clientes.Add(new Cliente
+                    clientes.Add(new ClienteResponse
                     {
                         Id_Cliente = reader.GetInt32(0),
                         Codigo = reader.GetString(1),
@@ -63,14 +63,13 @@ namespace Infrastructure.Repository
             }
 
 
-            return new Paginacion<Cliente> { Items = clientes, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
+            return new Paginacion<ClienteResponse> { Items = clientes, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
         }
 
-        public async Task<Cliente?> ObtenerClienteAsync(int idCliente)
+        public async Task<ClienteResponse?> ObtenerClienteAsync(int idCliente)
         {
             var idParam = new SqlParameter("@Id_Cliente", idCliente);
-            return await Task.Run(() =>
-                _context.Clientes
+            return await Task.Run(() => _context.ClientesDto
                 .FromSqlRaw("EXEC PA_OBTENER_CLIENTE @Id_Cliente", idParam)
                 .AsNoTracking()
                 .AsEnumerable()

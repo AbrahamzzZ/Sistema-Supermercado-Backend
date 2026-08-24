@@ -25,7 +25,7 @@ namespace Infrastructure.Repository
                 .ToListAsync();
         }
 
-        public async Task<Paginacion<Categorium>> ListarCategoriasPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<Paginacion<CategoriaResponse>> ListarCategoriasPaginacionAsync(int pageNumber, int pageSize)
         {
             using var command = _context.Database.GetDbConnection().CreateCommand();
             command.CommandText = "PA_LISTA_CATEGORIA_PAGINACION";
@@ -35,14 +35,14 @@ namespace Infrastructure.Repository
 
             await _context.Database.OpenConnectionAsync();
 
-            var categorias = new List<Categorium>();
+            var categorias = new List<CategoriaResponse>();
             int totalCount = 0;
 
             using (var reader = await command.ExecuteReaderAsync())
             {
                 while (await reader.ReadAsync())
                 {
-                    categorias.Add(new Categorium
+                    categorias.Add(new CategoriaResponse
                     {
                         Id_Categoria = reader.GetInt32(0),
                         Codigo = reader.GetString(1),
@@ -58,13 +58,13 @@ namespace Infrastructure.Repository
                 }
             }
 
-            return new Paginacion<Categorium> { Items = categorias, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
+            return new Paginacion<CategoriaResponse> { Items = categorias, TotalCount = totalCount, PageNumber = pageNumber, PageSize = pageSize };
         }
 
-        public async Task<Categorium?> ObtenerCategoriaAsync(int idCategoria)
+        public async Task<CategoriaResponse?> ObtenerCategoriaAsync(int idCategoria)
         {
             var idParam = new SqlParameter("@Id_Categoria", idCategoria);
-            return await Task.Run(() => _context.Categoria
+            return await Task.Run(() => _context.CategoriasDto
                 .FromSqlRaw("EXEC PA_OBTENER_CATEGORIA @Id_Categoria", idParam)
                 .AsNoTracking()
                 .AsEnumerable()
