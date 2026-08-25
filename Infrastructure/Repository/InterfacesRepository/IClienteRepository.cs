@@ -9,8 +9,8 @@ namespace Infrastructure.Repository.InterfacesRepository
         Task<List<ClienteResponse>> ListarClientesAsync();
         Task<Paginacion<ClienteResponse>> ListarClientesPaginacionAsync(int pageNumber, int pageSize);
         Task<ClienteResponse?> ObtenerClienteAsync(int idCliente);
-        Task<int> RegistrarClienteAsync(Cliente cliente, int UsuarioCreacion);
-        Task<int> EditarClienteAsync(Cliente cliente);
+        Task<int> RegistrarClienteAsync(Cliente cliente, int usuarioCreacion);
+        Task<int> EditarClienteAsync(Cliente cliente, int usuarioModificacion);
         Task<int> EliminarClienteAsync(int id);
     }
 }

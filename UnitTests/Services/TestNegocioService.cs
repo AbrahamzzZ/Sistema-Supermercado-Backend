@@ -123,7 +123,7 @@ public class TestNegocioService
         var negocio = new Negocio { Id_Negocio = 1, Nombre = "Test", Telefono = "1234567890", Ruc = "1234567890123", Direccion = "Dir", Correo_Electronico = "correo@test.com" };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Negocio>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerNegocioAsync(negocio.Id_Negocio)).ReturnsAsync(negocio);
-        _mockRepository.Setup(r => r.EditarNegocioAsync(negocio)).ReturnsAsync(1);
+        _mockRepository.Setup(r => r.EditarNegocioAsync(negocio, 1)).ReturnsAsync(1);
         var result = await _service.EditarNegocioAsync(negocio);
 
         Assert.IsTrue(result.IsSuccess);

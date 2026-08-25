@@ -180,7 +180,7 @@ public class TestTransportistaService
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Transportistum>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerTransportistaAsync(1)).ReturnsAsync(new TransportistaResponse());
         _mockRepository.Setup(r => r.ListarTransportistasAsync()).ReturnsAsync(new List<TransportistaResponse>());
-        _mockRepository.Setup(r => r.EditarTransportistaAsync(transportista)).ReturnsAsync(1);
+        _mockRepository.Setup(r => r.EditarTransportistaAsync(transportista, 1)).ReturnsAsync(1);
 
         var result = await _service.EditarTransportistaAsync(transportista);
 

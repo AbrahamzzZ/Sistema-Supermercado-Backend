@@ -180,7 +180,7 @@ public class TestClienteService
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Cliente>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerClienteAsync(1)).ReturnsAsync(new ClienteResponse());
         _mockRepository.Setup(r => r.ListarClientesAsync()).ReturnsAsync(new List<ClienteResponse>());
-        _mockRepository.Setup(r => r.EditarClienteAsync(cliente)).ReturnsAsync(1);
+        _mockRepository.Setup(r => r.EditarClienteAsync(cliente, 1)).ReturnsAsync(1);
         var result = await _service.EditarClienteAsync(cliente);
 
         Assert.IsTrue(result.IsSuccess);

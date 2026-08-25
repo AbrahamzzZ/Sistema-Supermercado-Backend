@@ -91,16 +91,17 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<int> EditarClienteAsync(Cliente cliente)
+        public async Task<int> EditarClienteAsync(Cliente cliente, int usuarioModificacion)
         {
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_EDITAR_CLIENTE @Id_Cliente, @Nombres, @Apellidos, @Cedula, @Telefono, @Correo_Electronico",
+                "EXEC PA_EDITAR_CLIENTE @Id_Cliente, @Nombres, @Apellidos, @Cedula, @Telefono, @Correo_Electronico, @Usuario_Modificacion",
                 new SqlParameter("@Id_Cliente", cliente.Id_Cliente),
                 new SqlParameter("@Nombres", cliente.Nombres ?? (object)DBNull.Value),
                 new SqlParameter("@Apellidos", cliente.Apellidos ?? (object)DBNull.Value),
                 new SqlParameter("@Cedula", cliente.Cedula ?? (object)DBNull.Value),
                 new SqlParameter("@Telefono", cliente.Telefono ?? (object)DBNull.Value),
-                new SqlParameter("@Correo_Electronico", cliente.Correo_Electronico ?? (object)DBNull.Value)
+                new SqlParameter("@Correo_Electronico", cliente.Correo_Electronico ?? (object)DBNull.Value),
+                new SqlParameter("@Usuario_Modificacion", usuarioModificacion)
             );
         }
 

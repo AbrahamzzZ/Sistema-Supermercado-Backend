@@ -114,7 +114,7 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<int> EditarTransportistaAsync(Transportistum transportista)
+        public async Task<int> EditarTransportistaAsync(Transportistum transportista, int usuarioModificacion)
         {
             if (!string.IsNullOrWhiteSpace(transportista.ImagenBase64))
             {
@@ -127,7 +127,7 @@ namespace Infrastructure.Repository
             }
 
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_EDITAR_TRANSPORTISTA @Id_Transportista, @Nombres, @Apellidos, @Cedula, @Telefono, @Correo_Electronico, @Foto, @Estado",
+                "EXEC PA_EDITAR_TRANSPORTISTA @Id_Transportista, @Nombres, @Apellidos, @Cedula, @Telefono, @Correo_Electronico, @Foto, @Estado, @Usuario_Modificacion",
                 new SqlParameter("@Id_Transportista", transportista.Id_Transportista),
                 new SqlParameter("@Nombres", transportista.Nombres ?? (object)DBNull.Value),
                 new SqlParameter("@Apellidos", transportista.Apellidos ?? (object)DBNull.Value),
@@ -135,7 +135,8 @@ namespace Infrastructure.Repository
                 new SqlParameter("@Telefono", transportista.Telefono ?? (object)DBNull.Value),
                 new SqlParameter("@Correo_Electronico", transportista.Correo_Electronico ?? (object)DBNull.Value),
                 new SqlParameter("@Foto", transportista.Foto ?? (object)DBNull.Value),
-                new SqlParameter("@Estado", transportista.Estado ?? (object)DBNull.Value)
+                new SqlParameter("@Estado", transportista.Estado ?? (object)DBNull.Value),
+                new SqlParameter("@Usuario_Modificacion", usuarioModificacion)
             );
         }
 

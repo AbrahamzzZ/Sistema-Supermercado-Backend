@@ -12,7 +12,7 @@ namespace Infrastructure.Repository.InterfacesRepository
         Task<UsuarioRolResponse?> ObtenerUsuarioAsync(int idUsuario);
         Task<UsuarioRolResponse?> IniciarSesionAsync(LoginRequest login);
         Task<int> RegistrarUsuarioAsync(Usuario usuario, int usuarioCreacion);
-        Task<int> EditarUsuarioAsync(Usuario usuario);
+        Task<int> EditarUsuarioAsync(Usuario usuario, int usuarioModificcion);
         Task<int> EliminarUsuarioAsync(int idUsuario);
     }
 }

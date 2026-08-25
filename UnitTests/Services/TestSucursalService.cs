@@ -130,7 +130,7 @@ public class TestSucursalService
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Sucursal>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerSucursalAsync(1)).ReturnsAsync((SucursalResponse)null);
         _mockRepository.Setup(r => r.ListarSucursalesAsync()).ReturnsAsync(new List<SucursalResponse>());
-        _mockRepository.Setup(r => r.EditarSucursalAsync(sucursal)).ReturnsAsync(1);
+        _mockRepository.Setup(r => r.EditarSucursalAsync(sucursal, 1)).ReturnsAsync(1);
         var result = await _service.EditarSucursalAsync(sucursal);
 
         Assert.IsTrue(result.IsSuccess);

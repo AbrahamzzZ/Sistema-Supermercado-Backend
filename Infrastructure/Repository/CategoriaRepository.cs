@@ -83,13 +83,14 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<int> EditarCategoriaAsync(Categorium categoria)
+        public async Task<int> EditarCategoriaAsync(Categorium categoria, int usuarioModificacion)
         {
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_EDITAR_CATEGORIA @Id_Categoria, @Nombre, @Estado",
+                "EXEC PA_EDITAR_CATEGORIA @Id_Categoria, @Nombre, @Estado, @Usuario_Modificacion",
                 new SqlParameter("@Id_Categoria", categoria.Id_Categoria),
                 new SqlParameter("@Nombre", categoria.Nombre_Categoria ?? (object)DBNull.Value),
-                new SqlParameter("@Estado", categoria.Estado ?? false)
+                new SqlParameter("@Estado", categoria.Estado ?? false),
+                new SqlParameter("@Usuario_Modificacion", usuarioModificacion)
             );
         }
 

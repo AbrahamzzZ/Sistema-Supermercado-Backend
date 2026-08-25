@@ -9,8 +9,8 @@ namespace Infrastructure.Repository.InterfacesRepository
         Task<List<CategoriaResponse>> ListarCategoriasAsync();
         Task<Paginacion<CategoriaResponse>> ListarCategoriasPaginacionAsync(int pageNumber, int pageSize);
         Task<CategoriaResponse?> ObtenerCategoriaAsync(int idCategoria);
-        Task<int> RegistrarCategoriaAsync(Categorium categoria, int UsuarioCreacion);
-        Task<int> EditarCategoriaAsync(Categorium categoria);
+        Task<int> RegistrarCategoriaAsync(Categorium categoria, int usuarioCreacion);
+        Task<int> EditarCategoriaAsync(Categorium categoria, int usuarioModificacion);
         Task<int> EliminarCategoriaAsync(int id);
     }
 }

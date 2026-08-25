@@ -10,7 +10,7 @@ namespace Infrastructure.Repository.InterfacesRepository
         Task<Paginacion<OfertaProductoResponse>> ListarOfertasPaginacionAsync(int pageNumber, int pageSize);
         Task<OfertaProductoResponse?> ObtenerOfertaAsync(int idOferta);
         Task<int> RegistrarOfertaAsync(Ofertum oferta, int usuarioCreacion);
-        Task<int> EditarOfertaAsync(Ofertum oferta);
+        Task<int> EditarOfertaAsync(Ofertum oferta, int usuarioModificacion);
         Task<int> EliminarOfertaAsync(int idOferta);
     }
 }

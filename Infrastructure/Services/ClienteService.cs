@@ -116,9 +116,11 @@ namespace Infrastructure.Services
             }else if (clientes.Any(c => c.Telefono == cliente.Telefono && c.Id_Cliente != cliente.Id_Cliente))
             {
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_PHONE_EXITS };
-                }
+            }
 
-            var result = await _clienteRepository.EditarClienteAsync(cliente);
+            var idUsuario = _currentUserService.GetUserId();
+
+            var result = await _clienteRepository.EditarClienteAsync(cliente, idUsuario);
             if (result > 0)
                 return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE };
 

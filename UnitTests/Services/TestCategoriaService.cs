@@ -104,7 +104,7 @@ public class TestCategoriaService
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Categorium>(), default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _mockRepository.Setup(r => r.ObtenerCategoriaAsync(1)).ReturnsAsync(new CategoriaResponse { Id_Categoria = 1, Nombre_Categoria = "Viejo", Estado = true });
         _mockRepository.Setup(r => r.ListarCategoriasAsync()).ReturnsAsync(new List<CategoriaResponse>());
-        _mockRepository.Setup(r => r.EditarCategoriaAsync(It.IsAny<Categorium>())).ReturnsAsync(1);
+        _mockRepository.Setup(r => r.EditarCategoriaAsync(It.IsAny<Categorium>(), It.IsAny<int>())).ReturnsAsync(1);
         var resultado = await _service.EditarCategoriaAsync(categoria);
 
         Assert.IsTrue(resultado.IsSuccess);

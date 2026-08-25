@@ -144,7 +144,7 @@ public class TestOfertaService
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Ofertum>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerOfertaAsync(1)).ReturnsAsync(new OfertaProductoResponse());
         _mockRepository.Setup(r => r.ListarOfertasAsync()).ReturnsAsync(new List<OfertaProductoResponse>());
-        _mockRepository.Setup(r => r.EditarOfertaAsync(oferta)).ReturnsAsync(1);
+        _mockRepository.Setup(r => r.EditarOfertaAsync(oferta, 1)).ReturnsAsync(1);
         var result = await _service.EditarOfertaAsync(oferta);
 
         Assert.IsTrue(result.IsSuccess);
