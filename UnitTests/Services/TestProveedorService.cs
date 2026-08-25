@@ -181,7 +181,7 @@ public class TestProveedorService
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new ProveedorResponse());
         _mockRepository.Setup(r => r.ListarProveedoresAsync()).ReturnsAsync(new List<ProveedorResponse>());
-        _mockRepository.Setup(r => r.EditarProveedorAsync(proveedor)).ReturnsAsync(1);
+        _mockRepository.Setup(r => r.EditarProveedorAsync(proveedor, 1)).ReturnsAsync(1);
         var result = await _service.EditarProveedorAsync(proveedor);
 
         Assert.IsTrue(result.IsSuccess);

@@ -122,7 +122,7 @@ public class TestProductoService
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Producto>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ObtenerProductoAsync(1)).ReturnsAsync(new ProductoResponse());
         _mockRepository.Setup(r => r.ListarProductosAsync()).ReturnsAsync(new List<ProductoCategoriaResponse>());
-        _mockRepository.Setup(r => r.EditarProductoAsync(producto)).ReturnsAsync(1);
+        _mockRepository.Setup(r => r.EditarProductoAsync(producto, 1)).ReturnsAsync(1);
         var result = await _service.EditarProductoAsync(producto);
 
         Assert.IsTrue(result.IsSuccess);
