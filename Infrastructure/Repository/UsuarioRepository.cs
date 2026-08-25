@@ -111,7 +111,7 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<int> EditarUsuarioAsync(Usuario usuario)
+        public async Task<int> EditarUsuarioAsync(Usuario usuario, int usuarioModificacion)
         {
             var usuarioActual = await _context.Usuarios
                 .AsNoTracking()
@@ -134,13 +134,14 @@ namespace Infrastructure.Repository
             }
 
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_EDITAR_USUARIO @Id_Usuario, @Nombre_Completo, @Correo_Electronico, @Clave, @Id_Rol, @Estado",
+                "EXEC PA_EDITAR_USUARIO @Id_Usuario, @Nombre_Completo, @Correo_Electronico, @Clave, @Id_Rol, @Estado, @Usuario_Modificacion",
                 new SqlParameter("@Id_Usuario", usuario.Id_Usuario),
                 new SqlParameter("@Nombre_Completo", usuario.Nombre_Completo ?? (object)DBNull.Value),
                 new SqlParameter("@Correo_Electronico", usuario.Correo_Electronico ?? (object)DBNull.Value),
                 new SqlParameter("@Clave", claveEncriptada),
                 new SqlParameter("@Id_Rol", usuario.Id_Rol ?? (object)DBNull.Value),
-                new SqlParameter("@Estado", usuario.Estado ?? (object)DBNull.Value)
+                new SqlParameter("@Estado", usuario.Estado ?? (object)DBNull.Value),
+                new SqlParameter("@Usuario_Modificacion", usuarioModificacion)
             );
         }
 

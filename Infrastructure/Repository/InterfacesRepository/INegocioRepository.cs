@@ -8,7 +8,7 @@ namespace Infrastructure.Repository.InterfacesRepository
     public interface INegocioRepository
     {
         Task<Negocio?> ObtenerNegocioAsync(int idNegocio);
-        Task<int> EditarNegocioAsync(Negocio negocio);
+        Task<int> EditarNegocioAsync(Negocio negocio, int usuarioModificacion);
         Task<List<ProductoMasCompradoResponse>> ObtenerProductoMasComprado();
         Task<List<ProductoMasVendidoResponse>> ObtenerProductoMasVendido();
         Task<List<ProductoMasCompradoAnalisisIA>> ObtenerAnalisisProductosComprados();

@@ -10,7 +10,7 @@ namespace Infrastructure.Repository.InterfacesRepository
         Task<Paginacion<ProveedorResponse>> ListarProveedoresPaginacionAsync(int pageNumber, int pageSize);
         Task<ProveedorResponse?> ObtenerProveedorAsync(int idProveedor);
         Task<int> RegistrarProveedorAsync(Proveedor proveedor, int usuarioCreacion);
-        Task<int> EditarProveedorAsync(Proveedor proveedor);
+        Task<int> EditarProveedorAsync(Proveedor proveedor, int usuarioModificacion);
         Task<int> EliminarProveedorAsync(int idProveedor);
     }
 }

@@ -15,14 +15,16 @@ namespace Infrastructure.Services
         private readonly NegocioRepository _negocioRepository;
         private readonly ProductoRepository _productoRepository;
         private readonly CategoriaRepository _categoriaRepository;
+        private readonly ICurrentUserService _currentUserService;
         private readonly IValidator<Negocio> _validator;
         private readonly OllamaClient _ollama;
 
-        public NegocioService(NegocioRepository negocioRepository, ProductoRepository productoRepository, CategoriaRepository categoriaRepository, IValidator<Negocio> validator, OllamaClient ollama)
+        public NegocioService(NegocioRepository negocioRepository, ProductoRepository productoRepository, CategoriaRepository categoriaRepository, ICurrentUserService currentUserService, IValidator<Negocio> validator, OllamaClient ollama)
         {
             _negocioRepository = negocioRepository;
             _productoRepository = productoRepository;
             _categoriaRepository = categoriaRepository;
+            _currentUserService = currentUserService;
             _validator = validator;
             _ollama = ollama;
         }
@@ -60,7 +62,9 @@ namespace Infrastructure.Services
             if (negocioExistente == null)
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
 
-            var result = await _negocioRepository.EditarNegocioAsync(negocio);
+            var idUsuario = _currentUserService.GetUserId();
+
+            var result = await _negocioRepository.EditarNegocioAsync(negocio, idUsuario);
             if (result > 0)
                 return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE };
 

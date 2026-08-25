@@ -28,7 +28,7 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<int> EditarNegocioAsync(Negocio negocio)
+        public async Task<int> EditarNegocioAsync(Negocio negocio, int usuarioModificacion)
         {
             if (!string.IsNullOrWhiteSpace(negocio.ImagenBase64))
             {
@@ -41,14 +41,15 @@ namespace Infrastructure.Repository
             }
 
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_EDITAR_NEGOCIO @Id_Negocio, @Nombre, @Telefono, @Ruc, @Direccion, @Correo_Electronico, @Logo",
+                "EXEC PA_EDITAR_NEGOCIO @Id_Negocio, @Nombre, @Telefono, @Ruc, @Direccion, @Correo_Electronico, @Logo, @Usuario_Modificacion",
                 new SqlParameter("@Id_Negocio", negocio.Id_Negocio),
                 new SqlParameter("@Nombre", negocio.Nombre ?? (object)DBNull.Value),
                 new SqlParameter("@Telefono", negocio.Telefono ?? (object)DBNull.Value),
                 new SqlParameter("@Ruc", negocio.Ruc ?? (object)DBNull.Value),
                 new SqlParameter("@Direccion", negocio.Direccion ?? (object)DBNull.Value),
                 new SqlParameter("@Correo_Electronico", negocio.Correo_Electronico ?? (object)DBNull.Value),
-                new SqlParameter("@Logo", negocio.Logo ?? (object)DBNull.Value)
+                new SqlParameter("@Logo", negocio.Logo ?? (object)DBNull.Value),
+                new SqlParameter("@Usuario_Modificacion", usuarioModificacion)
             );
         }
 

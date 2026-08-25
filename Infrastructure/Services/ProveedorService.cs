@@ -120,7 +120,9 @@ namespace Infrastructure.Services
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_PHONE_EXITS };
             }
 
-            var result = await _proveedorRepository.EditarProveedorAsync(proveedor);
+            var idUsuario = _currentUserService.GetUserId();
+
+            var result = await _proveedorRepository.EditarProveedorAsync(proveedor, idUsuario);
             if (result > 0)
                 return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE };
 

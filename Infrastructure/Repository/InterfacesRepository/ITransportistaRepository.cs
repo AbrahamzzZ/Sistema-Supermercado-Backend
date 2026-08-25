@@ -10,7 +10,7 @@ namespace Infrastructure.Repository.InterfacesRepository
         Task<Paginacion<TransportistaResponse>> ListarTransportistasPaginacionAsync(int pageNumber, int pageSize);
         Task<TransportistaResponse?> ObtenerTransportistaAsync(int idTranportista);
         Task<int> RegistrarTransportistaAsync(Transportistum transportista, int usuarioCreacion);
-        Task<int> EditarTransportistaAsync(Transportistum transportista);
+        Task<int> EditarTransportistaAsync(Transportistum transportista, int usuarioModificacion);
         Task<int> EliminarTransportistaAsync(int idTransportista);
     }
 }

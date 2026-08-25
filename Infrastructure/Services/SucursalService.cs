@@ -106,15 +106,17 @@ namespace Infrastructure.Services
             if (sucursalExistente == null)
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
 
-            var categorias = await _sucursalRepository.ListarSucursalesAsync();
-            if (categorias.Any(c =>
+            var sucursales = await _sucursalRepository.ListarSucursalesAsync();
+            if (sucursales.Any(c =>
                 c.Nombre_Sucursal?.ToLower() == sucursal.Nombre_Sucursal?.ToLower()
                 && c.Id_Sucursal != sucursal.Id_Sucursal))
             {
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe." };
             }
 
-            var result = await _sucursalRepository.EditarSucursalAsync(sucursal);
+            var idUsuario = _currentUserService.GetUserId();
+
+            var result = await _sucursalRepository.EditarSucursalAsync(sucursal, idUsuario);
             if (result > 0)
                 return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE };
 

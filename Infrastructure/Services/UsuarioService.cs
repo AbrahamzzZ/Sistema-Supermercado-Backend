@@ -147,7 +147,9 @@ namespace Infrastructure.Services
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe." };
             }
 
-            var result = await _usuarioRepository.EditarUsuarioAsync(usuario);
+            var idUsuario = _currentUserService.GetUserId();
+
+            var result = await _usuarioRepository.EditarUsuarioAsync(usuario, idUsuario);
             if (result > 0)
                 return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE };
 

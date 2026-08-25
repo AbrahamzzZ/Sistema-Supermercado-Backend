@@ -95,17 +95,18 @@ namespace Infrastructure.Repository
             );
         }
 
-        public async Task<int> EditarProductoAsync(Producto producto)
+        public async Task<int> EditarProductoAsync(Producto producto, int usuarioModificacion)
         {
 
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_EDITAR_PRODUCTO @Id_Producto, @Descripcion, @Nombre_Producto, @Id_Categoria, @Pais_Origen, @Estado",
+                "EXEC PA_EDITAR_PRODUCTO @Id_Producto, @Descripcion, @Nombre_Producto, @Id_Categoria, @Pais_Origen, @Estado, @Usuario_Modificacion",
                 new SqlParameter("@Id_Producto", producto.Id_Producto),
                 new SqlParameter("@Descripcion", producto.Descripcion ?? (object)DBNull.Value),
                 new SqlParameter("@Nombre_Producto", producto.Nombre_Producto ?? (object)DBNull.Value),
                 new SqlParameter("@Id_Categoria", producto.Id_Categoria ?? (object)DBNull.Value),
                 new SqlParameter("@Pais_Origen", producto.Pais_Origen ?? (object)DBNull.Value),
-                new SqlParameter("@Estado", producto.Estado ?? (object)DBNull.Value)
+                new SqlParameter("@Estado", producto.Estado ?? (object)DBNull.Value),
+                new SqlParameter("@Usuario_Modificacion", usuarioModificacion)
             );
         }
 

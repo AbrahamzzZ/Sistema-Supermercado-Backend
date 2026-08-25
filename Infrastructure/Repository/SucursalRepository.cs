@@ -117,7 +117,7 @@ namespace Infrastructure.Repository
             return await command.ExecuteNonQueryAsync();
         }
 
-        public async Task<int> EditarSucursalAsync(Sucursal sucursal)
+        public async Task<int> EditarSucursalAsync(Sucursal sucursal, int usuarioModificacion)
         {
             using var connection = _context.Database.GetDbConnection();
             await connection.OpenAsync();
@@ -149,6 +149,7 @@ namespace Infrastructure.Repository
 
             command.Parameters.Add(new SqlParameter("@Ciudad", sucursal.Ciudad_Sucursal ?? (object)DBNull.Value));
             command.Parameters.Add(new SqlParameter("@Estado", sucursal.Estado ?? (object)DBNull.Value));
+            command.Parameters.Add(new SqlParameter("@Usuario_Modificacion", usuarioModificacion));
 
             return await command.ExecuteNonQueryAsync();
         }

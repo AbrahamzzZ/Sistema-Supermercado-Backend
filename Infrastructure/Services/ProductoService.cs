@@ -112,7 +112,9 @@ namespace Infrastructure.Services
                 return new ApiResponse<object> { IsSuccess = false, Message = "El nombre ya existe." };
             }
 
-            var result = await _productoRepository.EditarProductoAsync(producto);
+            var idUsuario = _currentUserService.GetUserId();
+
+            var result = await _productoRepository.EditarProductoAsync(producto, idUsuario);
             if (result > 0)
                 return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE };
 
