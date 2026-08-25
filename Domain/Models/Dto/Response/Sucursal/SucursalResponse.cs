@@ -19,7 +19,5 @@
         public string? Ciudad_Sucursal { get; set; }
 
         public bool? Estado { get; set; }
-
-        public DateTime? Fecha_Creacion { get; set; }
     }
 }
