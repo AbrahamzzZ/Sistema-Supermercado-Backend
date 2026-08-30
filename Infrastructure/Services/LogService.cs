@@ -41,9 +41,8 @@ namespace Infrastructure.Services
 
         public async Task<ApiResponse<object>> RegistrarLogAsync(Log log)
         {
-       
-
             var result = await _logRepository.RegistrarLogAsync(log);
+
             if (result > 0)
                 return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
 
