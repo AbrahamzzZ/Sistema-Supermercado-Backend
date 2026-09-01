@@ -15,9 +15,9 @@ namespace Infrastructure.Services
             _logRepository = logRepository;
         }
 
-        public async Task<ApiResponse<Paginacion<Log>>> ListarLogsPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<ApiResponse<Paginacion<Log>>> ListarLogsPaginacionAsync(int pageNumber, int pageSize, string filtro = "")
         {
-            var pagedResult = await _logRepository.ListarLogsPaginacionAsync(pageNumber, pageSize);
+            var pagedResult = await _logRepository.ListarLogsPaginacionAsync(pageNumber, pageSize, filtro);
 
             if (pagedResult.Items == null || pagedResult.Items.Count == 0)
             {

@@ -39,7 +39,7 @@ public class TestSucursalController
     public async Task GetSucursalesPaginacion_ReturnsOk_WithData()
     {
         var expectedResponse = new ApiResponse<Paginacion<SucursalResponse>> { IsSuccess = true, Data = new Paginacion<SucursalResponse>() };
-        _mockService.Setup(s => s.ListarSucursalesPaginacionAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(expectedResponse);
+        _mockService.Setup(s => s.ListarSucursalesPaginacionAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetSucursalesPaginacion();
 

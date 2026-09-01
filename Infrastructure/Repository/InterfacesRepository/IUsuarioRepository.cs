@@ -8,7 +8,7 @@ namespace Infrastructure.Repository.InterfacesRepository
     public interface IUsuarioRepository
     {
         Task<List<UsuarioRolResponse>> ListarUsuariosAsync();
-        Task<Paginacion<UsuarioRolResponse>> ListarUsuariosPaginacionAsync(int pageNumber, int pageSize);
+        Task<Paginacion<UsuarioRolResponse>> ListarUsuariosPaginacionAsync(int pageNumber, int pageSize, string filtro);
         Task<UsuarioRolResponse?> ObtenerUsuarioAsync(int idUsuario);
         Task<UsuarioRolResponse?> IniciarSesionAsync(LoginRequest login);
         Task<int> RegistrarUsuarioAsync(Usuario usuario, int usuarioCreacion);

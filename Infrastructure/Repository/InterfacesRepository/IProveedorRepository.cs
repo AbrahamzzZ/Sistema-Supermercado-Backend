@@ -7,7 +7,7 @@ namespace Infrastructure.Repository.InterfacesRepository
     public interface IProveedorRepository
     {
         Task<List<ProveedorResponse>> ListarProveedoresAsync();
-        Task<Paginacion<ProveedorResponse>> ListarProveedoresPaginacionAsync(int pageNumber, int pageSize);
+        Task<Paginacion<ProveedorResponse>> ListarProveedoresPaginacionAsync(int pageNumber, int pageSize, string filtro);
         Task<ProveedorResponse?> ObtenerProveedorAsync(int idProveedor);
         Task<int> RegistrarProveedorAsync(Proveedor proveedor, int usuarioCreacion);
         Task<int> EditarProveedorAsync(Proveedor proveedor, int usuarioModificacion);

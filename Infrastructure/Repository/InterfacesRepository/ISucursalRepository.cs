@@ -7,7 +7,7 @@ namespace Infrastructure.Repository.InterfacesRepository
     public interface ISucursalRepository
     {
         Task<List<SucursalResponse>> ListarSucursalesAsync();
-        Task<Paginacion<SucursalResponse>> ListarSucursalesPaginacionAsync(int pageNumber, int pageSize);
+        Task<Paginacion<SucursalResponse>> ListarSucursalesPaginacionAsync(int pageNumber, int pageSize, string filtro);
         Task<SucursalResponse?> ObtenerSucursalAsync(int idSucursal);
         Task<int> RegistrarSucursalAsync(Sucursal sucursal, int usuarioCreacion);
         Task<int> EditarSucursalAsync(Sucursal sucursal, int usuarioModificacion);

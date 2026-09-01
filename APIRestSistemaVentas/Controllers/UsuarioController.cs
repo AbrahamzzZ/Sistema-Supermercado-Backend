@@ -63,9 +63,9 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista paginada obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Paginacion<UsuarioRolResponse>>>> GetUsuariosPaginacion(int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<ApiResponse<Paginacion<UsuarioRolResponse>>>> GetUsuariosPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
         {
-            var result = await _usuarioService.ListarUsuariosPaginacionAsync(pageNumber, pageSize);
+            var result = await _usuarioService.ListarUsuariosPaginacionAsync(pageNumber, pageSize, filtro);
             return Ok(result);
         }
 

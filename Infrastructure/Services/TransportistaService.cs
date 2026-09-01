@@ -42,9 +42,9 @@ namespace Infrastructure.Services
             return new ApiResponse<List<TransportistaResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaTransportistas };
         }
 
-        public async Task<ApiResponse<Paginacion<TransportistaResponse>>> ListarTransportistasPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<ApiResponse<Paginacion<TransportistaResponse>>> ListarTransportistasPaginacionAsync(int pageNumber, int pageSize, string filtro = "")
         {
-            var pagedResult = await _transportistaRepository.ListarTransportistasPaginacionAsync(pageNumber, pageSize);
+            var pagedResult = await _transportistaRepository.ListarTransportistasPaginacionAsync(pageNumber, pageSize, filtro);
 
             if (pagedResult.Items == null || !pagedResult.Items.Any())
             {

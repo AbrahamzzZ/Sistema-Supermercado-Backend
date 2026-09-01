@@ -38,7 +38,7 @@ public class TestClienteController
     public async Task GetClientesPaginacion_ReturnsOk_WithData()
     {
         var expectedResponse = new ApiResponse<Paginacion<ClienteResponse>> { IsSuccess = true, Data = new Paginacion<ClienteResponse>() };
-        _mockService.Setup(s => s.ListarClientesPaginacionAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(expectedResponse);
+        _mockService.Setup(s => s.ListarClientesPaginacionAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetClientesPaginacion();
         var okResult = result.Result as OkObjectResult;

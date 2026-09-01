@@ -7,7 +7,7 @@ namespace Infrastructure.Repository.InterfacesServices
     public interface IClienteService
     {
         Task<ApiResponse<List<ClienteResponse>>> ListarClientesAsync();
-        Task<ApiResponse<Paginacion<ClienteResponse>>> ListarClientesPaginacionAsync(int pageNumber, int pageSize);
+        Task<ApiResponse<Paginacion<ClienteResponse>>> ListarClientesPaginacionAsync(int pageNumber, int pageSize, string filtro);
         Task<ApiResponse<ClienteResponse>> ObtenerClienteAsync(int idCliente);
         Task<ApiResponse<object>> RegistrarClienteAsync(Cliente cliente);
         Task<ApiResponse<object>> EditarClienteAsync(Cliente cliente);
