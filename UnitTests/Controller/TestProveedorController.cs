@@ -66,7 +66,7 @@ public class TestProveedorController
     public async Task GetProveedoresPaginacion_ReturnsOk_WithData()
     {
         var expectedResponse = new ApiResponse<Paginacion<ProveedorResponse>> { IsSuccess = true, Data = new Paginacion<ProveedorResponse>() };
-        _mockService.Setup(s => s.ListarProveedoresPaginacionAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(expectedResponse);
+        _mockService.Setup(s => s.ListarProveedoresPaginacionAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetProveedoresPaginacion();
 

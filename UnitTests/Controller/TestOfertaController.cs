@@ -1,5 +1,6 @@
 using APIRestSistemaVentas.Controllers;
 using Domain.Models;
+using Domain.Models.Dto.Response.Cliente;
 using Domain.Models.Dto.Response.Oferta;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.AspNetCore.Mvc;
@@ -40,13 +41,8 @@ public class TestOfertaController
     [TestMethod]
     public async Task GetOfertasPaginacion_DeberiaRetornarOk()
     {
-        var paginacion = new Paginacion<OfertaProductoResponse>
-        {
-            Items = new List<OfertaProductoResponse> { new OfertaProductoResponse { Id_Oferta = 1, Nombre_Oferta = "Oferta Especial" } }, TotalCount = 1
-        };
-
-        _mockService.Setup(s => s.ListarOfertasPaginacionAsync(1, 10))
-            .ReturnsAsync(new ApiResponse<Paginacion<OfertaProductoResponse>> { IsSuccess = true, Data = paginacion });
+        var expectedResponse = new ApiResponse<Paginacion<OfertaProductoResponse>> { IsSuccess = true, Data = new Paginacion<OfertaProductoResponse>() };
+        _mockService.Setup(s => s.ListarOfertasPaginacionAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetOfertasPaginacion(1, 10);
 
