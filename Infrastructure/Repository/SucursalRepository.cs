@@ -27,13 +27,14 @@ namespace Infrastructure.Repository
                 .ToListAsync();
         }
 
-        public async Task<Paginacion<SucursalResponse>> ListarSucursalesPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<Paginacion<SucursalResponse>> ListarSucursalesPaginacionAsync(int pageNumber, int pageSize, string filtro)
         {
             using var command = _context.Database.GetDbConnection().CreateCommand();
             command.CommandText = "PA_LISTA_SUCURSAL_PAGINACION";
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.Add(new SqlParameter("@PageNumber", pageNumber));
             command.Parameters.Add(new SqlParameter("@PageSize", pageSize));
+            command.Parameters.Add(new SqlParameter("@Filtro", filtro ?? ""));
 
             await _context.Database.OpenConnectionAsync();
 

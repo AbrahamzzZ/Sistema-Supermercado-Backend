@@ -7,7 +7,7 @@ namespace Infrastructure.Repository.InterfacesRepository
     public interface IClienteRepository
     {
         Task<List<ClienteResponse>> ListarClientesAsync();
-        Task<Paginacion<ClienteResponse>> ListarClientesPaginacionAsync(int pageNumber, int pageSize);
+        Task<Paginacion<ClienteResponse>> ListarClientesPaginacionAsync(int pageNumber, int pageSize, string filtro);
         Task<ClienteResponse?> ObtenerClienteAsync(int idCliente);
         Task<int> RegistrarClienteAsync(Cliente cliente, int usuarioCreacion);
         Task<int> EditarClienteAsync(Cliente cliente, int usuarioModificacion);

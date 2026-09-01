@@ -43,9 +43,9 @@ namespace Infrastructure.Services
             return new ApiResponse<List<ProductoCategoriaResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listapProductos };
         }
 
-        public async Task<ApiResponse<Paginacion<ProductoCategoriaResponse>>> ListarProductosPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<ApiResponse<Paginacion<ProductoCategoriaResponse>>> ListarProductosPaginacionAsync(int pageNumber, int pageSize, string filtro = "")
         {
-            var pagedResult = await _productoRepository.ListarProductosPaginacionAsync(pageNumber, pageSize);
+            var pagedResult = await _productoRepository.ListarProductosPaginacionAsync(pageNumber, pageSize, filtro);
 
             if (pagedResult.Items == null || pagedResult.Items.Count == 0)
             {

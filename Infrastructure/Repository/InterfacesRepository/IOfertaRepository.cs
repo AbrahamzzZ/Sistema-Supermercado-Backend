@@ -7,7 +7,7 @@ namespace Infrastructure.Repository.InterfacesRepository
     public interface IOfertaRepository
     {
         Task<List<OfertaProductoResponse>> ListarOfertasAsync();
-        Task<Paginacion<OfertaProductoResponse>> ListarOfertasPaginacionAsync(int pageNumber, int pageSize);
+        Task<Paginacion<OfertaProductoResponse>> ListarOfertasPaginacionAsync(int pageNumber, int pageSize, string filtro);
         Task<OfertaProductoResponse?> ObtenerOfertaAsync(int idOferta);
         Task<int> RegistrarOfertaAsync(Ofertum oferta, int usuarioCreacion);
         Task<int> EditarOfertaAsync(Ofertum oferta, int usuarioModificacion);

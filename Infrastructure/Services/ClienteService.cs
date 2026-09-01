@@ -43,9 +43,9 @@ namespace Infrastructure.Services
             return new ApiResponse<List<ClienteResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaClientes };
         }
 
-        public async Task<ApiResponse<Paginacion<ClienteResponse>>> ListarClientesPaginacionAsync(int pageNumber, int pageSize)
+        public async Task<ApiResponse<Paginacion<ClienteResponse>>> ListarClientesPaginacionAsync(int pageNumber, int pageSize, string filtro = "")
         {
-            var pagedResult = await _clienteRepository.ListarClientesPaginacionAsync(pageNumber, pageSize);
+            var pagedResult = await _clienteRepository.ListarClientesPaginacionAsync(pageNumber, pageSize, filtro);
 
             if (pagedResult.Items == null || pagedResult.Items.Count == 0)
             {

@@ -7,7 +7,7 @@ namespace Infrastructure.Repository.InterfacesServices
     public interface IOfertaService
     {
         Task<ApiResponse<List<OfertaProductoResponse>>> ListarOfertasAsync();
-        Task<ApiResponse<Paginacion<OfertaProductoResponse>>> ListarOfertasPaginacionAsync(int pageNumber, int pageSize);
+        Task<ApiResponse<Paginacion<OfertaProductoResponse>>> ListarOfertasPaginacionAsync(int pageNumber, int pageSize, string filtro);
         Task<ApiResponse<OfertaProductoResponse>> ObtenerOfertaAsync(int idOferta);
         Task<ApiResponse<object>> RegistrarOfertaAsync(Ofertum oferta);
         Task<ApiResponse<object>> EditarOfertaAsync(Ofertum oferta);

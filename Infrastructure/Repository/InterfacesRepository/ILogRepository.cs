@@ -5,7 +5,7 @@ namespace Infrastructure.Repository.InterfacesRepository
 {
     public interface ILogRepository
     {
-        Task<Paginacion<Log>> ListarLogsPaginacionAsync(int pageNumber, int pageSize);
+        Task<Paginacion<Log>> ListarLogsPaginacionAsync(int pageNumber, int pageSize, string filtro);
         Task<Log?> ObtenerLogAsync(int idLog);
         Task<int> RegistrarLogAsync(Log log);
     }
