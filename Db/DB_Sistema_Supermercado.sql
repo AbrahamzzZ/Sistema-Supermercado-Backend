@@ -169,23 +169,31 @@ END;
 GO
 CREATE PROCEDURE PA_LISTA_USUARIO_PAGINACION(
     @PageNumber INT = 1,
-    @PageSize INT = 10
+    @PageSize INT = 10,
+    @Filtro NVARCHAR(100) = ''
 )
 AS
 BEGIN
     SET NOCOUNT ON;
 
     DECLARE @TotalCount INT;
-    SELECT @TotalCount = COUNT(*) FROM VW_USUARIO;
+    DECLARE @SearchTerm NVARCHAR(102) = '%' + @Filtro + '%';
 
-	SELECT * FROM VW_USUARIO
-    ORDER BY ID_USUARIO OFFSET (@PageNumber - 1) * @PageSize ROWS
+    SELECT @TotalCount = COUNT(*) FROM VW_USUARIO
+    WHERE (@Filtro = '' OR CODIGO LIKE @SearchTerm OR NOMBRE_COMPLETO LIKE @SearchTerm OR CORREO_ELECTRONICO LIKE @SearchTerm OR NOMBRE_ROL LIKE @SearchTerm OR
+    CONVERT(VARCHAR(10), FECHA_CREACION, 23) LIKE @SearchTerm OR CASE WHEN ESTADO = 1 THEN 'Activo' ELSE 'No Activo' END LIKE @SearchTerm);
+
+    SELECT * FROM VW_USUARIO
+    WHERE (@Filtro = '' OR  CODIGO LIKE @SearchTerm OR NOMBRE_COMPLETO LIKE @SearchTerm OR CORREO_ELECTRONICO LIKE @SearchTerm OR NOMBRE_ROL LIKE @SearchTerm OR
+    CONVERT(VARCHAR(10), FECHA_CREACION, 23) LIKE @SearchTerm OR CASE WHEN ESTADO = 1 THEN 'Activo' ELSE 'No Activo' END LIKE @SearchTerm)
+    ORDER BY ID_USUARIO 
+    OFFSET (@PageNumber - 1) * @PageSize ROWS
     FETCH NEXT @PageSize ROWS ONLY;
 
     SELECT @TotalCount AS TotalCount;
 END;
-
 GO
+
 CREATE PROCEDURE PA_OBTENER_USUARIO(
 	@Id_Usuario int
 )
@@ -288,17 +296,25 @@ END;
 GO
 CREATE PROCEDURE PA_LISTA_SUCURSAL_PAGINACION(
     @PageNumber INT = 1,
-    @PageSize INT = 10
+    @PageSize INT = 10,
+    @Filtro NVARCHAR(100) = ''
 )
 AS
 BEGIN
     SET NOCOUNT ON;
 
     DECLARE @TotalCount INT;
-    SELECT @TotalCount = COUNT(*) FROM VW_SUCURSAL;
+    DECLARE @SearchTerm NVARCHAR(102) = '%' + @Filtro + '%';
+
+    SELECT @TotalCount = COUNT(*) FROM VW_SUCURSAL
+    WHERE (@Filtro = '' OR  CODIGO LIKE @SearchTerm OR NOMBRE_SUCURSAL LIKE @SearchTerm OR DIRECCION_SUCURSAL LIKE @SearchTerm OR LATITUD LIKE @SearchTerm OR
+    LONGITUD LIKE @SearchTerm OR CIUDAD_SUCURSAL LIKE @SearchTerm OR CASE WHEN ESTADO = 1 THEN 'Activo' ELSE 'No Activo' END LIKE @SearchTerm);
 
     SELECT * FROM VW_SUCURSAL
-    ORDER BY ID_SUCURSAL OFFSET (@PageNumber - 1) * @PageSize ROWS
+    WHERE (@Filtro = '' OR CODIGO LIKE @SearchTerm OR  NOMBRE_SUCURSAL LIKE @SearchTerm OR DIRECCION_SUCURSAL LIKE @SearchTerm OR LATITUD LIKE @SearchTerm OR
+    LONGITUD LIKE @SearchTerm OR CIUDAD_SUCURSAL LIKE @SearchTerm OR CASE WHEN ESTADO = 1 THEN 'Activo' ELSE 'No Activo' END LIKE @SearchTerm)
+    ORDER BY ID_SUCURSAL 
+    OFFSET (@PageNumber - 1) * @PageSize ROWS
     FETCH NEXT @PageSize ROWS ONLY;
 
     SELECT @TotalCount AS TotalCount;
@@ -407,17 +423,25 @@ GO
 
 CREATE PROCEDURE PA_LISTA_PROVEEDOR_PAGINACION(
     @PageNumber INT = 1,
-    @PageSize INT = 10
+    @PageSize INT = 10,
+    @Filtro NVARCHAR(100) = ''
 )
 AS
 BEGIN
     SET NOCOUNT ON;
 
     DECLARE @TotalCount INT;
-    SELECT @TotalCount = COUNT(*) FROM VW_PROVEEDOR;
+    DECLARE @SearchTerm NVARCHAR(102) = '%' + @Filtro + '%';
 
-	SELECT * FROM VW_PROVEEDOR
-    ORDER BY ID_PROVEEDOR OFFSET (@PageNumber - 1) * @PageSize ROWS
+    SELECT @TotalCount = COUNT(*) FROM VW_PROVEEDOR
+    WHERE (@Filtro = '' OR CODIGO LIKE @SearchTerm OR  NOMBRES LIKE @SearchTerm OR APELLIDOS LIKE @SearchTerm OR CEDULA LIKE @SearchTerm OR TELEFONO LIKE @SearchTerm OR
+    CORREO_ELECTRONICO LIKE @SearchTerm OR CONVERT(VARCHAR(10), FECHA_CREACION, 23) LIKE @SearchTerm OR CASE WHEN ESTADO = 1 THEN 'Activo' ELSE 'No Activo' END LIKE @SearchTerm);
+
+    SELECT * FROM VW_PROVEEDOR
+    WHERE (@Filtro = '' OR  CODIGO LIKE @SearchTerm OR  NOMBRES LIKE @SearchTerm OR APELLIDOS LIKE @SearchTerm OR CEDULA LIKE @SearchTerm OR TELEFONO LIKE @SearchTerm OR
+    CORREO_ELECTRONICO LIKE @SearchTerm OR CONVERT(VARCHAR(10), FECHA_CREACION, 23) LIKE @SearchTerm OR CASE WHEN ESTADO = 1 THEN 'Activo' ELSE 'No Activo' END LIKE @SearchTerm)
+    ORDER BY ID_PROVEEDOR 
+    OFFSET (@PageNumber - 1) * @PageSize ROWS
     FETCH NEXT @PageSize ROWS ONLY;
 
     SELECT @TotalCount AS TotalCount;
@@ -518,17 +542,25 @@ GO
 
 CREATE PROCEDURE PA_LISTA_TRANSPORTISTA_PAGINACION(
     @PageNumber INT = 1,
-    @PageSize INT = 10   
+    @PageSize INT = 10,
+    @Filtro NVARCHAR(100) = ''
 )
 AS
 BEGIN
     SET NOCOUNT ON;
 
     DECLARE @TotalCount INT;
-    SELECT @TotalCount = COUNT(*) FROM VW_TRANSPORTISTA;
+    DECLARE @SearchTerm NVARCHAR(102) = '%' + @Filtro + '%';
 
-	SELECT * FROM VW_TRANSPORTISTA
-    ORDER BY ID_TRANSPORTISTA OFFSET (@PageNumber - 1) * @PageSize ROWS
+    SELECT @TotalCount = COUNT(*) FROM VW_TRANSPORTISTA
+    WHERE (@Filtro = '' OR CODIGO LIKE @SearchTerm OR  NOMBRES LIKE @SearchTerm OR APELLIDOS LIKE @SearchTerm OR CEDULA LIKE @SearchTerm OR TELEFONO LIKE @SearchTerm OR
+    CORREO_ELECTRONICO LIKE @SearchTerm OR CONVERT(VARCHAR(10), FECHA_CREACION, 23) LIKE @SearchTerm OR CASE WHEN ESTADO = 1 THEN 'Activo' ELSE 'No Activo' END LIKE @SearchTerm);
+
+    SELECT * FROM VW_TRANSPORTISTA
+    WHERE (@Filtro = '' OR CODIGO LIKE @SearchTerm OR  NOMBRES LIKE @SearchTerm OR APELLIDOS LIKE @SearchTerm OR CEDULA LIKE @SearchTerm OR TELEFONO LIKE @SearchTerm OR
+    CORREO_ELECTRONICO LIKE @SearchTerm OR CONVERT(VARCHAR(10), FECHA_CREACION, 23) LIKE @SearchTerm OR CASE WHEN ESTADO = 1 THEN 'Activo' ELSE 'No Activo' END LIKE @SearchTerm)
+    ORDER BY ID_TRANSPORTISTA 
+    OFFSET (@PageNumber - 1) * @PageSize ROWS
     FETCH NEXT @PageSize ROWS ONLY;
 
     SELECT @TotalCount AS TotalCount;
@@ -626,17 +658,25 @@ END;
 GO
 CREATE PROCEDURE PA_LISTA_CLIENTE_PAGINACION(
     @PageNumber INT = 1,
-    @PageSize INT = 10   
+    @PageSize INT = 10,
+    @Filtro NVARCHAR(100) = ''
 )
 AS
 BEGIN
     SET NOCOUNT ON;
 
     DECLARE @TotalCount INT;
-    SELECT @TotalCount = COUNT(*) FROM VW_CLIENTE
+    DECLARE @SearchTerm NVARCHAR(102) = '%' + @Filtro + '%';
 
-	SELECT * FROM VW_CLIENTE
-    ORDER BY ID_CLIENTE OFFSET (@PageNumber - 1) * @PageSize ROWS
+    SELECT @TotalCount = COUNT(*) FROM VW_CLIENTE
+    WHERE (@Filtro = '' OR CODIGO LIKE @SearchTerm OR NOMBRES LIKE @SearchTerm OR APELLIDOS LIKE @SearchTerm OR CEDULA LIKE @SearchTerm OR TELEFONO LIKE @SearchTerm OR
+    CORREO_ELECTRONICO LIKE @SearchTerm OR CONVERT(VARCHAR(10), FECHA_CREACION, 23) LIKE @SearchTerm);
+
+    SELECT * FROM VW_CLIENTE
+    WHERE (@Filtro = '' OR CODIGO LIKE @SearchTerm OR NOMBRES LIKE @SearchTerm OR APELLIDOS LIKE @SearchTerm OR CEDULA LIKE @SearchTerm OR TELEFONO LIKE @SearchTerm OR
+    CORREO_ELECTRONICO LIKE @SearchTerm OR CONVERT(VARCHAR(10), FECHA_CREACION, 23) LIKE @SearchTerm)
+    ORDER BY ID_CLIENTE 
+    OFFSET (@PageNumber - 1) * @PageSize ROWS
     FETCH NEXT @PageSize ROWS ONLY;
 
     SELECT @TotalCount AS TotalCount;
@@ -723,24 +763,32 @@ BEGIN
     SELECT * FROM VW_CATEGORIA;
 END;
 GO
-CREATE PROCEDURE PA_LISTA_CATEGORIA_PAGINACION(
-    @PageNumber INT = 1,
-    @PageSize INT = 10
-)
-AS
-BEGIN
-    SET NOCOUNT ON;
 
+CREATE PROCEDURE PA_LISTA_CATEGORIA_PAGINACION(     
+    @PageNumber INT = 1,     
+    @PageSize INT = 10,
+    @Filtro NVARCHAR(100) = ''
+) AS BEGIN     
+    SET NOCOUNT ON;      
+    
     DECLARE @TotalCount INT;
-    SELECT @TotalCount = COUNT(*) FROM VW_CATEGORIA;
-
+    DECLARE @SearchTerm NVARCHAR(102) = '%' + @Filtro + '%';
+    
+    SELECT @TotalCount = COUNT(*) FROM VW_CATEGORIA
+    WHERE (@Filtro = '' OR CODIGO LIKE @SearchTerm OR NOMBRE_CATEGORIA LIKE @SearchTerm OR CONVERT(VARCHAR(10), FECHA_CREACION, 23) LIKE @SearchTerm
+    OR CASE WHEN ESTADO = 1 THEN 'Activo' ELSE 'No Activo' END LIKE @SearchTerm);      
+    
     SELECT * FROM VW_CATEGORIA
-    ORDER BY ID_CATEGORIA OFFSET (@PageNumber - 1) * @PageSize ROWS
-    FETCH NEXT @PageSize ROWS ONLY;
-
-    SELECT @TotalCount AS TotalCount;
+    WHERE (@Filtro = '' OR CODIGO LIKE @SearchTerm OR NOMBRE_CATEGORIA LIKE @SearchTerm OR CONVERT(VARCHAR(10), FECHA_CREACION, 23) LIKE @SearchTerm
+    OR CASE WHEN ESTADO = 1 THEN 'Activo' ELSE 'No Activo' END LIKE @SearchTerm)
+    ORDER BY ID_CATEGORIA 
+    OFFSET (@PageNumber - 1) * @PageSize ROWS     
+    FETCH NEXT @PageSize ROWS ONLY;      
+    
+    SELECT @TotalCount AS TotalCount; 
 END;
 GO
+
 CREATE PROCEDURE PA_OBTENER_CATEGORIA(
     @Id_Categoria int
 )
@@ -841,17 +889,27 @@ END;
 GO
 CREATE PROCEDURE PA_LISTA_PRODUCTO_PAGINACION(
     @PageNumber INT = 1,
-    @PageSize INT = 10   
+    @PageSize INT = 10,
+    @Filtro NVARCHAR(100) = ''
 )
 AS
 BEGIN
     SET NOCOUNT ON;
 
     DECLARE @TotalCount INT;
-    SELECT @TotalCount = COUNT(*) FROM VW_PRODUCTO;
+    DECLARE @SearchTerm NVARCHAR(102) = '%' + @Filtro + '%';
 
-	SELECT * FROM VW_PRODUCTO
-    ORDER BY ID_PRODUCTO OFFSET (@PageNumber - 1) * @PageSize ROWS
+    SELECT @TotalCount = COUNT(*) FROM VW_PRODUCTO
+    WHERE (@Filtro = '' OR CODIGO LIKE @SearchTerm OR  NOMBRE_PRODUCTO LIKE @SearchTerm OR DESCRIPCION LIKE @SearchTerm OR NOMBRE_CATEGORIA LIKE @SearchTerm OR
+    PAIS_ORIGEN LIKE @SearchTerm OR CONVERT(VARCHAR(10), PRECIO_COMPRA) LIKE @SearchTerm OR CONVERT(VARCHAR(10), PRECIO_VENTA) LIKE @SearchTerm OR
+    CASE WHEN ESTADO = 1 THEN 'Activo' ELSE 'No Activo' END LIKE @SearchTerm);
+
+    SELECT * FROM VW_PRODUCTO
+    WHERE (@Filtro = '' OR  CODIGO LIKE @SearchTerm OR  NOMBRE_PRODUCTO LIKE @SearchTerm OR DESCRIPCION LIKE @SearchTerm OR NOMBRE_CATEGORIA LIKE @SearchTerm OR
+    PAIS_ORIGEN LIKE @SearchTerm OR CONVERT(VARCHAR(10), PRECIO_COMPRA) LIKE @SearchTerm OR CONVERT(VARCHAR(10), PRECIO_VENTA) LIKE @SearchTerm OR
+    CASE WHEN ESTADO = 1 THEN 'Activo' ELSE 'No Activo' END LIKE @SearchTerm)
+    ORDER BY ID_PRODUCTO 
+    OFFSET (@PageNumber - 1) * @PageSize ROWS
     FETCH NEXT @PageSize ROWS ONLY;
 
     SELECT @TotalCount AS TotalCount;
@@ -957,20 +1015,30 @@ GO
 
 CREATE PROCEDURE PA_LISTA_OFERTA_PAGINACION(
     @PageNumber INT = 1,
-    @PageSize INT = 10
+    @PageSize INT = 10,
+    @Filtro NVARCHAR(100) = ''
 )
 AS
 BEGIN
     SET NOCOUNT ON;
 
     DECLARE @TotalCount INT;
-    SELECT @TotalCount = COUNT(*) FROM VW_OFERTA;
+    DECLARE @SearchTerm NVARCHAR(102) = '%' + @Filtro + '%';
 
-	SELECT * FROM VW_OFERTA
-    ORDER BY ID_OFERTA OFFSET (@PageNumber - 1) * @PageSize ROWS
+    SELECT @TotalCount = COUNT(*) FROM VW_OFERTA
+    WHERE (@Filtro = '' OR CODIGO LIKE @SearchTerm OR  NOMBRE_OFERTA LIKE @SearchTerm OR NOMBRE_PRODUCTO LIKE @SearchTerm OR DESCRIPCION LIKE @SearchTerm OR
+    CONVERT(VARCHAR(10), FECHA_INICIO, 23) LIKE @SearchTerm OR CONVERT(VARCHAR(10), FECHA_FIN, 23) LIKE @SearchTerm OR CONVERT(VARCHAR(10), DESCUENTO) LIKE @SearchTerm OR
+    CONVERT(VARCHAR(10), FECHA_CREACION, 23) LIKE @SearchTerm OR CASE WHEN ESTADO = 1 THEN 'Activo' ELSE 'No Activo' END LIKE @SearchTerm);
+
+    SELECT * FROM VW_OFERTA
+    WHERE (@Filtro = '' OR CODIGO LIKE @SearchTerm OR  NOMBRE_OFERTA LIKE @SearchTerm OR NOMBRE_PRODUCTO LIKE @SearchTerm OR DESCRIPCION LIKE @SearchTerm OR
+    CONVERT(VARCHAR(10), FECHA_INICIO, 23) LIKE @SearchTerm OR CONVERT(VARCHAR(10), FECHA_FIN, 23) LIKE @SearchTerm OR CONVERT(VARCHAR(10), DESCUENTO) LIKE @SearchTerm OR
+    CONVERT(VARCHAR(10), FECHA_CREACION, 23) LIKE @SearchTerm OR CASE WHEN ESTADO = 1 THEN 'Activo' ELSE 'No Activo' END LIKE @SearchTerm)
+    ORDER BY ID_OFERTA 
+    OFFSET (@PageNumber - 1) * @PageSize ROWS
     FETCH NEXT @PageSize ROWS ONLY;
 
-    SELECT @TotalCount AS TotalCount;    
+    SELECT @TotalCount AS TotalCount;
 END;
 GO
 
@@ -1370,16 +1438,23 @@ GO
 
 CREATE PROCEDURE PA_LISTA_LOG_PAGINACION(
     @PageNumber INT = 1,
-    @PageSize INT = 10   
+    @PageSize INT = 10,
+    @Filtro NVARCHAR(100) = ''
 )
 AS
 BEGIN
     SET NOCOUNT ON;
 
     DECLARE @TotalCount INT;
-    SELECT @TotalCount = COUNT(*) FROM LOG;
+    DECLARE @SearchTerm NVARCHAR(102) = '%' + @Filtro + '%';
+
+    SELECT @TotalCount = COUNT(*) FROM LOG
+    WHERE (@Filtro = '' OR CODIGO_ERROR LIKE @SearchTerm OR ENDPOINT LIKE @SearchTerm OR METODO LIKE @SearchTerm OR NIVEL LIKE @SearchTerm OR 
+    CONVERT(VARCHAR(10), FECHA, 23) LIKE @SearchTerm);      
 
 	SELECT ID_LOG, CODIGO_ERROR, MENSAJE_ERROR, DETALLE_ERROR, ID_USUARIO, FECHA, ENDPOINT, METODO, NIVEL FROM LOG
+    WHERE (@Filtro = '' OR CODIGO_ERROR LIKE @SearchTerm OR ENDPOINT LIKE @SearchTerm OR METODO LIKE @SearchTerm OR NIVEL LIKE @SearchTerm OR
+    CONVERT(VARCHAR(10), FECHA, 23) LIKE @SearchTerm)
     ORDER BY ID_LOG OFFSET (@PageNumber - 1) * @PageSize ROWS
     FETCH NEXT @PageSize ROWS ONLY;
 
