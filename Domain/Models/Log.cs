@@ -6,11 +6,11 @@ public partial class Log
 {
     public int Id_Log { get; set; }
 
-    public string? Codigo_Error { get; set; }
+    public string? Codigo { get; set; }
 
-    public string? Mensaje_Error { get; set; }
+    public string? Mensaje { get; set; }
 
-    public string? Detalle_Error { get; set; }
+    public string? Detalle { get; set; }
 
     public int? Id_Usuario { get; set; }
 
