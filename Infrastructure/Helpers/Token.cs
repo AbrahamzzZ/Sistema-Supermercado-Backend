@@ -1,5 +1,6 @@
 ﻿using Domain.Models;
 using Domain.Models.Dto.Response.Usuario;
+using Infrastructure.Repository.InterfacesBusiness;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

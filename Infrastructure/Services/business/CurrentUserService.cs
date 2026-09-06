@@ -1,10 +1,10 @@
-﻿using Infrastructure.Repository.InterfacesServices;
+﻿using Infrastructure.Repository.InterfacesBusiness;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace Infrastructure.Services
+namespace Infrastructure.Services.business
 {
-    public class CurrentUserService : ICurrentUserService
+    public class CurrentUserService : ICurrentUser
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         public CurrentUserService(IHttpContextAccessor httpContextAccessor)
@@ -16,9 +16,9 @@ namespace Infrastructure.Services
         {
             var userIdClaim = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if(!int.TryParse(userIdClaim, out int userId))
+            if(string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
             {
-                throw new UnauthorizedAccessException("No se pudo obtener el ID del usuario autenticado.");
+                return 0;
             }
 
             return userId;
