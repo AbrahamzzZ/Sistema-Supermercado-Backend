@@ -29,46 +29,23 @@ namespace APIRestSistemaVentas.Middleware
 
         private async Task HandleException(HttpContext context, Exception ex)
         {
-            var logService = context.RequestServices.GetRequiredService<ILogService>();
+            var auditoriaService = context.RequestServices.GetRequiredService<IAuditoriaService>();
 
-            string codigo = $"ERR-{DateTime.Now:yyyyMMddHHmmss}";
-
-            var log = new Log
-            {
-                Codigo_Error = codigo,
-                Mensaje_Error = ex.Message,
-                Detalle_Error = ex.ToString(),
-                Endpoint = context.Request.Path,
-                Metodo = context.Request.Method,
-                Nivel = "ERROR",
-                Id_Usuario = ObtenerIdUsuario(context)
-            };
-
-            await logService.RegistrarLogAsync(log);
+            await auditoriaService.RegistrarErrorAsync(
+                context.Request.Path.ToString(),
+                ex
+            );
 
             var response = new ApiResponse<object>
             {
                 IsSuccess = false,
                 Message = "Ha ocurrido un error inesperado.",
-                Data = new { errorCode = codigo }
+                Data = new { errorCode = $"ERR-{DateTime.Now:yyyyMMddHHmmss}" }
             };
 
             context.Response.StatusCode = 500;
             context.Response.ContentType = "application/json";
-
             await context.Response.WriteAsync(JsonSerializer.Serialize(response));
-        }
-
-        private int? ObtenerIdUsuario(HttpContext context)
-        {
-            if (context.User.Identity?.IsAuthenticated == true)
-            {
-                var claim = context.User.FindFirst(ClaimTypes.NameIdentifier);
-                if (claim != null)
-                    return int.Parse(claim.Value);
-            }
-
-            return null;
         }
     }
 }
