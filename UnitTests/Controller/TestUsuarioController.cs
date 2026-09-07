@@ -2,7 +2,7 @@ using APIRestSistemaVentas.Controllers;
 using Domain.Models;
 using Domain.Models.Dto.Request;
 using Domain.Models.Dto.Response.Usuario;
-using Infrastructure.Helpers;
+using Infrastructure.Repository.InterfacesBusiness;
 using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;

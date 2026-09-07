@@ -1,11 +1,13 @@
 ﻿using Domain.Models;
-using Infrastructure.Repository.InterfacesRepository;
+using Domain.Models.Dto.Response.Transportista;
 using FluentValidation;
 using Infrastructure.Repository;
+using Infrastructure.Repository.InterfacesBusiness;
+using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Repository.InterfacesServices;
+using Infrastructure.Services.business;
 using Microsoft.Data.SqlClient;
 using Utilities.Shared;
-using Domain.Models.Dto.Response.Transportista;
 
 namespace Infrastructure.Services
 {
@@ -13,13 +15,15 @@ namespace Infrastructure.Services
     {
         private readonly TransportistaRepository _transportistaRepository;
         private readonly IValidator<Transportistum> _validator;
-        private readonly ICurrentUserService _currentUserService;
+        private readonly ICurrentUser _currentUserService;
+        private readonly IAuditoriaService _auditoriaService;
 
-        public TransportistaService(TransportistaRepository transportistaRepository, IValidator<Transportistum> validator, ICurrentUserService currentUserService)
+        public TransportistaService(TransportistaRepository transportistaRepository, IValidator<Transportistum> validator, ICurrentUser currentUserService, IAuditoriaService auditoriaService)
         {
             _transportistaRepository = transportistaRepository;
             _validator = validator;
             _currentUserService = currentUserService;
+            _auditoriaService = auditoriaService;
         }
 
         //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
@@ -34,97 +38,202 @@ namespace Infrastructure.Services
 
         public async Task<ApiResponse<List<TransportistaResponse>>> ListarTransportistasAsync()
         {
-            var listaTransportistas = await _transportistaRepository.ListarTransportistasAsync();
+            try
+            {
+                var listaTransportistas = await _transportistaRepository.ListarTransportistasAsync();
 
-            if (listaTransportistas == null || listaTransportistas.Count == 0)
-                return new ApiResponse<List<TransportistaResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaTransportistas };
+                if (listaTransportistas == null || listaTransportistas.Count == 0)
+                {
+                    await _auditoriaService.RegistrarFalloAsync("Listar Transportistas", "No hay transportistas registrados");
 
-            return new ApiResponse<List<TransportistaResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaTransportistas };
+                    return new ApiResponse<List<TransportistaResponse>>{ IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = listaTransportistas };
+                }
+
+                await _auditoriaService.RegistrarExitoAsync("Listar Transportistas", $"Se obtuvieron {listaTransportistas.Count} transportistas");
+
+                return new ApiResponse<List<TransportistaResponse>>{ IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = listaTransportistas };
+            }
+            catch (Exception ex)
+            {
+                await _auditoriaService.RegistrarErrorAsync("Listar Transportistas", ex);
+                throw;
+            }
         }
 
         public async Task<ApiResponse<Paginacion<TransportistaResponse>>> ListarTransportistasPaginacionAsync(int pageNumber, int pageSize, string filtro = "")
         {
-            var pagedResult = await _transportistaRepository.ListarTransportistasPaginacionAsync(pageNumber, pageSize, filtro);
-
-            if (pagedResult.Items == null || !pagedResult.Items.Any())
+            try
             {
-                return new ApiResponse<Paginacion<TransportistaResponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
-            }
+                var pagedResult = await _transportistaRepository.ListarTransportistasPaginacionAsync(pageNumber, pageSize, filtro);
 
-            return new ApiResponse<Paginacion<TransportistaResponse>> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
+                if (pagedResult.Items == null || !pagedResult.Items.Any())
+                {
+                    await _auditoriaService.RegistrarFalloAsync("Listar Transportistas Paginación", $"No hay resultados para el filtro: {filtro}");
+
+                    return new ApiResponse<Paginacion<TransportistaResponse>>{ IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = pagedResult };
+                }
+
+                await _auditoriaService.RegistrarExitoAsync("Listar Transportistas Paginación", $"Página {pageNumber}, {pagedResult.Items.Count} transportistas. Filtro: {filtro}");
+
+                return new ApiResponse<Paginacion<TransportistaResponse>>{ IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = pagedResult };
+            }
+            catch (Exception ex)
+            {
+                await _auditoriaService.RegistrarErrorAsync("Listar Transportistas Paginación", ex);
+                throw;
+            }
         }
 
         public async Task<ApiResponse<TransportistaResponse>> ObtenerTransportistaAsync(int idTranportista)
         {
-            var transportista = await _transportistaRepository.ObtenerTransportistaAsync(idTranportista);
-
-            if (transportista == null)
+            try
             {
-                return new ApiResponse<TransportistaResponse> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
-            }
+                var transportista = await _transportistaRepository.ObtenerTransportistaAsync(idTranportista);
 
-            return new ApiResponse<TransportistaResponse> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = transportista };
+                if (transportista == null)
+                {
+                    await _auditoriaService.RegistrarFalloAsync("Obtener Transportista", $"Transportista con ID {idTranportista} no encontrado");
+
+                    return new ApiResponse<TransportistaResponse>{ IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
+                }
+
+                await _auditoriaService.RegistrarExitoAsync("Obtener Transportista", $"Transportista {transportista.Codigo} obtenido correctamente");
+
+                return new ApiResponse<TransportistaResponse>{ IsSuccess = true, Message = Mensajes.MESSAGE_QUERY, Data = transportista };
+            }
+            catch (Exception ex)
+            {
+                await _auditoriaService.RegistrarErrorAsync("Obtener Transportista", ex);
+                throw;
+            }
         }
 
         public async Task<ApiResponse<object>> RegistrarTransportistaAsync(Transportistum transportista)
         {
-            if (transportista == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
+            try
+            {
+                if (transportista == null)
+                {
+                    await _auditoriaService.RegistrarFalloAsync("Registrar Transportista", "Transportista nulo");
 
-            var validationResult = await _validator.ValidateAsync(transportista);
+                    return new ApiResponse<object>{ IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
+                }
 
-            if (!validationResult.IsValid)
-                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
+                var validationResult = await _validator.ValidateAsync(transportista);
 
-            var transportistas = await _transportistaRepository.ListarTransportistasAsync();
-            if (transportistas.Any(c => c.Codigo == transportista.Codigo))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CODE_EXITS };
+                if (!validationResult.IsValid)
+                {
+                    var errores = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage));
+                    await _auditoriaService.RegistrarFalloAsync("Registrar Transportista", $"Validación fallida: {errores}");
 
-            if (transportistas.Any(c => c.Cedula == transportista.Cedula))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CEDULA_EXITS };
+                    return new ApiResponse<object>{ IsSuccess = false, Message = errores };
+                }
 
-            if (transportistas.Any(c => c.Telefono == transportista.Telefono))
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_PHONE_EXITS };
+                var transportistas = await _transportistaRepository.ListarTransportistasAsync();
 
-            var idUsuario = _currentUserService.GetUserId();
+                if (transportistas.Any(c => c.Codigo == transportista.Codigo))
+                {
+                    await _auditoriaService.RegistrarFalloAsync("Registrar Transportista", $"Código {transportista.Codigo} ya existe");
 
-            var result = await _transportistaRepository.RegistrarTransportistaAsync(transportista, idUsuario);
-            if (result > 0)
-                return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
+                    return new ApiResponse<object>{ IsSuccess = false, Message = Mensajes.MESSAGE_CODE_EXITS };
+                }
 
-            return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_REGISTER_FAILLED };
+                if (transportistas.Any(c => c.Cedula == transportista.Cedula))
+                {
+                    await _auditoriaService.RegistrarFalloAsync("Registrar Transportista", $"Cédula {transportista.Cedula} ya existe");
+
+                    return new ApiResponse<object>{ IsSuccess = false, Message = Mensajes.MESSAGE_CEDULA_EXITS };
+                }
+
+                if (transportistas.Any(c => c.Telefono == transportista.Telefono))
+                {
+                    await _auditoriaService.RegistrarFalloAsync("Registrar Transportista", $"Teléfono {transportista.Telefono} ya existe");
+
+                    return new ApiResponse<object>{ IsSuccess = false, Message = Mensajes.MESSAGE_PHONE_EXITS };
+                }
+
+                var idUsuario = _currentUserService.GetUserId();
+                var result = await _transportistaRepository.RegistrarTransportistaAsync(transportista, idUsuario);
+
+                if (result > 0)
+                {
+                    await _auditoriaService.RegistrarExitoAsync("Registrar Transportista", $"Transportista {transportista.Codigo} registrado exitosamente");
+
+                    return new ApiResponse<object>{ IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
+                }
+
+                await _auditoriaService.RegistrarFalloAsync("Registrar Transportista", $"No se pudo guardar el transportista {transportista.Codigo}");
+
+                return new ApiResponse<object>{ IsSuccess = false, Message = Mensajes.MESSAGE_REGISTER_FAILLED };
+            }
+            catch (Exception ex)
+            {
+                await _auditoriaService.RegistrarErrorAsync("Registrar Transportista", ex);
+                throw;
+            }
         }
 
         public async Task<ApiResponse<object>> EditarTransportistaAsync(Transportistum transportista)
         {
-            if (transportista == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
-
-            var validationResult = await _validator.ValidateAsync(transportista);
-            if (!validationResult.IsValid)
-                return new ApiResponse<object> { IsSuccess = false, Message = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage)) };
-
-            var transportistaExistente = await _transportistaRepository.ObtenerTransportistaAsync(transportista.Id_Transportista);
-            if (transportistaExistente == null)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
-
-            var transportistas = await _transportistaRepository.ListarTransportistasAsync();
-            if (transportistas.Any(c => c.Cedula == transportista.Cedula && c.Id_Transportista != transportista.Id_Transportista))
+            try
             {
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_CEDULA_EXITS };
+                if (transportista == null)
+                {
+                    await _auditoriaService.RegistrarFalloAsync("Editar Transportista", "Transportista nulo");
+
+                    return new ApiResponse<object>{ IsSuccess = false, Message = Mensajes.MESSAGE_NULL};
+                }
+
+                var validationResult = await _validator.ValidateAsync(transportista);
+                if (!validationResult.IsValid)
+                {
+                    var errores = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage));
+                    await _auditoriaService.RegistrarFalloAsync("Editar Transportista", $"Validación fallida: {errores}");
+
+                    return new ApiResponse<object>{ IsSuccess = false, Message = errores };
+                }
+
+                var transportistaExistente = await _transportistaRepository.ObtenerTransportistaAsync(transportista.Id_Transportista);
+                if (transportistaExistente == null)
+                {
+                    await _auditoriaService.RegistrarFalloAsync("Editar Transportista",$"Transportista con ID {transportista.Id_Transportista} no encontrado");
+
+                    return new ApiResponse<object>{ IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
+                }
+
+                var transportistas = await _transportistaRepository.ListarTransportistasAsync();
+                if (transportistas.Any(c => c.Cedula == transportista.Cedula && c.Id_Transportista != transportista.Id_Transportista))
+                {
+                    await _auditoriaService.RegistrarFalloAsync("Editar Transportista", $"Cédula {transportista.Cedula} ya existe en otro transportista");
+
+                    return new ApiResponse<object>{ IsSuccess = false, Message = Mensajes.MESSAGE_CEDULA_EXITS };
+                }
+                else if (transportistas.Any(c => c.Telefono == transportista.Telefono && c.Id_Transportista != transportista.Id_Transportista))
+                {
+                    await _auditoriaService.RegistrarFalloAsync("Editar Transportista", $"Teléfono {transportista.Telefono} ya existe en otro transportista");
+
+                    return new ApiResponse<object>{ IsSuccess = false, Message = Mensajes.MESSAGE_PHONE_EXITS };
+                }
+
+                var idUsuario = _currentUserService.GetUserId();
+                var result = await _transportistaRepository.EditarTransportistaAsync(transportista, idUsuario);
+
+                if (result > 0)
+                {
+                    await _auditoriaService.RegistrarExitoAsync("Editar Transportista", $"Transportista {transportista.Codigo} actualizado exitosamente");
+
+                    return new ApiResponse<object>{ IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE };
+                }
+
+                await _auditoriaService.RegistrarFalloAsync("Editar Transportista", $"No se pudo actualizar el transportista {transportista.Codigo}");
+
+                return new ApiResponse<object>{ IsSuccess = false, Message = Mensajes.MESSAGE_UPDATE_FAILLED};
             }
-            else if (transportistas.Any(c => c.Telefono == transportista.Telefono && c.Id_Transportista != transportista.Id_Transportista))
+            catch (Exception ex)
             {
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_PHONE_EXITS };
+                await _auditoriaService.RegistrarErrorAsync("Editar Transportista", ex);
+                throw;
             }
-
-            var idUsuario = _currentUserService.GetUserId();
-
-            var result = await _transportistaRepository.EditarTransportistaAsync(transportista, idUsuario);
-            if (result > 0)
-                return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE };
-
-            return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_UPDATE_FAILLED };
         }
 
         public async Task<ApiResponse<int>> EliminarTransportistaAsync(int id)
@@ -134,20 +243,34 @@ namespace Infrastructure.Services
                 var existe = await _transportistaRepository.ObtenerTransportistaAsync(id);
                 if (existe == null)
                 {
-                    return new ApiResponse<int>
-                    { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
+                    await _auditoriaService.RegistrarFalloAsync("Eliminar Transportista", $"Transportista con ID {id} no encontrado");
+
+                    return new ApiResponse<int>{ IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND };
                 }
 
                 var result = await _transportistaRepository.EliminarTransportistaAsync(id);
 
                 if (result > 0)
-                    return new ApiResponse<int> { IsSuccess = true, Message = Mensajes.MESSAGE_DELETE };
+                {
+                    await _auditoriaService.RegistrarExitoAsync("Eliminar Transportista", $"Transportista {existe.Codigo} eliminado exitosamente");
 
-                return new ApiResponse<int> { IsSuccess = false, Message = Mensajes.MESSAGE_DELETE_FAILLED };
+                    return new ApiResponse<int>{ IsSuccess = true, Message = Mensajes.MESSAGE_DELETE };
+                }
+
+                await _auditoriaService.RegistrarFalloAsync("Eliminar Transportista", $"No se pudo eliminar el transportista {existe.Codigo}");
+
+                return new ApiResponse<int>{ IsSuccess = false, Message = Mensajes.MESSAGE_DELETE_FAILLED };
             }
             catch (SqlException ex) when (ex.Number == 547)
             {
-                return new ApiResponse<int> { IsSuccess = false, Message = "No se puede eliminar al transportista porque tiene compras asociadas." };
+                await _auditoriaService.RegistrarErrorAsync("Eliminar Transportista", new Exception("No se puede eliminar: transportista tiene compras asociadas"));
+
+                return new ApiResponse<int>{ IsSuccess = false, Message = "No se puede eliminar al transportista porque tiene compras asociadas." };
+            }
+            catch (Exception ex)
+            {
+                await _auditoriaService.RegistrarErrorAsync("Eliminar Transportista", ex);
+                throw;
             }
         }
 

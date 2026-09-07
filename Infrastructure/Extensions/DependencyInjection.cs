@@ -3,9 +3,11 @@ using Domain.Models.Dto.Response.Compra;
 using Domain.Models.Dto.Response.Venta;
 using FluentValidation;
 using Infrastructure.Repository;
+using Infrastructure.Repository.InterfacesBusiness;
 using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
+using Infrastructure.Services.business;
 using Infrastructure.Services.Validators;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -41,7 +43,9 @@ namespace Infrastructure.Extensions
             services.AddScoped<RolService>();
             services.AddScoped<TransportistaService>();
             services.AddScoped<ILogService, LogService>();
-            services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<ICurrentUser, CurrentUserService>();
+            services.AddScoped<IAuditoriaService, AuditoriaService>();
+            services.AddScoped<IRequestContext, RequestContextService>();
             services.AddScoped<UsuarioService>();
             services.AddScoped<NegocioService>();
             services.AddScoped<ProductoService>();

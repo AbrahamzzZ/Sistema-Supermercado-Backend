@@ -37,9 +37,9 @@ namespace Infrastructure.Repository
                     logs.Add(new Log
                     {
                         Id_Log = reader.GetInt32(0),
-                        Codigo_Error = reader.GetString(1),
-                        Mensaje_Error = reader.GetString(2),
-                        Detalle_Error = reader.GetString(3),
+                        Codigo = reader.GetString(1),
+                        Mensaje = reader.GetString(2),
+                        Detalle = reader.GetString(3),
                         Id_Usuario = reader.IsDBNull(4) ? null : reader.GetInt32(4),
                         Fecha = reader.GetDateTime(5),
                         Endpoint = reader.GetString(6),
@@ -71,10 +71,10 @@ namespace Infrastructure.Repository
         public async Task<int> RegistrarLogAsync(Log log)
         {
             return await _context.Database.ExecuteSqlRawAsync(
-                "EXEC PA_REGISTRAR_LOG @Codigo_Error, @Mensaje_Error, @Detalle_Error, @Id_Usuario, @EndPoint, @Metodo, @Nivel",
-                new SqlParameter("@Codigo_Error", log.Codigo_Error ?? (object)DBNull.Value),
-                new SqlParameter("@Mensaje_Error", log.Mensaje_Error ?? (object)DBNull.Value),
-                new SqlParameter("@Detalle_Error", log.Detalle_Error ?? (object)DBNull.Value),
+                "EXEC PA_REGISTRAR_LOG @Codigo, @Mensaje, @Detalle, @Id_Usuario, @EndPoint, @Metodo, @Nivel",
+                new SqlParameter("@Codigo", log.Codigo ?? (object)DBNull.Value),
+                new SqlParameter("@Mensaje", log.Mensaje ?? (object)DBNull.Value),
+                new SqlParameter("@Detalle", log.Detalle ?? (object)DBNull.Value),
                 new SqlParameter("@Id_Usuario", log.Id_Usuario ?? (object)DBNull.Value),
                 new SqlParameter("@EndPoint", log.Endpoint ?? (object)DBNull.Value),
                 new SqlParameter("@Metodo", log.Metodo ?? (object) DBNull.Value),

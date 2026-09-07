@@ -13,13 +13,13 @@ namespace Domain.Contexts.Configuration
             builder.ToTable("LOG");
 
             builder.Property(e => e.Id_Log).HasColumnName("ID_LOG");
-            builder.Property(e => e.Codigo_Error)
+            builder.Property(e => e.Codigo)
                 .HasMaxLength(20)
                 .IsUnicode(false)
-                .HasColumnName("CODIGO_ERROR");
-            builder.Property(e => e.Detalle_Error)
+                .HasColumnName("CODIGO");
+            builder.Property(e => e.Detalle)
                 .IsUnicode(false)
-                .HasColumnName("DETALLE_ERROR");
+                .HasColumnName("DETALLE");
             builder.Property(e => e.Endpoint)
                 .HasMaxLength(200)
                 .IsUnicode(false)
@@ -29,10 +29,10 @@ namespace Domain.Contexts.Configuration
                 .HasColumnType("datetime")
                 .HasColumnName("FECHA");
             builder.Property(e => e.Id_Usuario).HasColumnName("ID_USUARIO");
-            builder.Property(e => e.Mensaje_Error)
+            builder.Property(e => e.Mensaje)
                 .HasMaxLength(500)
                 .IsUnicode(false)
-                .HasColumnName("MENSAJE_ERROR");
+                .HasColumnName("MENSAJE");
             builder.Property(e => e.Metodo)
                 .HasMaxLength(10)
                 .IsUnicode(false)
