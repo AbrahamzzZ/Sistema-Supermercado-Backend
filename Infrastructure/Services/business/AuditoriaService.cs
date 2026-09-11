@@ -33,7 +33,14 @@ namespace Infrastructure.Services.business
                 Fecha = DateTime.Now
             };
 
-            await _logRepository.RegistrarLogAsync(log);
+            try
+            {
+                await _logRepository.RegistrarLogAsync(log);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[AUDIT] No se registró log de éxito: {ex.Message}");
+            }
         }
 
         // Registra un log de operación fallida (validación, reglas de negocio)
@@ -51,7 +58,14 @@ namespace Infrastructure.Services.business
                 Fecha = DateTime.Now
             };
 
-            await _logRepository.RegistrarLogAsync(log);
+            try
+            {
+                await _logRepository.RegistrarLogAsync(log);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[AUDIT] No se registró log de fallo: {ex.Message}");
+            }
         }
 
         // Registra un log de error del sistema (excepciones)
@@ -69,7 +83,14 @@ namespace Infrastructure.Services.business
                 Fecha = DateTime.Now
             };
 
-            await _logRepository.RegistrarLogAsync(log);
+            try
+            {
+                await _logRepository.RegistrarLogAsync(log);
+            }
+            catch (Exception logEx)
+            {
+                Console.WriteLine($"[AUDIT] No se registró log de error: {logEx.Message}");
+            }
         }
     }
 }

@@ -29,12 +29,19 @@ namespace APIRestSistemaVentas.Middleware
 
         private async Task HandleException(HttpContext context, Exception ex)
         {
-            var auditoriaService = context.RequestServices.GetRequiredService<IAuditoriaService>();
-
-            await auditoriaService.RegistrarErrorAsync(
-                context.Request.Path.ToString(),
-                ex
-            );
+            try
+            {
+                var auditoriaService = context.RequestServices.GetRequiredService<IAuditoriaService>();
+                await auditoriaService.RegistrarErrorAsync(
+                    context.Request.Path.ToString(),
+                    ex
+                );
+            }
+            catch (Exception logEx)
+            {
+                Console.WriteLine($"Error registrando auditoría: {logEx.Message}");
+                Console.WriteLine($"Error original: {ex.Message}");
+            }
 
             var response = new ApiResponse<object>
             {
