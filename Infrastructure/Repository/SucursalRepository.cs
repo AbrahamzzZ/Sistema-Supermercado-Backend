@@ -53,8 +53,8 @@ namespace Infrastructure.Repository
                         Id_Negocio = reader.GetInt32(2),
                         Nombre_Sucursal = reader.GetString(3),
                         Direccion_Sucursal = reader.GetString(4),
-                        Latitud = reader.GetDouble(5),
-                        Longitud = reader.GetDouble(6),
+                        Latitud = reader.IsDBNull(5) ? null : reader.GetDouble(5),
+                        Longitud = reader.IsDBNull(6) ? null : reader.GetDouble(6),
                         Ciudad_Sucursal = reader.GetString(7),
                         Estado = reader.GetBoolean(8)
                     });
