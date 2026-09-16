@@ -13,6 +13,8 @@ Permite administrar usuarios, ventas, compras, inventario, clientes, proveedores
 - SQL Server
 - JWT Authentication
 - SHA-256 (Cifrado de contraseñas)
+- Auditoría de operaciones por módulo
+- Logging persistente con niveles `INFO`, `WARNING` y `ERROR`
 - Ollama (Integración IA local)
 
 ---
@@ -56,107 +58,28 @@ La API está organizada en una arquitectura en capas:
 
 ---
 
-## Integración con IA (Ollama)
+## Auditoría y logging
 
-El sistema incluye integración con IA local usando **Ollama**.
+La API registra las operaciones de los módulos mediante `IAuditoriaService`. La auditoría está integrada en los servicios de negocio y permite conservar la trazabilidad de las operaciones exitosas, las validaciones fallidas y los errores inesperados.
 
-### Requisitos:
+Cada registro almacena:
 
-1. Instalar Ollama desde:
-https://ollama.com
+- Código de seguimiento de la operación.
+- Mensaje y detalle de lo ocurrido.
+- Usuario autenticado que ejecutó la operación, cuando está disponible.
+- Endpoint y método HTTP utilizados.
+- Fecha y hora del evento.
+- Nivel del registro.
 
-2. Descargar el modelo usado en el proyecto o cualquier otro modelo:
+### Niveles de auditoría
 
-ollama pull qwen3:8b
+| Nivel | Uso |
+|-------|-----|
+| `INFO` | Operaciones ejecutadas correctamente. |
+| `WARNING` | Validaciones fallidas, datos no encontrados o reglas de negocio no cumplidas. |
+| `ERROR` | Excepciones y errores inesperados del sistema. |
 
-3. Editar OllamaClient.cs
-
-cd Backend\Utilities\IA
-
-string model = "TU_MODELO"
-
----
-
-## Instalación y ejecución
-
-**Clonar repositorio**
-git clone <https://github.com/AbrahamzzZ/Sistema-Supermercado-Backend.git>
-
-**Entrar a la carpeta del backend**
-cd backend
-
-**Ejecutar el script de la DB**
-cd backend/Db
-
-Importante si va a usar la autenticacion de Windows en vez de un usuario de la base de datos especificar eso en la cadena de conexión.
-
-**Editar appsettings.json**
-
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=TU_SERVIDOR;Database=TU_BASE;User Id=USUARIO;Password=CLAVE;Integrated Security=True;TrustServerCertificate=True;"
-  }
-
-**Restaurar dependencias**
-dotnet restore
-
-**Ejecutar**
-dotnet run
-
-# Sistema de Ventas - Backend API (.NET 8)
-
-API REST desarrollada en **.NET 8** para la gestión integral de un Sistema de Ventas.  
-Permite administrar usuarios, ventas, compras, inventario, clientes, proveedores y reportes.
-
----
-
-## Tecnologías utilizadas
-
-- .NET 8
-- ASP.NET Core Web API
-- Entity Framework Core (Database First)
-- SQL Server
-- JWT Authentication
-- SHA-256 (Cifrado de contraseñas)
-- Ollama (Integración IA local)
-
----
-
-## Arquitectura
-
-La API está organizada en una arquitectura en capas:
-
-### Controllers
-- Reciben solicitudes HTTP.
-- Validan parámetros.
-- Retornan respuestas estándar (`ApiResponse`).
-
-### Services
-- Contienen la lógica de negocio.
-- Usan inyección de dependencias.
-- Separación por módulos (Ventas, Compras, Usuarios, etc.).
-
-### Repository
-- Acceso a datos mediante Entity Framework.
-- Implementación de interfaces por módulo.
-
-### Models
-- Clases generadas por EF (Database First).
-- DTOs para transferencia de datos.
-
-### Utilities / Shared
-- `ApiResponse.cs` → Respuesta estándar de la API.
-- `Mensajes.cs` → Mensajes reutilizables.
-- `Paginacion.cs` → Soporte para paginación.
-- `Encriptacion.cs` → Cifrado SHA-256.
-- `Token.cs` → Generación y validación JWT.
-
----
-
-## Seguridad
-
-- Autenticación basada en **JWT**
-- Contraseñas cifradas con **SHA-256**
-- Protección de endpoints mediante `[Authorize]`
+Los errores no controlados se registran automáticamente mediante `ErrorHandlerMiddleware` antes de devolver la respuesta HTTP `500` al cliente. Los registros se persisten en la tabla `LOG` de SQL Server a través del procedimiento `PA_REGISTRAR_LOG`.
 
 ---
 
