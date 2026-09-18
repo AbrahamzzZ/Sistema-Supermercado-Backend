@@ -2,6 +2,7 @@ using APIRestSistemaVentas.Middleware;
 using Domain.Contexts;
 using Infrastructure.Extensions;
 using Infrastructure.Helpers;
+using Infrastructure.Repository.InterfacesBusiness;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
@@ -12,27 +13,27 @@ using Utilities.IA;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuración de clave JWT
+// Configuraciï¿½n de clave JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var claveSecreta = jwtSettings.GetValue<string>("Key") ?? throw new InvalidOperationException("JWT Key no configurada");
 
-// Configuración del docker para la base de datos
+// Configuraciï¿½n del docker para la base de datos
 string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("CadenaSQL") ?? "";
 builder.Services.AddDbContext<SistemaSupermercadoContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
 
-// Agregar DbContext con la cadena de conexión del appsettings.json
+// Agregar DbContext con la cadena de conexiï¿½n del appsettings.json
 /*builder.Services.AddDbContext<SistemaSupermercadoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CadenaSQL"))
 );*/
 
-// Inyección de dependencias separada en métodos de extensión
+// Inyecciï¿½n de dependencias separada en mï¿½todos de extensiï¿½n
 builder.Services.AddRepositories();
 builder.Services.AddServices();
 builder.Services.AddValidators();
-builder.Services.AddSingleton<Token>();
+builder.Services.AddSingleton<IToken, Token>();
 builder.Services.AddHttpClient<OllamaClient>(client =>
 {
     client.BaseAddress = new Uri("http://localhost:11434");
@@ -61,7 +62,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Configuración de Rate Limiting
+// Configuraciï¿½n de Rate Limiting
 builder.Services.AddRateLimiter(option =>
 {
     option.RejectionStatusCode = 
@@ -90,14 +91,14 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Agregar Swagger para documentación API  https://aka.ms/aspnetcore/swashbuckle
+// Agregar Swagger para documentaciï¿½n API  https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new() { Title = "API Supermercado", Version = "v1" });
     options.EnableAnnotations();
 
-    // Configuración de seguridad JWT
+    // Configuraciï¿½n de seguridad JWT
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Name = "Authorization",
