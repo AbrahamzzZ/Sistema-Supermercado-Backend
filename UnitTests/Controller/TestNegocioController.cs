@@ -18,11 +18,11 @@ public class TestNegocioController
     public void Setup()
     {
         _mockService = new Mock<INegocioService>();
-        //_controller = new NegocioController(_mockService.Object);
+        _controller = new NegocioController(_mockService.Object);
     }
 
     [TestMethod]
-    public async Task GetNegocio_ReturnsOk_WhenFound()
+    public async Task ObtenerNegocio_DebeRetornarOk_CuandoExiste()
     {
         var response = new ApiResponse<Negocio> { IsSuccess = true, Data = new Negocio { Id_Negocio = 1, Nombre = "Mi Empresa" } };
 
@@ -38,7 +38,7 @@ public class TestNegocioController
     }
 
     [TestMethod]
-    public async Task GetNegocio_ReturnsNotFound_WhenNotFound()
+    public async Task ObtenerNegocio_DebeRetornarNoEncontrado_CuandoNoExiste()
     {
         var response = new ApiResponse<Negocio> { IsSuccess = false, Message = "No encontrado" };
 
@@ -54,7 +54,7 @@ public class TestNegocioController
     }
 
     [TestMethod]
-    public async Task EditarNegocio_ReturnsOk_WhenSuccess()
+    public async Task EditarNegocio_DebeRetornarOk_CuandoTieneExito()
     {
         var request = new Negocio { Id_Negocio = 1, Nombre = "Actualizado" };
         var response = new ApiResponse<object> { IsSuccess = true, Message = "Editado correctamente" };
@@ -71,7 +71,7 @@ public class TestNegocioController
     }
 
     [TestMethod]
-    public async Task EditarNegocio_ReturnsBadRequest_WhenFails()
+    public async Task EditarNegocio_DebeRetornarSolicitudIncorrecta_CuandoFalla()
     {
         var request = new Negocio { Id_Negocio = 1, Nombre = "Actualizado" };
         var response = new ApiResponse<object> { IsSuccess = false, Message = "Error al editar" };
@@ -88,7 +88,7 @@ public class TestNegocioController
     }
 
     [TestMethod]
-    public async Task ObtenerProductosMasComprados_ReturnsOk_WhenSuccess()
+    public async Task ObtenerProductosMasComprados_DebeRetornarOk_CuandoTieneExito()
     {
         var response = new ApiResponse<List<ProductoMasCompradoResponse>>
         { IsSuccess = true, Data = new List<ProductoMasCompradoResponse> { new ProductoMasCompradoResponse { Nombre_Producto = "Producto A", Cantidad_Comprada = 10 } } };
@@ -105,7 +105,7 @@ public class TestNegocioController
     }
 
     [TestMethod]
-    public async Task ObtenerProductosMasVendidos_ReturnsOk_WhenSuccess()
+    public async Task ObtenerProductosMasVendidos_DebeRetornarOk_CuandoTieneExito()
     {
         var response = new ApiResponse<List<ProductoMasVendidoResponse>> { IsSuccess = true, Data = new List<ProductoMasVendidoResponse>  { new ProductoMasVendidoResponse { Nombre_Producto = "Producto X", Cantidad_Vendida = 20 } } };
 
@@ -121,7 +121,7 @@ public class TestNegocioController
     }
 
     [TestMethod]
-    public async Task ObtenerTopClientes_ReturnsOk_WhenSuccess()
+    public async Task ObtenerTopClientes_DebeRetornarOk_CuandoTieneExito()
     {
         var response = new ApiResponse<List<TopClienteResponse>>
         { IsSuccess = true, Data = new List<TopClienteResponse> { new TopClienteResponse { Nombre_Completo = "Cliente A", Compras_Totales = 500 } } };
@@ -138,7 +138,7 @@ public class TestNegocioController
     }
 
     [TestMethod]
-    public async Task ObtenerTopProveedores_ReturnsOk_WhenSuccess()
+    public async Task ObtenerTopProveedores_DebeRetornarOk_CuandoTieneExito()
     {
         var response = new ApiResponse<List<TopProveedorResponse>>
         { IsSuccess = true, Data = new List<TopProveedorResponse> {  new TopProveedorResponse { Nombre_Completo = "Proveedor A", Compras_Totales = 300 } } };
@@ -155,7 +155,7 @@ public class TestNegocioController
     }
 
     [TestMethod]
-    public async Task ObtenerTransportistaViajes_ReturnsOk_WhenSuccess()
+    public async Task ObtenerViajesTransportista_DebeRetornarOk_CuandoTieneExito()
     {
         var response = new ApiResponse<List<ViajesTransportistaResponse>> { IsSuccess = true, Data = new List<ViajesTransportistaResponse> { new ViajesTransportistaResponse { Nombre_Completo = "Juan", Viajes_Realizados = 15 } } };
 
@@ -171,7 +171,7 @@ public class TestNegocioController
     }
 
     [TestMethod]
-    public async Task ObtenerEmpleadosProductivos_ReturnsOk_WhenSuccess()
+    public async Task ObtenerEmpleadosProductivos_DebeRetornarOk_CuandoTieneExito()
     {
         var response = new ApiResponse<List<EmpleadoProductivoResponse>> { IsSuccess = true, Data = new List<EmpleadoProductivoResponse> { new EmpleadoProductivoResponse { Nombre_Completo = "Pedro", Ventas_Empleado = 50 } } };
 

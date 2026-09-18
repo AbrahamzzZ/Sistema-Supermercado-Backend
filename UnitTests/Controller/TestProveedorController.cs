@@ -18,11 +18,11 @@ public class TestProveedorController
     public void Setup()
     {
         _mockService = new Mock<IProveedorService>();
-        //_controller = new ProveedorController(_mockService.Object);
+        _controller = new ProveedorController(_mockService.Object);
     }
 
     [TestMethod]
-    public async Task GetProveedores_ReturnsOk_WithProveedores()
+    public async Task ObtenerProveedores_DebeRetornarOk_ConProveedores()
     {
         var expectedResponse = new ApiResponse<List<ProveedorResponse>> { IsSuccess = true, Data = new List<ProveedorResponse>() };
         _mockService.Setup(s => s.ListarProveedoresAsync()).ReturnsAsync(expectedResponse);
@@ -36,7 +36,7 @@ public class TestProveedorController
     }
 
     [TestMethod]
-    public async Task GetProveedor_ReturnsOk_WhenFound()
+    public async Task ObtenerProveedor_DebeRetornarOk_CuandoExiste()
     {
         var expectedResponse = new ApiResponse<ProveedorResponse> { IsSuccess = true, Data = new ProveedorResponse() };
         _mockService.Setup(s => s.ObtenerProveedorAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
@@ -50,7 +50,7 @@ public class TestProveedorController
     }
 
     [TestMethod]
-    public async Task GetProveedor_ReturnsNotFound_WhenNotFound()
+    public async Task ObtenerProveedor_DebeRetornarNoEncontrado_CuandoNoExiste()
     {
         var expectedResponse = new ApiResponse<ProveedorResponse> { IsSuccess = false, Message = "Not Found" };
         _mockService.Setup(s => s.ObtenerProveedorAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
@@ -63,7 +63,7 @@ public class TestProveedorController
     }
 
     [TestMethod]
-    public async Task GetProveedoresPaginacion_ReturnsOk_WithData()
+    public async Task ObtenerProveedoresPaginados_DebeRetornarOk_ConDatos()
     {
         var expectedResponse = new ApiResponse<Paginacion<ProveedorResponse>> { IsSuccess = true, Data = new Paginacion<ProveedorResponse>() };
         _mockService.Setup(s => s.ListarProveedoresPaginacionAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(expectedResponse);
@@ -77,7 +77,7 @@ public class TestProveedorController
     }
 
     [TestMethod]
-    public async Task RegistrarProveedor_ReturnsOk_WhenSuccess()
+    public async Task RegistrarProveedor_DebeRetornarOk_CuandoTieneExito()
     {
         var proveedor = new Proveedor();
         var expectedResponse = new ApiResponse<object> { IsSuccess = true };
@@ -91,7 +91,7 @@ public class TestProveedorController
     }
 
     [TestMethod]
-    public async Task RegistrarProveedor_ReturnsBadRequest_WhenFail()
+    public async Task RegistrarProveedor_DebeRetornarSolicitudIncorrecta_CuandoFalla()
     {
         var proveedor = new Proveedor();
         var expectedResponse = new ApiResponse<object> { IsSuccess = false };
@@ -105,7 +105,7 @@ public class TestProveedorController
     }
 
     [TestMethod]
-    public async Task EditarProveedor_ReturnsOk_WhenSuccess()
+    public async Task EditarProveedor_DebeRetornarOk_CuandoTieneExito()
     {
         var proveedor = new Proveedor();
         var expectedResponse = new ApiResponse<object> { IsSuccess = true };
@@ -119,7 +119,7 @@ public class TestProveedorController
     }
 
     [TestMethod]
-    public async Task EditarProveedor_ReturnsBadRequest_WhenFail()
+    public async Task EditarProveedor_DebeRetornarSolicitudIncorrecta_CuandoFalla()
     {
         var proveedor = new Proveedor();
         var expectedResponse = new ApiResponse<object> { IsSuccess = false };
@@ -133,7 +133,7 @@ public class TestProveedorController
     }
 
     [TestMethod]
-    public async Task EliminarProveedor_ReturnsOk_WhenSuccess()
+    public async Task EliminarProveedor_DebeRetornarOk_CuandoTieneExito()
     {
         var expectedResponse = new ApiResponse<int> { IsSuccess = true };
         _mockService.Setup(s => s.EliminarProveedorAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
@@ -146,7 +146,7 @@ public class TestProveedorController
     }
 
     [TestMethod]
-    public async Task EliminarProveedor_ReturnsNotFound_WhenFail()
+    public async Task EliminarProveedor_DebeRetornarNoEncontrado_CuandoFalla()
     {
         var expectedResponse = new ApiResponse<int> { IsSuccess = false };
         _mockService.Setup(s => s.EliminarProveedorAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);

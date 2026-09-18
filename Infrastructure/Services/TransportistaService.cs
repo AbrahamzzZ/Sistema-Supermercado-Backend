@@ -13,28 +13,18 @@ namespace Infrastructure.Services
 {
     public class TransportistaService : ITransportistaService
     {
-        private readonly TransportistaRepository _transportistaRepository;
+        private readonly ITransportistaRepository _transportistaRepository;
         private readonly IValidator<Transportistum> _validator;
         private readonly ICurrentUser _currentUserService;
         private readonly IAuditoriaService _auditoriaService;
 
-        public TransportistaService(TransportistaRepository transportistaRepository, IValidator<Transportistum> validator, ICurrentUser currentUserService, IAuditoriaService auditoriaService)
+        public TransportistaService(ITransportistaRepository transportistaRepository, IValidator<Transportistum> validator, ICurrentUser currentUserService, IAuditoriaService auditoriaService)
         {
             _transportistaRepository = transportistaRepository;
             _validator = validator;
             _currentUserService = currentUserService;
             _auditoriaService = auditoriaService;
         }
-
-        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
-
-        /*readonly ITransportistaRepository _transportistaRepository;
-        private readonly IValidator<Transportistum> _validator;
-        public TransportistaService(ITransportistaRepository transportistaRepository, IValidator<Transportistum> validator)
-        {
-            _transportistaRepository = transportistaRepository;
-            _validator = validator;
-        }*/
 
         public async Task<ApiResponse<List<TransportistaResponse>>> ListarTransportistasAsync()
         {

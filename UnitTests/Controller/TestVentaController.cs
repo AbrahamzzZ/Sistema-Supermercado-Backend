@@ -17,12 +17,12 @@ public class TestVentaController
     public void Setup()
     {
         _mockService = new Mock<IVentaService>();
-        //_controller = new VentaController(_mockService.Object);
+        _controller = new VentaController(_mockService.Object);
     }
 
 
     [TestMethod]
-    public async Task GetObtenerNumeroDocumento_ReturnsOkResult()
+    public async Task ObtenerNumeroDocumento_DebeRetornarOk()
     {
         var response = new ApiResponse<string> { IsSuccess = true, Message = "OK", Data = "VEN-0001" };
 
@@ -38,7 +38,7 @@ public class TestVentaController
     }
 
     [TestMethod]
-    public async Task GetObtenerVenta_ReturnsOkWithVenta()
+    public async Task ObtenerVenta_DebeRetornarOk_ConVenta()
     {
         var response = new ApiResponse<VentaResponse> { IsSuccess = true, Message = "OK", Data = new VentaResponse { Numero_Documento = "VEN-0001", Monto_Total = 100, Id_Cliente = 1 } };
 
@@ -54,7 +54,7 @@ public class TestVentaController
     }
 
     [TestMethod]
-    public async Task GetObtenerDetallesVenta_ReturnsOkWithDetalles()
+    public async Task ObtenerDetallesVenta_DebeRetornarOk_ConDetalles()
     {
         var response = new ApiResponse<List<DetalleVentaReponse>>
         {
@@ -75,7 +75,7 @@ public class TestVentaController
     }
 
     [TestMethod]
-    public async Task PostRegistrarVenta_ReturnsOkWhenSuccess()
+    public async Task RegistrarVenta_DebeRetornarOk_CuandoTieneExito()
     {
         var ventaDto = new Ventas { Numero_Documento = "VEN-0002", Monto_Total = 200 };
         var response = new ApiResponse<object> { IsSuccess = true, Message = "Venta registrada correctamente" };
@@ -92,7 +92,7 @@ public class TestVentaController
     }
 
     [TestMethod]
-    public async Task PostRegistrarVenta_ReturnsBadRequestWhenFails()
+    public async Task RegistrarVenta_DebeRetornarSolicitudIncorrecta_CuandoFalla()
     {
         var ventaDto = new Ventas { Numero_Documento = "VEN-0003", Monto_Total = 300 };
         var response = new ApiResponse<object> { IsSuccess = false, Message = "Error al registrar venta" };

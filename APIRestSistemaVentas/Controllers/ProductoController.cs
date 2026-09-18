@@ -15,9 +15,9 @@ namespace APIRestSistemaVentas.Controllers
     public class ProductoController : ControllerBase
     {
 
-        private readonly ProductoService _productoService;
+        private readonly IProductoService _productoService;
 
-        public ProductoController(ProductoService productoService)
+        public ProductoController(IProductoService productoService)
         {
             _productoService = productoService;
         }

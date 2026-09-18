@@ -13,29 +13,18 @@ namespace Infrastructure.Services
 {
     public class ProveedorService : IProveedorService
     {
-        private readonly ProveedorRepository _proveedorRepository;
+        private readonly IProveedorRepository _proveedorRepository;
         private readonly IValidator<Proveedor> _validator;
         private readonly ICurrentUser _currentUserService;
         private readonly IAuditoriaService _auditoriaService;
 
-        public ProveedorService(ProveedorRepository proveedorRepository, IValidator<Proveedor> validator, ICurrentUser currentUserService, IAuditoriaService auditoriaService)
+        public ProveedorService(IProveedorRepository proveedorRepository, IValidator<Proveedor> validator, ICurrentUser currentUserService, IAuditoriaService auditoriaService)
         {
             _proveedorRepository = proveedorRepository;
             _validator = validator;
             _currentUserService = currentUserService;
             _auditoriaService = auditoriaService;
         }
-
-        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
-
-        /*readonly IProveedorRepository _proveedorRepository;
-        private readonly IValidator<Proveedor> _validator;
-
-        public ProveedorService(IProveedorRepository proveedorRepository, IValidator<Proveedor> validator)
-        {
-            _proveedorRepository = proveedorRepository;
-            _validator = validator;
-        }*/
 
         public async Task<ApiResponse<List<ProveedorResponse>>> ListarProveedoresAsync()
         {

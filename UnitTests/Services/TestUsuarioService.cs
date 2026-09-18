@@ -4,6 +4,8 @@ using Domain.Models.Dto.Response.Usuario;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
+using Infrastructure.Repository.InterfacesBusiness;
+using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Moq;
 using Utilities.Shared;
@@ -15,6 +17,8 @@ public class TestUsuarioService
 {
     private Mock<IUsuarioRepository> _mockRepository;
     private Mock<IValidator<Usuario>> _mockValidator;
+    private Mock<ICurrentUser> _mockCurrentUser;
+    private Mock<IAuditoriaService> _mockAuditoria;
     private UsuarioService _service;
 
     [TestInitialize]
@@ -22,14 +26,18 @@ public class TestUsuarioService
     {
         _mockRepository = new Mock<IUsuarioRepository>();
         _mockValidator = new Mock<IValidator<Usuario>>();
-        /*_service = new UsuarioService(
+        _mockCurrentUser = new Mock<ICurrentUser>();
+        _mockCurrentUser.Setup(user => user.GetUserId()).Returns(1);
+        _mockAuditoria = new Mock<IAuditoriaService>();
+        _service = new UsuarioService(
             _mockRepository.Object,
-            _mockValidator.Object
-        );*/
+            _mockValidator.Object,
+            _mockCurrentUser.Object,
+            _mockAuditoria.Object);
     }
 
     [TestMethod]
-    public async Task RegistrarUsuario_DeberiaFallar_SiUsuarioEsNull()
+    public async Task RegistrarUsuario_DeberiaFallar_SiUsuarioEsNulo()
     {
         var result = await _service.RegistrarUsuarioAsync(null);
         Assert.IsFalse(result.IsSuccess);
@@ -62,22 +70,22 @@ public class TestUsuarioService
     public async Task RegistrarUsuario_DeberiaFallar_SiClaveInvalida()
     {
         var usuario = new Usuario { Codigo = "USR01", Nombre_Completo = "Juan Perez", Correo_Electronico = "test@mail.com", Clave = "123" };
-        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Usuario>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Clave", "La clave debe tener al menos 10 caracteres, incluyendo letras, números y caracteres especiales.") }));
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Usuario>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Clave", "La clave debe tener al menos 10 caracteres, incluyendo letras, nï¿½meros y caracteres especiales.") }));
         var result = await _service.RegistrarUsuarioAsync(usuario);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("La clave debe tener al menos 10 caracteres, incluyendo letras, números y caracteres especiales.", result.Message);
+        Assert.AreEqual("La clave debe tener al menos 10 caracteres, incluyendo letras, nï¿½meros y caracteres especiales.", result.Message);
     }
 
     [TestMethod]
     public async Task RegistrarUsuario_DeberiaFallar_SiCorreoInvalido()
     {
         var usuario = new Usuario { Codigo = "USR01", Nombre_Completo = "Juan Perez", Correo_Electronico = "correo_invalido", Clave = "ClaveValida#123" };
-        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Usuario>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Correo Electronico", "El correo electrónico no tiene un formato válido") }));
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Usuario>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Correo Electronico", "El correo electrï¿½nico no tiene un formato vï¿½lido") }));
         var result = await _service.RegistrarUsuarioAsync(usuario);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("El correo electrónico no tiene un formato válido", result.Message);
+        Assert.AreEqual("El correo electrï¿½nico no tiene un formato vï¿½lido", result.Message);
     }
 
     [TestMethod]
@@ -94,7 +102,7 @@ public class TestUsuarioService
 
 
     [TestMethod]
-    public async Task EditarUsuario_DeberiaFallar_SiUsuarioEsNull()
+    public async Task EditarUsuario_DeberiaFallar_SiUsuarioEsNulo()
     {
         var result = await _service.EditarUsuarioAsync(null);
         Assert.IsFalse(result.IsSuccess);
@@ -135,7 +143,7 @@ public class TestUsuarioService
         var result = await _service.EditarUsuarioAsync(usuarioEditado);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("No se puede modificar el rol al único administrador activo.", result.Message);
+        Assert.AreEqual("No se puede modificar el rol al Ãºnico administrador activo.", result.Message);
     }
 
 
@@ -161,12 +169,12 @@ public class TestUsuarioService
         var result = await _service.EliminarUsuarioAsync(1);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("No se puede eliminar al único administrador activo.", result.Message);
+        Assert.AreEqual("No se puede eliminar al Ãºnico administrador activo.", result.Message);
     }
 
 
     [TestMethod]
-    public async Task IniciarSesion_DeberiaFallar_SiLoginEsNull()
+    public async Task IniciarSesion_DeberiaFallar_SiCredencialesSonNulas()
     {
         var result = await _service.IniciarSesionAsync(null);
 
@@ -184,7 +192,7 @@ public class TestUsuarioService
         var result = await _service.IniciarSesionAsync(login);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("Credenciales inválidas.", result.Message);
+        Assert.AreEqual("Credenciales invÃ¡lidas.", result.Message);
     }
 
     [TestMethod]
@@ -199,5 +207,16 @@ public class TestUsuarioService
 
         Assert.IsFalse(result.IsSuccess);
         Assert.AreEqual("Usuario inactivo. Contacte con el administrador.", result.Message);
+    }
+
+    [TestMethod]
+    public async Task ObtenerUsuario_DebePropagarExcepcion_YRegistrarError()
+    {
+        var excepcion = new InvalidOperationException("Error de repositorio");
+        _mockRepository.Setup(r => r.ObtenerUsuarioAsync(1)).ThrowsAsync(excepcion);
+
+        await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => _service.ObtenerUsuarioAsync(1));
+
+        _mockAuditoria.Verify(a => a.RegistrarErrorAsync("Obtener Usuario", excepcion), Times.Once);
     }
 }

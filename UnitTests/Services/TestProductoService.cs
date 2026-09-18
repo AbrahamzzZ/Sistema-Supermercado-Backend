@@ -3,6 +3,8 @@ using Domain.Models.Dto.Response.Producto;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
+using Infrastructure.Repository.InterfacesBusiness;
+using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Moq;
 using Utilities.Shared;
@@ -14,6 +16,8 @@ public class TestProductoService
 {
     private Mock<IProductoRepository> _mockRepository;
     private Mock<IValidator<Producto>> _mockValidator;
+    private Mock<ICurrentUser> _mockCurrentUser;
+    private Mock<IAuditoriaService> _mockAuditoria;
     private ProductoService _service;
 
     [TestInitialize]
@@ -21,14 +25,18 @@ public class TestProductoService
     {
         _mockRepository = new Mock<IProductoRepository>();
         _mockValidator = new Mock<IValidator<Producto>>();
-        /*_service = new ProductoService(
+        _mockCurrentUser = new Mock<ICurrentUser>();
+        _mockCurrentUser.Setup(user => user.GetUserId()).Returns(1);
+        _mockAuditoria = new Mock<IAuditoriaService>();
+        _service = new ProductoService(
             _mockRepository.Object,
-            _mockValidator.Object
-        );*/
+            _mockValidator.Object,
+            _mockCurrentUser.Object,
+            _mockAuditoria.Object);
     }
 
     [TestMethod]
-    public async Task ListarProductosAsync_ReturnsSuccess_WhenDataExists()
+    public async Task ListarProductosAsync_DebeRetornarExito_CuandoExistenDatos()
     {
         var productos = new List<ProductoCategoriaResponse> { new ProductoCategoriaResponse { Id_Producto = 1, Nombre_Producto = "Producto A" } };
         _mockRepository.Setup(r => r.ListarProductosAsync()).ReturnsAsync(productos);
@@ -40,7 +48,7 @@ public class TestProductoService
     }
 
     [TestMethod]
-    public async Task ListarProductosAsync_ReturnsEmpty_WhenNoData()
+    public async Task ListarProductosAsync_DebeRetornarVacio_CuandoNoExistenDatos()
     {
         _mockRepository.Setup(r => r.ListarProductosAsync()).ReturnsAsync(new List<ProductoCategoriaResponse>());
         var result = await _service.ListarProductosAsync();
@@ -50,7 +58,7 @@ public class TestProductoService
     }
 
     [TestMethod]
-    public async Task ObtenerProductoAsync_ReturnsSuccess_WhenFound()
+    public async Task ObtenerProductoAsync_DebeRetornarExito_CuandoExiste()
     {
         var producto = new ProductoResponse { Id_Producto = 1, Nombre_Producto = "Producto A" };
         _mockRepository.Setup(r => r.ObtenerProductoAsync(1)).ReturnsAsync(producto);
@@ -61,7 +69,7 @@ public class TestProductoService
     }
 
     [TestMethod]
-    public async Task ObtenerProductoAsync_ReturnsNotFound_WhenNotExists()
+    public async Task ObtenerProductoAsync_DebeRetornarNoEncontrado_CuandoNoExiste()
     {
         _mockRepository.Setup(r => r.ObtenerProductoAsync(99)).ReturnsAsync((ProductoResponse)null);
         var result = await _service.ObtenerProductoAsync(99);
@@ -71,7 +79,7 @@ public class TestProductoService
     }
 
     [TestMethod]
-    public async Task RegistrarProducto_DeberiaFallar_SiProductoEsNull()
+    public async Task RegistrarProducto_DeberiaFallar_SiProductoEsNulo()
     {
         var result = await _service.RegistrarProductoAsync(null);
 
@@ -140,7 +148,7 @@ public class TestProductoService
     }
 
     [TestMethod]
-    public async Task EliminarProducto_DeberiaSerExitos()
+    public async Task EliminarProducto_DebeSerExitoso()
     {
 
         _mockRepository.Setup(r => r.ObtenerProductoAsync(1)).ReturnsAsync(new ProductoResponse());
@@ -149,5 +157,16 @@ public class TestProductoService
 
         Assert.IsTrue(result.IsSuccess);
         Assert.AreEqual(Mensajes.MESSAGE_DELETE, result.Message);
+    }
+
+    [TestMethod]
+    public async Task ListarProductos_DebePropagarExcepcion_YRegistrarError()
+    {
+        var excepcion = new InvalidOperationException("Error de repositorio");
+        _mockRepository.Setup(r => r.ListarProductosAsync()).ThrowsAsync(excepcion);
+
+        await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => _service.ListarProductosAsync());
+
+        _mockAuditoria.Verify(a => a.RegistrarErrorAsync("Listar Productos", excepcion), Times.Once);
     }
 }

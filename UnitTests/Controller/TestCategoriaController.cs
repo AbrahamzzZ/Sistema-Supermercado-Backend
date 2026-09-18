@@ -18,7 +18,7 @@ public class TestCategoriaController
     public void Setup()
     {
         _mockService = new Mock<ICategoriaService>();
-        //_controller = new CategoriaController(_mockService.Object);
+        _controller = new CategoriaController(_mockService.Object);
     }
 
     [TestMethod]
@@ -52,7 +52,7 @@ public class TestCategoriaController
     }
 
     [TestMethod]
-    public async Task GetCategoria_DeberiaRetornarNotFound_SiNoExiste()
+    public async Task ObtenerCategoria_DebeRetornarNoEncontrado_SiNoExiste()
     {
         _mockService.Setup(s => s.ObtenerCategoriaAsync(99))
             .ReturnsAsync(new ApiResponse<CategoriaResponse> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND });
@@ -91,7 +91,7 @@ public class TestCategoriaController
     [TestMethod]
     public async Task EditarCategoria_DeberiaRetornarOk_SiValido()
     {
-        var categoria = new Categorium { Id_Categoria = 1, Nombre_Categoria = "Lácteos" };
+        var categoria = new Categorium { Id_Categoria = 1, Nombre_Categoria = "Lï¿½cteos" };
 
         _mockService.Setup(s => s.EditarCategoriaAsync(categoria))
             .ReturnsAsync(new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE });
@@ -126,7 +126,7 @@ public class TestCategoriaController
     }
 
     [TestMethod]
-    public async Task EliminarCategoria_DeberiaRetornarNotFound_SiNoExiste()
+    public async Task EliminarCategoria_DebeRetornarNoEncontrado_SiNoExiste()
     {
         _mockService.Setup(s => s.EliminarCategoriaAsync(99))
             .ReturnsAsync(new ApiResponse<int> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND });

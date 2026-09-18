@@ -12,9 +12,9 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class VentaController : ControllerBase
     {
-        private readonly VentaService _ventaService;
+        private readonly IVentaService _ventaService;
 
-        public VentaController(VentaService ventaService)
+        public VentaController(IVentaService ventaService)
         {
             _ventaService = ventaService;
         }

@@ -3,6 +3,8 @@ using Domain.Models.Dto.Response.Provedor;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
+using Infrastructure.Repository.InterfacesBusiness;
+using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Moq;
 using Utilities.Shared;
@@ -14,6 +16,8 @@ public class TestProveedorService
 {
     private Mock<IProveedorRepository> _mockRepository;
     private Mock<IValidator<Proveedor>> _mockValidator;
+    private Mock<ICurrentUser> _mockCurrentUser;
+    private Mock<IAuditoriaService> _mockAuditoria;
     private ProveedorService _service;
 
     [TestInitialize]
@@ -21,14 +25,18 @@ public class TestProveedorService
     {
         _mockRepository = new Mock<IProveedorRepository>();
         _mockValidator = new Mock<IValidator<Proveedor>>();
-        /*_service = new ProveedorService(
+        _mockCurrentUser = new Mock<ICurrentUser>();
+        _mockCurrentUser.Setup(user => user.GetUserId()).Returns(1);
+        _mockAuditoria = new Mock<IAuditoriaService>();
+        _service = new ProveedorService(
             _mockRepository.Object,
-            _mockValidator.Object
-        );*/
+            _mockValidator.Object,
+            _mockCurrentUser.Object,
+            _mockAuditoria.Object);
     }
 
     [TestMethod]
-    public async Task RegistrarProveedor_DeberiaFallar_SiProveedorEsNull()
+    public async Task RegistrarProveedor_DeberiaFallar_SiProveedorEsNulo()
     {
         var result = await _service.RegistrarProveedorAsync(null);
 
@@ -62,22 +70,22 @@ public class TestProveedorService
     public async Task RegistrarProveedor_DeberiaFallar_SiCedulaOTelefonoInvalidos()
     {
         var proveedor = new Proveedor { Codigo = "CLI01", Nombres = "Juan", Apellidos = "Perez", Cedula = "123", Telefono = "098", Correo_Electronico = "test@mail.com" };
-        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Cedula", "La cédula y el teléfono deben contener exactamente 10 dígitos numéricos") }));
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Cedula", "La cï¿½dula y el telï¿½fono deben contener exactamente 10 dï¿½gitos numï¿½ricos") }));
         var result = await _service.RegistrarProveedorAsync(proveedor);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("La cédula y el teléfono deben contener exactamente 10 dígitos numéricos", result.Message);
+        Assert.AreEqual("La cï¿½dula y el telï¿½fono deben contener exactamente 10 dï¿½gitos numï¿½ricos", result.Message);
     }
 
     [TestMethod]
     public async Task RegistrarProveedor_DeberiaFallar_SiCorreoInvalido()
     {
         var proveedor = new Proveedor { Codigo = "CLI01", Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "correo_invalido" };
-        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Correo Electronico", "El correo electrónico no tiene un formato válido") }));
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Correo Electronico", "El correo electrï¿½nico no tiene un formato vï¿½lido") }));
         var result = await _service.RegistrarProveedorAsync(proveedor);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("El correo electrónico no tiene un formato válido", result.Message);
+        Assert.AreEqual("El correo electrï¿½nico no tiene un formato vï¿½lido", result.Message);
     }
 
     [TestMethod]
@@ -94,7 +102,7 @@ public class TestProveedorService
     }
 
     [TestMethod]
-    public async Task EditarProveedor_DeberiaFallar_SiProveedorEsNull()
+    public async Task EditarProveedor_DeberiaFallar_SiProveedorEsNulo()
     {
         var result = await _service.EditarProveedorAsync(null);
 
@@ -141,24 +149,24 @@ public class TestProveedorService
     public async Task EditarProveedor_DeberiaFallar_SiCedulaOTelefonoInvalidos()
     {
         var proveedor = new Proveedor { Id_Proveedor = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "123", Telefono = "098", Correo_Electronico = "test@mail.com" };
-        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Cedula", "La cédula y el teléfono deben contener exactamente 10 dígitos numéricos") }));
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Cedula", "La cï¿½dula y el telï¿½fono deben contener exactamente 10 dï¿½gitos numï¿½ricos") }));
         _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new ProveedorResponse());
         var result = await _service.EditarProveedorAsync(proveedor);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("La cédula y el teléfono deben contener exactamente 10 dígitos numéricos", result.Message);
+        Assert.AreEqual("La cï¿½dula y el telï¿½fono deben contener exactamente 10 dï¿½gitos numï¿½ricos", result.Message);
     }
 
     [TestMethod]
     public async Task EditarProveedor_DeberiaFallar_SiCorreoInvalido()
     {
         var proveedor = new Proveedor { Id_Proveedor = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "correo_invalido" };
-        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Correo Electronico", "El correo electrónico no tiene un formato válido") }));
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Proveedor>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Correo Electronico", "El correo electrï¿½nico no tiene un formato vï¿½lido") }));
         _mockRepository.Setup(r => r.ObtenerProveedorAsync(1)).ReturnsAsync(new ProveedorResponse());
         var result = await _service.EditarProveedorAsync(proveedor);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("El correo electrónico no tiene un formato válido", result.Message);
+        Assert.AreEqual("El correo electrï¿½nico no tiene un formato vï¿½lido", result.Message);
     }
 
     [TestMethod]
@@ -189,7 +197,7 @@ public class TestProveedorService
     }
 
     [TestMethod]
-    public async Task EliminarProveedo_DeberiaFallar_SiProveedorNoExiste()
+    public async Task EliminarProveedor_DeberiaFallar_SiProveedorNoExiste()
     {
         _mockRepository.Setup(r => r.ObtenerProveedorAsync(99)).ReturnsAsync((ProveedorResponse)null);
         var result = await _service.EliminarProveedorAsync(99);
@@ -219,5 +227,16 @@ public class TestProveedorService
 
         Assert.IsFalse(result.IsSuccess);
         Assert.AreEqual(Mensajes.MESSAGE_DELETE_FAILLED, result.Message);
+    }
+
+    [TestMethod]
+    public async Task ListarProveedores_DebePropagarExcepcion_YRegistrarError()
+    {
+        var excepcion = new InvalidOperationException("Error de repositorio");
+        _mockRepository.Setup(r => r.ListarProveedoresAsync()).ThrowsAsync(excepcion);
+
+        await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => _service.ListarProveedoresAsync());
+
+        _mockAuditoria.Verify(a => a.RegistrarErrorAsync("Listar Proveedores", excepcion), Times.Once);
     }
 }

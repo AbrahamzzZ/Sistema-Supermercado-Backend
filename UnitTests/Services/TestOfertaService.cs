@@ -3,6 +3,8 @@ using Domain.Models.Dto.Response.Oferta;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
+using Infrastructure.Repository.InterfacesBusiness;
+using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Moq;
 using Utilities.Shared;
@@ -14,6 +16,8 @@ public class TestOfertaService
 {
     private Mock<IOfertaRepository> _mockRepository;
     private Mock<IValidator<Ofertum>> _mockValidator;
+    private Mock<ICurrentUser> _mockCurrentUser;
+    private Mock<IAuditoriaService> _mockAuditoria;
     private OfertaService _service;
 
     [TestInitialize]
@@ -21,14 +25,18 @@ public class TestOfertaService
     {
         _mockRepository = new Mock<IOfertaRepository>();
         _mockValidator = new Mock<IValidator<Ofertum>>();
-        /*_service = new OfertaService(
+        _mockCurrentUser = new Mock<ICurrentUser>();
+        _mockCurrentUser.Setup(user => user.GetUserId()).Returns(1);
+        _mockAuditoria = new Mock<IAuditoriaService>();
+        _service = new OfertaService(
             _mockRepository.Object,
-            _mockValidator.Object
-        );*/
+            _mockValidator.Object,
+            _mockCurrentUser.Object,
+            _mockAuditoria.Object);
     }
 
     [TestMethod]
-    public async Task ListarOfertasAsync_ReturnsSuccess_WhenDataExists()
+    public async Task ListarOfertasAsync_DebeRetornarExito_CuandoExistenDatos()
     {
         var ofertas = new List<OfertaProductoResponse> { new OfertaProductoResponse { Id_Oferta = 1, Nombre_Oferta = "Oferta A" } };
         _mockRepository.Setup(r => r.ListarOfertasAsync()).ReturnsAsync(ofertas);
@@ -40,7 +48,7 @@ public class TestOfertaService
     }
 
     [TestMethod]
-    public async Task ListarOfertasAsync_ReturnsEmpty_WhenNoData()
+    public async Task ListarOfertasAsync_DebeRetornarVacio_CuandoNoExistenDatos()
     {
         _mockRepository.Setup(r => r.ListarOfertasAsync()).ReturnsAsync(new List<OfertaProductoResponse>());
         var result = await _service.ListarOfertasAsync();
@@ -50,7 +58,7 @@ public class TestOfertaService
     }
 
     [TestMethod]
-    public async Task ObtenerOfertaAsync_ReturnsSuccess_WhenFound()
+    public async Task ObtenerOfertaAsync_DebeRetornarExito_CuandoExiste()
     {
         var oferta = new OfertaProductoResponse { Id_Oferta = 1, Nombre_Oferta = "Oferta A" };
         _mockRepository.Setup(r => r.ObtenerOfertaAsync(1)).ReturnsAsync(oferta);
@@ -61,7 +69,7 @@ public class TestOfertaService
     }
 
     [TestMethod]
-    public async Task ObtenerOfertaAsync_ReturnsNotFound_WhenNotExists()
+    public async Task ObtenerOfertaAsync_DebeRetornarNoEncontrado_CuandoNoExiste()
     {
         _mockRepository.Setup(r => r.ObtenerOfertaAsync(99)).ReturnsAsync((OfertaProductoResponse)null);
         var result = await _service.ObtenerOfertaAsync(99);
@@ -71,7 +79,7 @@ public class TestOfertaService
     }
 
     [TestMethod]
-    public async Task RegistrarOfertaAsync_ReturnsValidate_WhenNull()
+    public async Task RegistrarOfertaAsync_DebeRetornarError_CuandoEsNula()
     {
         var result = await _service.RegistrarOfertaAsync(null);
 
@@ -91,9 +99,9 @@ public class TestOfertaService
     }
 
     [TestMethod]
-    public async Task RegistrarOferta_DeberiaFallar_SiDescuenoInvalido()
+    public async Task RegistrarOferta_DeberiaFallar_SiDescuentoEsInvalido()
     {
-        var oferta = new Ofertum { Id_Producto = 1, Codigo = "OF001", Nombre_Oferta = "Oferta Test", Descripcion = "Descripción", Descuento = 150, Fecha_Fin = DateOnly.FromDateTime(DateTime.Now.AddDays(10)) };
+        var oferta = new Ofertum { Id_Producto = 1, Codigo = "OF001", Nombre_Oferta = "Oferta Test", Descripcion = "Descripciï¿½n", Descuento = 150, Fecha_Fin = DateOnly.FromDateTime(DateTime.Now.AddDays(10)) };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Ofertum>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Descuento", "El descuento debe estar entre 0 y 100") }));
         var result = await _service.RegistrarOfertaAsync(oferta);
 
@@ -102,9 +110,9 @@ public class TestOfertaService
     }
 
     [TestMethod]
-    public async Task RegistrarOferta_DeberiaFalla_SiFechaFinEsFutura()
+    public async Task RegistrarOferta_DeberiaFallar_SiFechaFinNoEsFutura()
     {
-        var oferta = new Ofertum { Id_Producto = 1, Codigo = "OF001",  Nombre_Oferta = "Oferta Test", Descripcion = "Descripción", Descuento = 10, Fecha_Fin = DateOnly.FromDateTime(DateTime.Now.AddDays(-1)) };
+        var oferta = new Ofertum { Id_Producto = 1, Codigo = "OF001",  Nombre_Oferta = "Oferta Test", Descripcion = "Descripciï¿½n", Descuento = 10, Fecha_Fin = DateOnly.FromDateTime(DateTime.Now.AddDays(-1)) };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Ofertum>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure>{ new ValidationFailure("Fecha_Fin", "La fecha de fin debe ser una fecha futura") }));
         var result = await _service.RegistrarOfertaAsync(oferta);
 
@@ -115,7 +123,7 @@ public class TestOfertaService
     [TestMethod]
     public async Task RegistrarOferta_DeberiaSerExitoso()
     {
-        var oferta = new Ofertum { Id_Producto = 1, Codigo = "OF001", Nombre_Oferta = "Oferta Test", Descripcion = "Descripción", Descuento = 20, Fecha_Fin = DateOnly.FromDateTime(DateTime.Now.AddDays(5)) };
+        var oferta = new Ofertum { Id_Producto = 1, Codigo = "OF001", Nombre_Oferta = "Oferta Test", Descripcion = "Descripciï¿½n", Descuento = 20, Fecha_Fin = DateOnly.FromDateTime(DateTime.Now.AddDays(5)) };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Ofertum>(), default)).ReturnsAsync(new ValidationResult());
         _mockRepository.Setup(r => r.ListarOfertasAsync()).ReturnsAsync(new List<OfertaProductoResponse>());
         _mockRepository.Setup(r => r.RegistrarOfertaAsync(oferta, 1)).ReturnsAsync(1);
@@ -152,7 +160,7 @@ public class TestOfertaService
     }
 
     [TestMethod]
-    public async Task EliminarOfertaAsync_ReturnsNotFound_WhenNotExists()
+    public async Task EliminarOfertaAsync_DebeRetornarNoEncontrado_CuandoNoExiste()
     {
         _mockRepository.Setup(r => r.ObtenerOfertaAsync(99)).ReturnsAsync((OfertaProductoResponse)null);
         var result = await _service.EliminarOfertaAsync(99);
@@ -162,7 +170,7 @@ public class TestOfertaService
     }
 
     [TestMethod]
-    public async Task EliminarOfertaAsync_ReturnsSuccess_WhenDeleted()
+    public async Task EliminarOfertaAsync_DebeRetornarExito_CuandoSeElimina()
     {
         var oferta = new OfertaProductoResponse { Id_Oferta = 1, Nombre_Oferta = "Oferta A" };
         _mockRepository.Setup(r => r.ObtenerOfertaAsync(1)).ReturnsAsync(oferta);
@@ -171,5 +179,16 @@ public class TestOfertaService
 
         Assert.IsTrue(result.IsSuccess);
         Assert.AreEqual(Mensajes.MESSAGE_DELETE, result.Message);
+    }
+
+    [TestMethod]
+    public async Task ListarOfertas_DebePropagarExcepcion_YRegistrarError()
+    {
+        var excepcion = new InvalidOperationException("Error de repositorio");
+        _mockRepository.Setup(r => r.ListarOfertasAsync()).ThrowsAsync(excepcion);
+
+        await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => _service.ListarOfertasAsync());
+
+        _mockAuditoria.Verify(a => a.RegistrarErrorAsync("Listar Ofertas", excepcion), Times.Once);
     }
 }

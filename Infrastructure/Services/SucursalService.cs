@@ -12,29 +12,18 @@ namespace Infrastructure.Services
 {
     public class SucursalService : ISucursalService
     {
-        private readonly SucursalRepository _sucursalRepository;
+        private readonly ISucursalRepository _sucursalRepository;
         private readonly IValidator<Sucursal> _validator;
         private readonly ICurrentUser _currentUserService;
         private readonly IAuditoriaService _auditoriaService;
 
-        public SucursalService(SucursalRepository sucursalRepository, IValidator<Sucursal> validator, ICurrentUser currentUserService, IAuditoriaService auditoriaService)
+        public SucursalService(ISucursalRepository sucursalRepository, IValidator<Sucursal> validator, ICurrentUser currentUserService, IAuditoriaService auditoriaService)
         {
             _sucursalRepository = sucursalRepository;
             _validator = validator;
             _currentUserService = currentUserService;
             _auditoriaService = auditoriaService;
         }
-
-        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
-
-        /*readonly ISucursalRepository _sucursalRepository;
-        private readonly IValidator<Sucursal> _validator;
-
-        public SucursalService(ISucursalRepository sucursalRepository, IValidator<Sucursal> validator)
-        {
-            _sucursalRepository = sucursalRepository;
-            _validator = validator;
-        }*/
 
         public async Task<ApiResponse<List<SucursalResponse>>> ListarSucursalesAsync()
         {

@@ -13,9 +13,9 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class SucursalController : ControllerBase
     {
-        private readonly SucursalService _sucursalService;
+        private readonly ISucursalService _sucursalService;
 
-        public SucursalController(SucursalService sucursalService)
+        public SucursalController(ISucursalService sucursalService)
         {
             _sucursalService = sucursalService;
         }
