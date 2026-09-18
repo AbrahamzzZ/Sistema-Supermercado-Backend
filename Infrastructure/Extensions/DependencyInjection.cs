@@ -17,42 +17,42 @@ namespace Infrastructure.Extensions
     {
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            services.AddScoped<CategoriaRepository>();
-            services.AddScoped<ClienteRepository>();
-            services.AddScoped<ProveedorRepository>();
+            services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+            services.AddScoped<IClienteRepository, ClienteRepository>();
+            services.AddScoped<IProveedorRepository, ProveedorRepository>();
             services.AddScoped<RolRepository>();
             services.AddScoped<MenuRepository>();
-            services.AddScoped<TransportistaRepository>();
+            services.AddScoped<ITransportistaRepository, TransportistaRepository>();
             services.AddScoped<ILogRepository, LogRepository>();
-            services.AddScoped<UsuarioRepository>();
-            services.AddScoped<NegocioRepository>();
-            services.AddScoped<ProductoRepository>();
-            services.AddScoped<OfertaRepository>();
-            services.AddScoped<SucursalRepository>();
-            services.AddScoped<CompraRepository>();
-            services.AddScoped<VentaRepository>();
+            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            services.AddScoped<INegocioRepository, NegocioRepository>();
+            services.AddScoped<IProductoRepository, ProductoRepository>();
+            services.AddScoped<IOfertaRepository, OfertaRepository>();
+            services.AddScoped<ISucursalRepository, SucursalRepository>();
+            services.AddScoped<ICompraRepository, CompraRepository>();
+            services.AddScoped<IVentaRepository, VentaRepository>();
             return services;
         }
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddScoped<CategoriaService>();
-            services.AddScoped<ClienteService>();
-            services.AddScoped<ProveedorService>();
-            services.AddScoped<MenuService>();
+            services.AddScoped<ICategoriaService, CategoriaService>();
+            services.AddScoped<IClienteService, ClienteService>();
+            services.AddScoped<IProveedorService, ProveedorService>();
+            services.AddScoped<IMenuService, MenuService>();
             services.AddScoped<RolService>();
-            services.AddScoped<TransportistaService>();
+            services.AddScoped<ITransportistaService, TransportistaService>();
             services.AddScoped<ILogService, LogService>();
             services.AddScoped<ICurrentUser, CurrentUserService>();
             services.AddScoped<IAuditoriaService, AuditoriaService>();
             services.AddScoped<IRequestContext, RequestContextService>();
-            services.AddScoped<UsuarioService>();
-            services.AddScoped<NegocioService>();
-            services.AddScoped<ProductoService>();
-            services.AddScoped<OfertaService>();
-            services.AddScoped<SucursalService>();
-            services.AddScoped<CompraService>();
-            services.AddScoped<VentaService>();
+            services.AddScoped<IUsuarioService, UsuarioService>();
+            services.AddScoped<INegocioService, NegocioService>();
+            services.AddScoped<IProductoService, ProductoService>();
+            services.AddScoped<IOfertaService, OfertaService>();
+            services.AddScoped<ISucursalService, SucursalService>();
+            services.AddScoped<ICompraService, CompraService>();
+            services.AddScoped<IVentaService, VentaService>();
             return services;
         }
 

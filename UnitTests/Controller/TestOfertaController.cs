@@ -19,7 +19,7 @@ public class TestOfertaController
     public void Setup()
     {
         _mockService = new Mock<IOfertaService>();
-        //_controller = new OfertaController(_mockService.Object);
+        _controller = new OfertaController(_mockService.Object);
     }
 
     [TestMethod]
@@ -39,9 +39,19 @@ public class TestOfertaController
     }
 
     [TestMethod]
-    public async Task GetOfertasPaginacion_DeberiaRetornarOk()
+    public async Task ObtenerOfertasPaginadas_DebeRetornarOk()
     {
-        var expectedResponse = new ApiResponse<Paginacion<OfertaProductoResponse>> { IsSuccess = true, Data = new Paginacion<OfertaProductoResponse>() };
+        var expectedResponse = new ApiResponse<Paginacion<OfertaProductoResponse>>
+        {
+            IsSuccess = true,
+            Data = new Paginacion<OfertaProductoResponse>
+            {
+                Items = new List<OfertaProductoResponse>
+                {
+                    new OfertaProductoResponse { Id_Oferta = 1, Nombre_Oferta = "Descuento Snacks" }
+                }
+            }
+        };
         _mockService.Setup(s => s.ListarOfertasPaginacionAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(expectedResponse);
 
         var result = await _controller.GetOfertasPaginacion(1, 10);
@@ -54,7 +64,7 @@ public class TestOfertaController
     }
 
     [TestMethod]
-    public async Task GetOferta_Existe_DeberiaRetornarOk()
+    public async Task ObtenerOferta_CuandoExiste_DebeRetornarOk()
     {
         var oferta = new OfertaProductoResponse { Id_Oferta = 1, Nombre_Oferta = "Descuento 50%" };
         _mockService.Setup(s => s.ObtenerOfertaAsync(1)).ReturnsAsync(new ApiResponse<OfertaProductoResponse> { IsSuccess = true, Data = oferta });
@@ -63,27 +73,27 @@ public class TestOfertaController
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
-        var response = okResult.Value as ApiResponse<Ofertum>;
+        var response = okResult.Value as ApiResponse<OfertaProductoResponse>;
         Assert.IsTrue(response.IsSuccess);
         Assert.AreEqual("Descuento 50%", response.Data.Nombre_Oferta);
     }
 
     [TestMethod]
-    public async Task GetOferta_NoExiste_DeberiaRetornarNotFound()
+    public async Task ObtenerOferta_CuandoNoExiste_DebeRetornarNoEncontrado()
     {
-        _mockService.Setup(s => s.ObtenerOfertaAsync(99)).ReturnsAsync(new ApiResponse<OfertaProductoResponse> { IsSuccess = false, Message = "No se encontró la oferta" });
+        _mockService.Setup(s => s.ObtenerOfertaAsync(99)).ReturnsAsync(new ApiResponse<OfertaProductoResponse> { IsSuccess = false, Message = "No se encontrï¿½ la oferta" });
 
         var result = await _controller.GetOferta(99);
 
         var notFoundResult = result.Result as NotFoundObjectResult;
         Assert.IsNotNull(notFoundResult);
-        var response = notFoundResult.Value as ApiResponse<Ofertum>;
+        var response = notFoundResult.Value as ApiResponse<OfertaProductoResponse>;
         Assert.IsFalse(response.IsSuccess);
-        Assert.AreEqual("No se encontró la oferta", response.Message);
+        Assert.AreEqual("No se encontrï¿½ la oferta", response.Message);
     }
 
     [TestMethod]
-    public async Task RegistrarOferta_Valida_DeberiaRetornarOk()
+    public async Task RegistrarOferta_CuandoEsValida_DebeRetornarOk()
     {
         var oferta = new Ofertum { Id_Oferta = 1, Nombre_Oferta = "Promo Verano" };
         _mockService.Setup(s => s.RegistrarOfertaAsync(oferta))
@@ -99,7 +109,7 @@ public class TestOfertaController
     }
 
     [TestMethod]
-    public async Task RegistrarOferta_Invalida_DeberiaRetornarBadRequest()
+    public async Task RegistrarOferta_CuandoEsInvalida_DebeRetornarSolicitudIncorrecta()
     {
         var oferta = new Ofertum { Id_Oferta = 1, Nombre_Oferta = "" }; 
         _mockService.Setup(s => s.RegistrarOfertaAsync(oferta))
@@ -115,7 +125,7 @@ public class TestOfertaController
     }
 
     [TestMethod]
-    public async Task EditarOferta_DeberiaRetornarOk()
+    public async Task EditarOferta_DebeRetornarOk()
     {
         var oferta = new Ofertum { Id_Oferta = 1, Nombre_Oferta = "Promo Actualizada" };
         _mockService.Setup(s => s.EditarOfertaAsync(oferta))
@@ -130,7 +140,7 @@ public class TestOfertaController
     }
 
     [TestMethod]
-    public async Task EditarOferta_DeberiaRetornarBadRequest_SiInvalido()
+    public async Task EditarOferta_CuandoEsInvalida_DebeRetornarSolicitudIncorrecta()
     {
         var oferta = new Ofertum { Id_Oferta = 1, Nombre_Oferta = "" };
 
@@ -143,7 +153,7 @@ public class TestOfertaController
     }
 
     [TestMethod]
-    public async Task EliminarOferta_DeberiaRetornarOk()
+    public async Task EliminarOferta_DebeRetornarOk()
     {
         _mockService.Setup(s => s.EliminarOfertaAsync(1))
             .ReturnsAsync(new ApiResponse<int> { IsSuccess = true, Message = "Eliminado correctamente" });

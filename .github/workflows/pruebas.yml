@@ -1,0 +1,32 @@
+name: Pruebas unitarias
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  pruebas:
+    name: Compilar y ejecutar pruebas
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      - name: Configurar .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restaurar dependencias
+        run: dotnet restore Backend.sln
+
+      - name: Compilar solución
+        run: dotnet build Backend.sln --configuration Release --no-restore
+
+      - name: Ejecutar pruebas
+        run: dotnet test UnitTests/UnitTests.csproj --configuration Release --no-build --logger "trx;LogFileName=resultados.trx"

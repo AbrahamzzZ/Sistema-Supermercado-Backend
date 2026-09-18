@@ -13,9 +13,9 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class ProveedorController : ControllerBase
     {
-        private readonly ProveedorService _proveedorService;
+        private readonly IProveedorService _proveedorService;
 
-        public ProveedorController(ProveedorService proveedorService)
+        public ProveedorController(IProveedorService proveedorService)
         {
             _proveedorService = proveedorService;
         }

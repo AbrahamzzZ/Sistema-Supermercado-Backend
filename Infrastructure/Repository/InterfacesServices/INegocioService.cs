@@ -8,6 +8,7 @@ namespace Infrastructure.Repository.InterfacesServices
     {
         Task<ApiResponse<Negocio>> ObtenerNegocioAsync(int idNegocio);
         Task<ApiResponse<object>> EditarNegocioAsync(Negocio negocio);
+        Task<ApiResponse<object>> AnalisisIA(string promptUsuario);
         Task<ApiResponse<List<ProductoMasCompradoResponse>>> ObtenerProductoMasComprado();
         Task<ApiResponse<List<ProductoMasVendidoResponse>>> ObtenerProductoMasVendido();
         Task<ApiResponse<List<TopClienteResponse>>> ObtenerTopClientes();

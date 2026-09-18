@@ -26,11 +26,10 @@ public class TestUsuarioController
         _mockService = new Mock<IUsuarioService>();
         _mockMenuService = new Mock<IMenuService>();
         _mockToken = new Mock<IToken>();
-        /*_controller = new UsuarioController(
+        _controller = new UsuarioController(
             _mockService.Object,
             _mockToken.Object,
-            _mockMenuService.Object
-        );*/
+            _mockMenuService.Object);
     }
 
     [TestMethod]
@@ -46,7 +45,7 @@ public class TestUsuarioController
     }
 
     [TestMethod]
-    public async Task GetUsuario_DeberiaRetornarNotFound_SiNoExiste()
+    public async Task ObtenerUsuario_DebeRetornarNoEncontrado_SiNoExiste()
     {
         _mockService.Setup(s => s.ObtenerUsuarioAsync(99))
             .ReturnsAsync(new ApiResponse<UsuarioRolResponse>
@@ -97,7 +96,7 @@ public class TestUsuarioController
 
 
     [TestMethod]
-    public async Task RegistrarUsuario_DeberiaRetornarOk()
+    public async Task RegistrarUsuario_DebeRetornarOk()
     {
         var usuario = new Usuario();
 
@@ -110,7 +109,7 @@ public class TestUsuarioController
     }
 
     [TestMethod]
-    public async Task RegistrarUsuario_DeberiaRetornarBadRequest()
+    public async Task RegistrarUsuario_DebeRetornarSolicitudIncorrecta()
     {
         var usuario = new Usuario();
 
@@ -123,7 +122,7 @@ public class TestUsuarioController
     }
 
     [TestMethod]
-    public async Task EditarUsuario_DeberiaRetornarOk()
+    public async Task EditarUsuario_DebeRetornarOk()
     {
         var usuario = new Usuario();
 
@@ -136,7 +135,7 @@ public class TestUsuarioController
     }
 
     [TestMethod]
-    public async Task EliminarUsuario_DeberiaRetornarNotFound()
+    public async Task EliminarUsuario_DebeRetornarNoEncontrado()
     {
         _mockService.Setup(s => s.EliminarUsuarioAsync(99))
             .ReturnsAsync(new ApiResponse<int> { IsSuccess = false });

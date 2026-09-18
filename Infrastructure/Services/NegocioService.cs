@@ -14,16 +14,16 @@ namespace Infrastructure.Services
 {
     public class NegocioService : INegocioService
     {
-        private readonly NegocioRepository _negocioRepository;
-        private readonly ProductoRepository _productoRepository;
-        private readonly CategoriaRepository _categoriaRepository;
+        private readonly INegocioRepository _negocioRepository;
+        private readonly IProductoRepository _productoRepository;
+        private readonly ICategoriaRepository _categoriaRepository;
 
         private readonly IAuditoriaService _auditoriaService;
         private readonly ICurrentUser _currentUserService;
         private readonly IValidator<Negocio> _validator;
         private readonly OllamaClient _ollama;
 
-        public NegocioService(NegocioRepository negocioRepository, ProductoRepository productoRepository, CategoriaRepository categoriaRepository, ICurrentUser currentUserService, IValidator<Negocio> validator, OllamaClient ollama, IAuditoriaService auditoriaService)
+        public NegocioService(INegocioRepository negocioRepository, IProductoRepository productoRepository, ICategoriaRepository categoriaRepository, ICurrentUser currentUserService, IValidator<Negocio> validator, OllamaClient ollama, IAuditoriaService auditoriaService)
         {
             _negocioRepository = negocioRepository;
             _productoRepository = productoRepository;
@@ -33,17 +33,6 @@ namespace Infrastructure.Services
             _validator = validator;
             _ollama = ollama;
         }
-
-        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
-
-        /*readonly INegocioRepository _negocioRepository;
-        private readonly IValidator<Negocio> _validator;
-
-        public NegocioService(INegocioRepository negocioRepository, IValidator<Negocio> validator)
-        {
-            _negocioRepository = negocioRepository;
-            _validator = validator;
-        }*/
 
         public async Task<ApiResponse<Negocio>> ObtenerNegocioAsync(int idNegocio)
         {

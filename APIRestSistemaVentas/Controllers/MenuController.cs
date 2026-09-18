@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,9 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class MenuController : ControllerBase
     {
-        private readonly MenuService _menuService;
+        private readonly IMenuService _menuService;
 
-        public MenuController(MenuService menuService)
+        public MenuController(IMenuService menuService)
         {
             _menuService = menuService;
         }

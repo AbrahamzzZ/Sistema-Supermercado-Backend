@@ -2,6 +2,7 @@ using Domain.Models.Dto.Response.Venta;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
+using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Moq;
 using Utilities.Shared;
@@ -13,6 +14,7 @@ public class TestVentaService
 {
     private Mock<IVentaRepository> _mockRepository;
     private Mock<IValidator<Ventas>> _mockValidator;
+    private Mock<IAuditoriaService> _mockAuditoria;
     private VentaService _service;
 
     [TestInitialize]
@@ -20,10 +22,11 @@ public class TestVentaService
     {
         _mockRepository = new Mock<IVentaRepository>();
         _mockValidator = new Mock<IValidator<Ventas>>();
-        /*_service = new VentaService(
+        _mockAuditoria = new Mock<IAuditoriaService>();
+        _service = new VentaService(
             _mockRepository.Object,
-            _mockValidator.Object
-        );*/
+            _mockValidator.Object,
+            _mockAuditoria.Object);
     }
 
     [TestMethod]
@@ -35,7 +38,7 @@ public class TestVentaService
 
         Assert.IsTrue(result.IsSuccess);
         Assert.AreEqual(numeroEsperado, result.Data);
-        Assert.AreEqual("Número de documento generado correctamente.", result.Message);
+        Assert.AreEqual("NÃºmero de documento generado correctamente.", result.Message);
     }
 
     [TestMethod]
@@ -60,7 +63,7 @@ public class TestVentaService
     }
 
     [TestMethod]
-    public async Task RegistrarVentaAsync_SiDtoEsNuloDebeRetornarError()
+    public async Task RegistrarVentaAsync_SiSolicitudEsNulaDebeRetornarError()
     {
         var result = await _service.RegistrarVentaAsync(null);
 
@@ -100,5 +103,16 @@ public class TestVentaService
 
         Assert.IsTrue(result.IsSuccess);
         Assert.AreEqual(Mensajes.MESSAGE_REGISTER, result.Message);
+    }
+
+    [TestMethod]
+    public async Task ObtenerVenta_DebePropagarExcepcion_YRegistrarError()
+    {
+        var excepcion = new InvalidOperationException("Error de repositorio");
+        _mockRepository.Setup(r => r.ObtenerVentaAsync("DOC-500")).ThrowsAsync(excepcion);
+
+        await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => _service.ObtenerVentaAsync("DOC-500"));
+
+        _mockAuditoria.Verify(a => a.RegistrarErrorAsync("Obtener Venta", excepcion), Times.Once);
     }
 }

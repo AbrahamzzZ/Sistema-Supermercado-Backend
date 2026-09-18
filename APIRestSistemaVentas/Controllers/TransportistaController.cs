@@ -13,9 +13,9 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class TransportistaController : ControllerBase
     {
-        private readonly TransportistaService _transportistaService;
+        private readonly ITransportistaService _transportistaService;
 
-        public TransportistaController(TransportistaService transportistaService)
+        public TransportistaController(ITransportistaService transportistaService)
         {
             _transportistaService = transportistaService;
         }

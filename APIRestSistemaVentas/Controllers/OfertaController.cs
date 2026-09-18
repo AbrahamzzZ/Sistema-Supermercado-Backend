@@ -14,9 +14,9 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class OfertaController : ControllerBase
     {
-        private readonly OfertaService _ofertaService;
+        private readonly IOfertaService _ofertaService;
 
-        public OfertaController(OfertaService ofertaService)
+        public OfertaController(IOfertaService ofertaService)
         {
             _ofertaService = ofertaService;
         }

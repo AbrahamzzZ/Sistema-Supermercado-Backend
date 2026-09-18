@@ -18,7 +18,7 @@ public class TestProductoController
     public void Setup()
     {
         _mockService = new Mock<IProductoService>();
-        //_controller = new ProductoController(_mockService.Object);
+        _controller = new ProductoController(_mockService.Object);
     }
 
     // Test 1: GET all productos
@@ -55,7 +55,7 @@ public class TestProductoController
     }
 
     [TestMethod]
-    public async Task GetProducto_CuandoNoExiste_DeberiaRetornarNotFound()
+    public async Task ObtenerProducto_CuandoNoExiste_DebeRetornarNoEncontrado()
     {
         _mockService.Setup(s => s.ObtenerProductoAsync(999))
             .ReturnsAsync(new ApiResponse<ProductoResponse> { IsSuccess = false, Message = "No encontrado" });
@@ -100,7 +100,7 @@ public class TestProductoController
     }
 
     [TestMethod]
-    public async Task EditarCategoria_DeberiaRetornarOk_SiValido()
+    public async Task EditarProducto_DebeRetornarOk_SiEsValido()
     {
         var categoria = new Producto { Id_Producto = 1, Nombre_Producto = "Leche" };
 
@@ -113,7 +113,7 @@ public class TestProductoController
     }
 
     [TestMethod]
-    public async Task EditarProducto_DeberiaRetornarBadRequest_SiInvalido()
+    public async Task EditarProducto_DebeRetornarSolicitudIncorrecta_SiEsInvalido()
     {
         var productos = new Producto { Id_Producto = 1, Nombre_Producto = "" };
 
@@ -140,7 +140,7 @@ public class TestProductoController
     }
 
     [TestMethod]
-    public async Task EliminarProducto_CuandoNoExiste_DeberiaRetornarNotFound()
+    public async Task EliminarProducto_CuandoNoExiste_DebeRetornarNoEncontrado()
     {
         _mockService.Setup(s => s.EliminarProductoAsync(999))
             .ReturnsAsync(new ApiResponse<int> { IsSuccess = false, Message = "No encontrado" });

@@ -13,29 +13,18 @@ namespace Infrastructure.Services
 {
     public class OfertaService : IOfertaService
     {
-        private readonly OfertaRepository _ofertaRepository;
+        private readonly IOfertaRepository _ofertaRepository;
         private readonly IValidator<Ofertum> _validator;
         private readonly ICurrentUser _currentUserService;
         private readonly IAuditoriaService _auditoriaService;
 
-        public OfertaService(OfertaRepository ofertaRepository, IValidator<Ofertum> validator, ICurrentUser currentUserService, IAuditoriaService auditoriaService)
+        public OfertaService(IOfertaRepository ofertaRepository, IValidator<Ofertum> validator, ICurrentUser currentUserService, IAuditoriaService auditoriaService)
         {
             _ofertaRepository = ofertaRepository;
             _validator = validator;
             _currentUserService = currentUserService;
             _auditoriaService = auditoriaService;
         }
-
-        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
-
-        /*readonly IOfertaRepository _ofertaRepository;
-        private readonly IValidator<Ofertum> _validator;
-
-        public OfertaService(IOfertaRepository ofertaRepository, IValidator<Ofertum> validator)
-        {
-            _ofertaRepository = ofertaRepository;
-            _validator = validator;
-        }*/
 
         public async Task<ApiResponse<List<OfertaProductoResponse>>> ListarOfertasAsync()
         {

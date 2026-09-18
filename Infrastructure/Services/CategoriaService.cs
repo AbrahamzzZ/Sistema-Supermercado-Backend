@@ -13,29 +13,18 @@ namespace Infrastructure.Services
 {
     public class CategoriaService : ICategoriaService
     {
-        private readonly CategoriaRepository _categoriaRepository;
+        private readonly ICategoriaRepository _categoriaRepository;
         private readonly IValidator<Categorium> _validator;
         private readonly ICurrentUser _currentUserService;
         private readonly IAuditoriaService _auditoriaService;
 
-        public CategoriaService(CategoriaRepository categoriaRepository, IValidator<Categorium> validator, ICurrentUser currentUserService, IAuditoriaService auditoriaService)
+        public CategoriaService(ICategoriaRepository categoriaRepository, IValidator<Categorium> validator, ICurrentUser currentUserService, IAuditoriaService auditoriaService)
         {
             _categoriaRepository = categoriaRepository;
             _validator = validator;
             _currentUserService = currentUserService;
             _auditoriaService = auditoriaService;
         }
-
-        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
-
-        /*readonly ICategoriaRepository _categoriaRepository;
-        private readonly IValidator<Categorium> _validator;
-
-        public CategoriaService(ICategoriaRepository categoriaRepository, IValidator<Categorium> validator)
-        {
-            _categoriaRepository = categoriaRepository;
-            _validator = validator;
-        }*/
 
         public async Task<ApiResponse<List<CategoriaResponse>>> ListarCategoriasAsync()
         {

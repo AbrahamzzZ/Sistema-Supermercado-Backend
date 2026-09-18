@@ -13,9 +13,9 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class CategoriaController : ControllerBase
     {
-        private readonly CategoriaService _categoriaService;
+        private readonly ICategoriaService _categoriaService;
 
-        public CategoriaController(CategoriaService categoriaService)
+        public CategoriaController(ICategoriaService categoriaService)
         {
             _categoriaService = categoriaService;
         }

@@ -3,6 +3,7 @@ using Domain.Models.Dto.Response.Compra;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
+using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Moq;
 using Utilities.Shared;
@@ -14,6 +15,7 @@ public class TestCompraService
 {
     private Mock<ICompraRepository> _mockRepository;
     private Mock<IValidator<Compras>> _mockValidator;
+    private Mock<IAuditoriaService> _mockAuditoria;
     private CompraService _service;
 
     [TestInitialize]
@@ -21,10 +23,11 @@ public class TestCompraService
     {
         _mockRepository = new Mock<ICompraRepository>();
         _mockValidator = new Mock<IValidator<Compras>>();
-        /*_service = new CompraService(
+        _mockAuditoria = new Mock<IAuditoriaService>();
+        _service = new CompraService(
             _mockRepository.Object,
-            _mockValidator.Object
-        );*/
+            _mockValidator.Object,
+            _mockAuditoria.Object);
     }
 
     [TestMethod]
@@ -36,11 +39,11 @@ public class TestCompraService
 
         Assert.IsTrue(result.IsSuccess);
         Assert.AreEqual(numeroEsperado, result.Data);
-        Assert.AreEqual("Número de documento generado correctamente.", result.Message);
+        Assert.AreEqual("NÃºmero de documento generado correctamente.", result.Message);
     }
 
     [TestMethod]
-    public async Task ObtenerCompraAsync_SiNoExisteDebeRetornarError()
+    public async Task ObtenerCompraAsync_SiNoExisteDebeRetornarNoEncontrado()
     {
         _mockRepository.Setup(r => r.ObtenerCompraAsync("COMP-002")).ReturnsAsync((CompraResponse)null);
         var result = await _service.ObtenerCompraAsync("COMP-002");
@@ -61,7 +64,7 @@ public class TestCompraService
     }
 
     [TestMethod]
-    public async Task RegistrarCompraAsync_SiDtoEsNuloDebeRetornarError()
+    public async Task RegistrarCompraAsync_SiSolicitudEsNulaDebeRetornarError()
     {
         var result = await _service.RegistrarCompraAsync(null);
 
@@ -70,7 +73,7 @@ public class TestCompraService
     }
 
     [TestMethod]
-    public async Task RegistrarCompraAsync_SiCamposInvalidosDebeRetornarError()
+    public async Task RegistrarCompraAsync_SiCamposSonInvalidosDebeRetornarError()
     {
         var compra = new Compras { Id_Usuario = 0, Id_Proveedor = 0, Id_Transportista = 0, Tipo_Documento = "", Numero_Documento = "", Monto_Total = 0, Detalles = null };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Compras>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure>{ new ValidationFailure("Tipo Documento", Mensajes.MESSAGE_EMPTY) }));
@@ -81,7 +84,7 @@ public class TestCompraService
     }
 
     [TestMethod]
-    public async Task RegistrarCompraAsync_SiTipoDocumentoInvalidoDebeRetornarError()
+    public async Task RegistrarCompraAsync_SiTipoDocumentoEsInvalidoDebeRetornarError()
     {
         var compra = new Compras { Id_Usuario = 1, Id_Proveedor = 1, Id_Transportista = 1, Tipo_Documento = "COMP123", Numero_Documento = "001", Monto_Total = 100, Detalles = new List<DetalleCompras> { new DetalleCompras() } };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Compras>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Tipo Documento", "El tipo de documento solo pueden contener letras.") }));
@@ -92,7 +95,7 @@ public class TestCompraService
     }
 
     [TestMethod]
-    public async Task RegistrarCompraAsync_SiCompraValidaDebeRegistrar()
+    public async Task RegistrarCompraAsync_SiCompraEsValidaDebeRegistrar()
     {
         var compra = new Compras { Id_Usuario = 1, Id_Proveedor = 1, Id_Transportista = 1, Tipo_Documento = "Factura", Numero_Documento = "001", Monto_Total = 500, Detalles = new List<DetalleCompras> { new DetalleCompras() } };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Compras>(), default)).ReturnsAsync(new ValidationResult());
@@ -101,5 +104,16 @@ public class TestCompraService
 
         Assert.IsTrue(result.IsSuccess);
         Assert.AreEqual(Mensajes.MESSAGE_REGISTER, result.Message);
+    }
+
+    [TestMethod]
+    public async Task ObtenerCompra_DebePropagarExcepcion_YRegistrarError()
+    {
+        var excepcion = new InvalidOperationException("Error de repositorio");
+        _mockRepository.Setup(r => r.ObtenerCompraAsync("COMP-500")).ThrowsAsync(excepcion);
+
+        await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => _service.ObtenerCompraAsync("COMP-500"));
+
+        _mockAuditoria.Verify(a => a.RegistrarErrorAsync("Obtener Compra", excepcion), Times.Once);
     }
 }

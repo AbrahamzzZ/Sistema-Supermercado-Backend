@@ -15,9 +15,9 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class NegocioController : ControllerBase
     {
-        private readonly NegocioService _negocioService;
+        private readonly INegocioService _negocioService;
 
-        public NegocioController(NegocioService negocioService)
+        public NegocioController(INegocioService negocioService)
         {
             _negocioService = negocioService;
         }

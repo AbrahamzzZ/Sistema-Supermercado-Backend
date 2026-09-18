@@ -17,11 +17,11 @@ public class TestCompraController
     public void Setup()
     {
         _mockService = new Mock<ICompraService>();
-        //_controller = new CompraController(_mockService.Object);
+        _controller = new CompraController(_mockService.Object);
     }
 
     [TestMethod]
-    public async Task GetObtenerNumeroDocumento_ReturnsOkResult()
+    public async Task ObtenerNumeroDocumento_DebeRetornarOk()
     {
         var response = new ApiResponse<string> { IsSuccess = true, Message = "OK", Data = "VEN-0001" };
 
@@ -37,7 +37,7 @@ public class TestCompraController
     }
 
     [TestMethod]
-    public async Task GetObtenerCompra_ReturnsOkWithVenta()
+    public async Task ObtenerCompra_DebeRetornarOk_ConCompra()
     {
         var response = new ApiResponse<CompraResponse> { IsSuccess = true, Message = "OK", Data = new CompraResponse { Numero_Documento = "VEN-0001", Monto_Total = 100, Id_Proveedor = 1 } };
 
@@ -53,7 +53,7 @@ public class TestCompraController
     }
 
     [TestMethod]
-    public async Task GetObtenerDetallesCompra_ReturnsOkWithDetalles()
+    public async Task ObtenerDetallesCompra_DebeRetornarOk_ConDetalles()
     {
         var response = new ApiResponse<List<DetalleCompraReponse>>
         {
@@ -74,7 +74,7 @@ public class TestCompraController
     }
 
     [TestMethod]
-    public async Task PostRegistrarCompra_ReturnsOkWhenSuccess()
+    public async Task RegistrarCompra_DebeRetornarOk_CuandoTieneExito()
     {
         var compraDto = new Compras { Numero_Documento = "VEN-0002", Monto_Total = 200 };
         var response = new ApiResponse<object> { IsSuccess = true, Message = "Compra registrada correctamente" };
@@ -91,7 +91,7 @@ public class TestCompraController
     }
 
     [TestMethod]
-    public async Task PostRegistrarVenta_ReturnsBadRequestWhenFails()
+    public async Task RegistrarCompra_DebeRetornarSolicitudIncorrecta_CuandoFalla()
     {
         var compraDto = new Compras { Numero_Documento = "VEN-0003", Monto_Total = 300 };
         var response = new ApiResponse<object> { IsSuccess = false, Message = "Error al registrar compra" };

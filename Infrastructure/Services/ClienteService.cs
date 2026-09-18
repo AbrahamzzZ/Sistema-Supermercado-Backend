@@ -12,13 +12,13 @@ namespace Infrastructure.Services
 {
     public class ClienteService : IClienteService
     {
-        private readonly ClienteRepository _clienteRepository;
+        private readonly IClienteRepository _clienteRepository;
         private readonly IValidator<Cliente> _validator;
         private readonly ICurrentUser _currentUserService;
         private readonly IAuditoriaService _auditoriaService;
 
 
-        public ClienteService(ClienteRepository clienteRepository, IValidator<Cliente> validator, ICurrentUser currentUserService, IAuditoriaService auditoriaService)
+        public ClienteService(IClienteRepository clienteRepository, IValidator<Cliente> validator, ICurrentUser currentUserService, IAuditoriaService auditoriaService)
         {
             _clienteRepository = clienteRepository;
             _validator = validator;
@@ -26,16 +26,6 @@ namespace Infrastructure.Services
             _auditoriaService = auditoriaService;
         }
 
-
-        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
-
-        /*readonly IClienteRepository _clienteRepository;
-        private readonly IValidator<Cliente> _validator;
-        public ClienteService(IClienteRepository clienteRepository, IValidator<Cliente> validator)
-        {
-            _clienteRepository = clienteRepository;
-            _validator = validator;
-        }*/
 
         public async Task<ApiResponse<List<ClienteResponse>>> ListarClientesAsync()
         {

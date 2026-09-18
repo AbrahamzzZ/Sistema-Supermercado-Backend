@@ -18,12 +18,12 @@ public class TestTranportistaController
     public void Setup()
     {
         _mockService = new Mock<ITransportistaService>();
-        //_controller = new TransportistaController(_mockService.Object);
+        _controller = new TransportistaController(_mockService.Object);
     }
 
 
     [TestMethod]
-    public async Task GetTransportistas_ReturnsOkWithList()
+    public async Task ObtenerTransportistas_DebeRetornarOk_ConLista()
     {
         var response = new ApiResponse<List<TransportistaResponse>>
         { IsSuccess = true, Data = new List<TransportistaResponse> { new TransportistaResponse { Id_Transportista = 1, Nombres = "Juan Perez" } }};
@@ -40,7 +40,7 @@ public class TestTranportistaController
 
 
     [TestMethod]
-    public async Task GetTransportista_ReturnsOk_WhenFound()
+    public async Task ObtenerTransportista_DebeRetornarOk_CuandoExiste()
     {
         var response = new ApiResponse<TransportistaResponse> { IsSuccess = true, Data = new TransportistaResponse { Id_Transportista = 1, Nombres = "Juan Perez" } };
 
@@ -55,7 +55,7 @@ public class TestTranportistaController
     }
 
     [TestMethod]
-    public async Task GetTransportista_ReturnsNotFound_WhenNotFound()
+    public async Task ObtenerTransportista_DebeRetornarNoEncontrado_CuandoNoExiste()
     {
         var response = new ApiResponse<TransportistaResponse> { IsSuccess = false, Message = "No encontrado" };
 
@@ -70,7 +70,7 @@ public class TestTranportistaController
     }
 
     [TestMethod]
-    public async Task RegistrarProveedor_ReturnsOk_WhenSuccess()
+    public async Task RegistrarTransportista_DebeRetornarOk_CuandoTieneExito()
     {
         var request = new Transportistum { Id_Transportista = 1, Nombres = "Nuevo Transportista" };
         var response = new ApiResponse<object> { IsSuccess = true, Message = "Registrado correctamente" };
@@ -87,7 +87,7 @@ public class TestTranportistaController
     }
 
     [TestMethod]
-    public async Task RegistrarProveedor_ReturnsBadRequest_WhenFails()
+    public async Task RegistrarTransportista_DebeRetornarSolicitudIncorrecta_CuandoFalla()
     {
         var request = new Transportistum { Id_Transportista = 1, Nombres = "Nuevo Transportista" };
         var response = new ApiResponse<object> { IsSuccess = false, Message = "Error al registrar" };
@@ -104,7 +104,7 @@ public class TestTranportistaController
     }
 
     [TestMethod]
-    public async Task EditarTransportista_ReturnsOk_WhenSuccess()
+    public async Task EditarTransportista_DebeRetornarOk_CuandoTieneExito()
     {
         var request = new Transportistum { Id_Transportista = 1, Nombres = "Editado" };
         var response = new ApiResponse<object> { IsSuccess = true, Message = "Editado correctamente" };
@@ -121,7 +121,7 @@ public class TestTranportistaController
     }
 
     [TestMethod]
-    public async Task EditarTransportista_ReturnsBadRequest_WhenFails()
+    public async Task EditarTransportista_DebeRetornarSolicitudIncorrecta_CuandoFalla()
     {
         var request = new Transportistum { Id_Transportista = 1, Nombres = "Editado" };
         var response = new ApiResponse<object> { IsSuccess = false, Message = "Error al editar" };
@@ -138,7 +138,7 @@ public class TestTranportistaController
     }
 
     [TestMethod]
-    public async Task EliminarTransportista_ReturnsOk_WhenSuccess()
+    public async Task EliminarTransportista_DebeRetornarOk_CuandoTieneExito()
     {
         var response = new ApiResponse<int> { IsSuccess = true, Data = 1, Message = "Eliminado correctamente" };
 
@@ -154,7 +154,7 @@ public class TestTranportistaController
     }
 
     [TestMethod]
-    public async Task EliminarTransportista_ReturnsNotFound_WhenFails()
+    public async Task EliminarTransportista_DebeRetornarNoEncontrado_CuandoFalla()
     {
         var response = new ApiResponse<int> { IsSuccess = false, Message = "No se pudo eliminar" };
 

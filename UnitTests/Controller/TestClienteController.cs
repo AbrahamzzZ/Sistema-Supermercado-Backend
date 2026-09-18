@@ -18,11 +18,11 @@ public class TestClienteController
     public void Setup()
     {
         _mockService = new Mock<IClienteService>();
-        //_controller = new ClienteController(_mockService.Object);
+        _controller = new ClienteController(_mockService.Object);
     }
 
     [TestMethod]
-    public async Task GetClientes_ReturnsOk_WithClientes()
+    public async Task ObtenerClientes_DebeRetornarOk_ConClientes()
     {
         var expectedResponse = new ApiResponse<List<ClienteResponse>> { IsSuccess = true, Data = new List<ClienteResponse>() };
         _mockService.Setup(s => s.ListarClientesAsync()).ReturnsAsync(expectedResponse);
@@ -35,7 +35,7 @@ public class TestClienteController
     }
 
     [TestMethod]
-    public async Task GetClientesPaginacion_ReturnsOk_WithData()
+    public async Task ObtenerClientesPaginados_DebeRetornarOk_ConDatos()
     {
         var expectedResponse = new ApiResponse<Paginacion<ClienteResponse>> { IsSuccess = true, Data = new Paginacion<ClienteResponse>() };
         _mockService.Setup(s => s.ListarClientesPaginacionAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(expectedResponse);
@@ -48,7 +48,7 @@ public class TestClienteController
     }
 
     [TestMethod]
-    public async Task GetCliente_ReturnsOk_WhenFound()
+    public async Task ObtenerCliente_DebeRetornarOk_CuandoExiste()
     {
         var expectedResponse = new ApiResponse<ClienteResponse> { IsSuccess = true, Data = new ClienteResponse() };
         _mockService.Setup(s => s.ObtenerClienteAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
@@ -62,7 +62,7 @@ public class TestClienteController
     }
 
     [TestMethod]
-    public async Task GetCliente_ReturnsNotFound_WhenNotFound()
+    public async Task ObtenerCliente_DebeRetornarNoEncontrado_CuandoNoExiste()
     {
         var expectedResponse = new ApiResponse<ClienteResponse> { IsSuccess = false, Message = "Not Found" };
         _mockService.Setup(s => s.ObtenerClienteAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
@@ -75,7 +75,7 @@ public class TestClienteController
     }
 
     [TestMethod]
-    public async Task RegistrarCliente_ReturnsOk_WhenSuccess()
+    public async Task RegistrarCliente_DebeRetornarOk_CuandoTieneExito()
     {
         var cliente = new Cliente();
         var expectedResponse = new ApiResponse<object> { IsSuccess = true };
@@ -89,7 +89,7 @@ public class TestClienteController
     }
 
     [TestMethod]
-    public async Task RegistrarCliente_ReturnsBadRequest_WhenFail()
+    public async Task RegistrarCliente_DebeRetornarSolicitudIncorrecta_CuandoFalla()
     {
         var cliente = new Cliente();
         var expectedResponse = new ApiResponse<object> { IsSuccess = false };
@@ -103,7 +103,7 @@ public class TestClienteController
     }
 
     [TestMethod]
-    public async Task EditarCliente_ReturnsOk_WhenSuccess()
+    public async Task EditarCliente_DebeRetornarOk_CuandoTieneExito()
     {
         var cliente = new Cliente();
         var expectedResponse = new ApiResponse<object> { IsSuccess = true };
@@ -117,7 +117,7 @@ public class TestClienteController
     }
 
     [TestMethod]
-    public async Task EditarCliente_ReturnsBadRequest_WhenFail()
+    public async Task EditarCliente_DebeRetornarSolicitudIncorrecta_CuandoFalla()
     {
         var cliente = new Cliente();
         var expectedResponse = new ApiResponse<object> { IsSuccess = false };
@@ -131,7 +131,7 @@ public class TestClienteController
     }
 
     [TestMethod]
-    public async Task EliminarCliente_ReturnsOk_WhenSuccess()
+    public async Task EliminarCliente_DebeRetornarOk_CuandoTieneExito()
     {
         var expectedResponse = new ApiResponse<int> { IsSuccess = true };
         _mockService.Setup(s => s.EliminarClienteAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
@@ -144,7 +144,7 @@ public class TestClienteController
     }
 
     [TestMethod]
-    public async Task EliminarCliente_ReturnsNotFound_WhenFail()
+    public async Task EliminarCliente_DebeRetornarNoEncontrado_CuandoFalla()
     {
         var expectedResponse = new ApiResponse<int> { IsSuccess = false };
         _mockService.Setup(s => s.EliminarClienteAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);

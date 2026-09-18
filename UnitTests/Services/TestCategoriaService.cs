@@ -3,6 +3,8 @@ using Domain.Models.Dto.Response.Categoria;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
+using Infrastructure.Repository.InterfacesBusiness;
+using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Moq;
 using Utilities.Shared;
@@ -14,6 +16,8 @@ public class TestCategoriaService
 {
     private Mock<ICategoriaRepository> _mockRepository;
     private Mock<IValidator<Categorium>> _mockValidator;
+    private Mock<ICurrentUser> _mockCurrentUser;
+    private Mock<IAuditoriaService> _mockAuditoria;
     private CategoriaService _service;
 
     [TestInitialize]
@@ -21,10 +25,14 @@ public class TestCategoriaService
     {
         _mockRepository = new Mock<ICategoriaRepository>();
         _mockValidator = new Mock<IValidator<Categorium>>();
-        /*_service = new CategoriaService(
+        _mockCurrentUser = new Mock<ICurrentUser>();
+        _mockCurrentUser.Setup(user => user.GetUserId()).Returns(1);
+        _mockAuditoria = new Mock<IAuditoriaService>();
+        _service = new CategoriaService(
             _mockRepository.Object,
-            _mockValidator.Object
-        );*/
+            _mockValidator.Object,
+            _mockCurrentUser.Object,
+            _mockAuditoria.Object);
     }
 
     [TestMethod]
@@ -54,7 +62,7 @@ public class TestCategoriaService
     [TestMethod]
     public async Task RegistrarCategoria_DeberiaRegistrar_SiDatosValidos()
     {
-        var categoria = new Categorium { Codigo = "CAT02", Nombre_Categoria = "L·cteos", Estado = true };
+        var categoria = new Categorium { Codigo = "CAT02", Nombre_Categoria = "LÔøΩcteos", Estado = true };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Categorium>(), default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _mockRepository.Setup(r => r.ListarCategoriasAsync()).ReturnsAsync(new List<CategoriaResponse>());
         _mockRepository.Setup(r => r.RegistrarCategoriaAsync(It.IsAny<Categorium>(), It.IsAny<int>())).ReturnsAsync(1);
@@ -130,5 +138,16 @@ public class TestCategoriaService
 
         Assert.IsTrue(resultado.IsSuccess);
         Assert.AreEqual(Mensajes.MESSAGE_DELETE, resultado.Message);
+    }
+
+    [TestMethod]
+    public async Task ListarCategorias_DebePropagarExcepcion_YRegistrarError()
+    {
+        var excepcion = new InvalidOperationException("Error de repositorio");
+        _mockRepository.Setup(r => r.ListarCategoriasAsync()).ThrowsAsync(excepcion);
+
+        await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => _service.ListarCategoriasAsync());
+
+        _mockAuditoria.Verify(a => a.RegistrarErrorAsync("Listar Categor√≠as", excepcion), Times.Once);
     }
 }

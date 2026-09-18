@@ -3,6 +3,8 @@ using Domain.Models.Dto.Response.Cliente;
 using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.Repository.InterfacesRepository;
+using Infrastructure.Repository.InterfacesBusiness;
+using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
 using Moq;
 using Utilities.Shared;
@@ -14,6 +16,8 @@ public class TestClienteService
 {
     private Mock<IClienteRepository> _mockRepository;
     private Mock<IValidator<Cliente>> _mockValidator;
+    private Mock<ICurrentUser> _mockCurrentUser;
+    private Mock<IAuditoriaService> _mockAuditoria;
     private ClienteService _service;
 
     [TestInitialize]
@@ -21,14 +25,18 @@ public class TestClienteService
     {
         _mockRepository = new Mock<IClienteRepository>();
         _mockValidator = new Mock<IValidator<Cliente>>();
-        /*_service = new ClienteService(
+        _mockCurrentUser = new Mock<ICurrentUser>();
+        _mockCurrentUser.Setup(user => user.GetUserId()).Returns(1);
+        _mockAuditoria = new Mock<IAuditoriaService>();
+        _service = new ClienteService(
             _mockRepository.Object,
-            _mockValidator.Object
-        );*/
+            _mockValidator.Object,
+            _mockCurrentUser.Object,
+            _mockAuditoria.Object);
     }
 
     [TestMethod]
-    public async Task RegistrarCliente_DeberiaFallar_SiClienteEsNull()
+    public async Task RegistrarCliente_DeberiaFallar_SiClienteEsNulo()
     {
         var result = await _service.RegistrarClienteAsync(null);
 
@@ -62,22 +70,22 @@ public class TestClienteService
     public async Task RegistrarCliente_DeberiaFallar_SiCedulaOTelefonoInvalidos()
     {
         var cliente = new Cliente { Codigo = "CLI01", Nombres = "Juan", Apellidos = "Perez", Cedula = "123", Telefono = "098", Correo_Electronico = "test@mail.com" };
-        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Cliente>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure>{ new ValidationFailure("Cedula", "La cédula y el teléfono deben contener exactamente 10 dígitos numéricos") }));
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Cliente>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure>{ new ValidationFailure("Cedula", "La cï¿½dula y el telï¿½fono deben contener exactamente 10 dï¿½gitos numï¿½ricos") }));
         var result = await _service.RegistrarClienteAsync(cliente);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("La cédula y el teléfono deben contener exactamente 10 dígitos numéricos", result.Message);
+        Assert.AreEqual("La cï¿½dula y el telï¿½fono deben contener exactamente 10 dï¿½gitos numï¿½ricos", result.Message);
     }
 
     [TestMethod]
     public async Task RegistrarCliente_DeberiaFallar_SiCorreoInvalido()
     {
         var cliente = new Cliente { Codigo = "CLI01", Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "correo_invalido" };
-        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Cliente>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Correo Electronico", "El correo electrónico no tiene un formato válido") }));
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Cliente>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Correo Electronico", "El correo electrï¿½nico no tiene un formato vï¿½lido") }));
         var result = await _service.RegistrarClienteAsync(cliente);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("El correo electrónico no tiene un formato válido", result.Message);
+        Assert.AreEqual("El correo electrï¿½nico no tiene un formato vï¿½lido", result.Message);
     }
 
     [TestMethod]
@@ -93,7 +101,7 @@ public class TestClienteService
     }
 
     [TestMethod]
-    public async Task EditarCliente_DeberiaFallar_SiClienteEsNull()
+    public async Task EditarCliente_DeberiaFallar_SiClienteEsNulo()
     {
         var result = await _service.EditarClienteAsync(null);
 
@@ -140,24 +148,24 @@ public class TestClienteService
     public async Task EditarCliente_DeberiaFallar_SiCedulaOTelefonoInvalidos()
     {
         var cliente = new Cliente { Id_Cliente = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "123", Telefono = "098", Correo_Electronico = "test@mail.com" };
-        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Cliente>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Cedula", "La cédula y el teléfono deben contener exactamente 10 dígitos numéricos") }));
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Cliente>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Cedula", "La cï¿½dula y el telï¿½fono deben contener exactamente 10 dï¿½gitos numï¿½ricos") }));
         _mockRepository.Setup(r => r.ObtenerClienteAsync(1)).ReturnsAsync(new ClienteResponse());
         var result = await _service.EditarClienteAsync(cliente);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("La cédula y el teléfono deben contener exactamente 10 dígitos numéricos", result.Message);
+        Assert.AreEqual("La cï¿½dula y el telï¿½fono deben contener exactamente 10 dï¿½gitos numï¿½ricos", result.Message);
     }
 
     [TestMethod]
     public async Task EditarCliente_DeberiaFallar_SiCorreoInvalido()
     {
         var cliente = new Cliente { Id_Cliente = 1, Nombres = "Juan", Apellidos = "Perez", Cedula = "1234567890", Telefono = "0987654321", Correo_Electronico = "correo_invalido" };
-        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Cliente>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Correo Electronico", "El correo electrónico no tiene un formato válido") }));
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Cliente>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Correo Electronico", "El correo electrï¿½nico no tiene un formato vï¿½lido") }));
         _mockRepository.Setup(r => r.ObtenerClienteAsync(1)).ReturnsAsync(new ClienteResponse());
         var result = await _service.EditarClienteAsync(cliente);
 
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual("El correo electrónico no tiene un formato válido", result.Message);
+        Assert.AreEqual("El correo electrï¿½nico no tiene un formato vï¿½lido", result.Message);
     }
 
     [TestMethod]
@@ -217,5 +225,16 @@ public class TestClienteService
 
         Assert.IsFalse(result.IsSuccess);
         Assert.AreEqual(Mensajes.MESSAGE_DELETE_FAILLED, result.Message);
+    }
+
+    [TestMethod]
+    public async Task ListarClientes_DebePropagarExcepcion_YRegistrarError()
+    {
+        var excepcion = new InvalidOperationException("Error de repositorio");
+        _mockRepository.Setup(r => r.ListarClientesAsync()).ThrowsAsync(excepcion);
+
+        await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => _service.ListarClientesAsync());
+
+        _mockAuditoria.Verify(a => a.RegistrarErrorAsync("Listar Clientes", excepcion), Times.Once);
     }
 }

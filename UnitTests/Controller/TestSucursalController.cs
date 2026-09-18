@@ -18,11 +18,11 @@ public class TestSucursalController
     public void Setup()
     {
         _mockService = new Mock<ISucursalService>();
-        //_controller = new SucursalController(_mockService.Object);
+        _controller = new SucursalController(_mockService.Object);
     }
 
     [TestMethod]
-    public async Task GetSucursales_ReturnsOk_WithSucursales()
+    public async Task ObtenerSucursales_DebeRetornarOk_ConSucursales()
     {
         var expectedResponse = new ApiResponse<List<SucursalResponse>> { IsSuccess = true, Data = new List<SucursalResponse>() };
         _mockService.Setup(s => s.ListarSucursalesAsync()).ReturnsAsync(expectedResponse);
@@ -36,7 +36,7 @@ public class TestSucursalController
     }
 
     [TestMethod]
-    public async Task GetSucursalesPaginacion_ReturnsOk_WithData()
+    public async Task ObtenerSucursalesPaginadas_DebeRetornarOk_ConDatos()
     {
         var expectedResponse = new ApiResponse<Paginacion<SucursalResponse>> { IsSuccess = true, Data = new Paginacion<SucursalResponse>() };
         _mockService.Setup(s => s.ListarSucursalesPaginacionAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(expectedResponse);
@@ -50,7 +50,7 @@ public class TestSucursalController
     }
 
     [TestMethod]
-    public async Task GetSucursal_ReturnsOk_WhenFound()
+    public async Task ObtenerSucursal_DebeRetornarOk_CuandoExiste()
     {
         var expectedResponse = new ApiResponse<SucursalResponse> { IsSuccess = true, Data = new SucursalResponse() };
         _mockService.Setup(s => s.ObtenerSucursalAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
@@ -64,7 +64,7 @@ public class TestSucursalController
     }
 
     [TestMethod]
-    public async Task GetSucursal_ReturnsNotFound_WhenNotFound()
+    public async Task ObtenerSucursal_DebeRetornarNoEncontrado_CuandoNoExiste()
     {
         var expectedResponse = new ApiResponse<SucursalResponse> { IsSuccess = false, Message = "Not Found" };
         _mockService.Setup(s => s.ObtenerSucursalAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
@@ -77,7 +77,7 @@ public class TestSucursalController
     }
 
     [TestMethod]
-    public async Task RegistrarSucursal_ReturnsOk_WhenSuccess()
+    public async Task RegistrarSucursal_DebeRetornarOk_CuandoTieneExito()
     {
         var sucursal = new Sucursal();
         var expectedResponse = new ApiResponse<object> { IsSuccess = true };
@@ -91,7 +91,7 @@ public class TestSucursalController
     }
 
     [TestMethod]
-    public async Task RegistrarSucursal_ReturnsBadRequest_WhenFail()
+    public async Task RegistrarSucursal_DebeRetornarSolicitudIncorrecta_CuandoFalla()
     {
         var sucursal = new Sucursal();
         var expectedResponse = new ApiResponse<object> { IsSuccess = false };
@@ -105,7 +105,7 @@ public class TestSucursalController
     }
 
     [TestMethod]
-    public async Task EditarSucursal_ReturnsOk_WhenSuccess()
+    public async Task EditarSucursal_DebeRetornarOk_CuandoTieneExito()
     {
         var sucursal = new Sucursal();
         var expectedResponse = new ApiResponse<object> { IsSuccess = true };
@@ -119,7 +119,7 @@ public class TestSucursalController
     }
 
     [TestMethod]
-    public async Task EditarSucursal_ReturnsBadRequest_WhenFail()
+    public async Task EditarSucursal_DebeRetornarSolicitudIncorrecta_CuandoFalla()
     {
         var sucursal = new Sucursal();
         var expectedResponse = new ApiResponse<object> { IsSuccess = false };
@@ -133,7 +133,7 @@ public class TestSucursalController
     }
 
     [TestMethod]
-    public async Task EliminarSucursal_ReturnsOk_WhenSuccess()
+    public async Task EliminarSucursal_DebeRetornarOk_CuandoTieneExito()
     {
         var expectedResponse = new ApiResponse<int> { IsSuccess = true };
         _mockService.Setup(s => s.EliminarSucursalAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
@@ -146,7 +146,7 @@ public class TestSucursalController
     }
 
     [TestMethod]
-    public async Task EliminarSucursal_ReturnsNotFound_WhenFail()
+    public async Task EliminarSucursal_DebeRetornarNoEncontrado_CuandoFalla()
     {
         var expectedResponse = new ApiResponse<int> { IsSuccess = false };
         _mockService.Setup(s => s.EliminarSucursalAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);

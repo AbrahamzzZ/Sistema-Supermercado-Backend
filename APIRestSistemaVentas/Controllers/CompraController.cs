@@ -12,9 +12,9 @@ namespace APIRestSistemaVentas.Controllers
     [ApiController]
     public class CompraController : ControllerBase
     {
-        private readonly CompraService _compraService;
+        private readonly ICompraService _compraService;
 
-        public CompraController(CompraService compraService)
+        public CompraController(ICompraService compraService)
         {
             _compraService = compraService;
         }
