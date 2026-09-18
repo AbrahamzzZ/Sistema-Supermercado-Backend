@@ -131,48 +131,48 @@ dotnet run
 
 ---
 
-## CI/CD Pipeline con Jenkins
+## Pruebas unitarias y GitHub Actions
 
-El proyecto cuenta con un pipeline de Integración Continua y Despliegue Continuo configurado en **Jenkins** que automatiza el proceso de compilación, prueba y despliegue.
+El proyecto cuenta con pruebas unitarias desarrolladas con **MSTest** y **Moq**. Las pruebas están organizadas por responsabilidad:
 
-### Importante
+- `UnitTests/Services`: valida reglas de negocio, validaciones, casos exitosos, errores, excepciones y registro de auditoría.
+- `UnitTests/Controller`: valida las respuestas HTTP de los controladores y la comunicación con los servicios mockeados.
 
-**El pipeline SOLO funciona en la rama `5-test`.** Esta rama está preparada exclusivamente para la ejecución de pruebas unitarias y despliegue automatizado.
+Actualmente existen **244 pruebas unitarias**.
 
-### Flujo del Pipeline
+### Flujo de integración continua
 
-Cada vez que se realiza un `git push` a la rama `5-test`, Jenkins ejecuta automáticamente las siguientes etapas:
+El workflow `.github/workflows/pruebas.yml` se ejecuta automáticamente cuando:
+
+- Se crea o actualiza un Pull Request hacia `main`.
+- Se realiza un push directo a `main`.
+
+El workflow realiza las siguientes etapas:
 
 | Etapa | Descripción |
 |-------|-------------|
-| **Build** | Restaura paquetes NuGet y compila la solución |
-| **Test** | Ejecuta las 233 pruebas unitarias usando MSTest |
-| **Publish** | Genera los archivos ejecutables de la API |
-| **Deploy** | Copia los archivos a `C:\SistemaVentas\API` |
+| **Restauración** | Restaura las dependencias de la solución. |
+| **Compilación** | Compila `Backend.sln` en configuración `Release`. |
+| **Pruebas** | Ejecuta todos los tests del proyecto `UnitTests`. |
 
-### Notificaciones
+Si la compilación o alguna prueba falla, GitHub Actions marca el workflow como fallido y muestra los detalles en los logs del Pull Request.
 
-Al finalizar el pipeline, se envía un correo electrónico al equipo de desarrollo indicando:
-- ✅ **Éxito**: Todas las pruebas pasaron correctamente
-- ❌ **Fallo**: Se requiere revisar los logs del pipeline
+### Protección de la rama principal
 
-### Archivos de configuración
+La rama `main` debe utilizar una regla de protección que requiera:
 
-- `Jenkinsfile` → Define las etapas del pipeline
-- `deploy.ps1` → Script de despliegue en entorno local
+- Un Pull Request para integrar cambios.
+- La aprobación de los checks de GitHub Actions antes del merge.
+- La resolución de las conversaciones del Pull Request.
 
-### Requisitos para ejecutar el pipeline
+De esta forma, los cambios no se integran a `main` mientras la solución no compile o alguna prueba unitaria falle.
 
-- Jenkins instalado (v2.541.3+)
-- Java 21 (LTS)
-- .NET SDK 8.0
-- ngrok (para webhook local)
+### Ejecución local
 
-### Rama de pruebas
+Para restaurar, compilar y ejecutar las pruebas localmente:
 
 ```bash
-# Cambiar a la rama de pruebas
-git checkout 5-test
-
-# Subir cambios para activar el pipeline
-git push origin 5-test
+dotnet restore Backend.sln
+dotnet build Backend.sln --configuration Release --no-restore
+dotnet test UnitTests/UnitTests.csproj --configuration Release --no-build
+```
