@@ -2,11 +2,9 @@
 using Domain.Models.Dto.Request;
 using Domain.Models.Dto.Response.Usuario;
 using FluentValidation;
-using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesBusiness;
 using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Repository.InterfacesServices;
-using Infrastructure.Services.business;
 using Microsoft.Data.SqlClient;
 using Utilities.Shared;
 

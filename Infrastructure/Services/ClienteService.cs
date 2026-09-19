@@ -1,12 +1,11 @@
 ﻿using Domain.Models;
-using Infrastructure.Repository.InterfacesRepository;
+using Domain.Models.Dto.Response.Cliente;
 using FluentValidation;
-using Infrastructure.Repository;
+using Infrastructure.Repository.InterfacesBusiness;
+using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Repository.InterfacesServices;
 using Microsoft.Data.SqlClient;
 using Utilities.Shared;
-using Domain.Models.Dto.Response.Cliente;
-using Infrastructure.Repository.InterfacesBusiness;
 
 namespace Infrastructure.Services
 {

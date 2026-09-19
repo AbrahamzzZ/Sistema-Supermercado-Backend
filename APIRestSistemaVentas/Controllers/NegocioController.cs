@@ -1,7 +1,6 @@
 ﻿using Domain.Models;
 using Domain.Models.Dto.Response.Negocio;
 using Infrastructure.Repository.InterfacesServices;
-using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -21,15 +20,6 @@ namespace APIRestSistemaVentas.Controllers
         {
             _negocioService = negocioService;
         }
-
-        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
-
-        /*private readonly INegocioService _negocioService;
-
-        public NegocioController(INegocioService negocioService)
-        {
-            _negocioService = negocioService;
-        }*/
 
         // GET: api/negocio/1
         [HttpGet("{id}")]

@@ -1,6 +1,5 @@
 ﻿using Domain.Models;
 using Infrastructure.Repository.InterfacesServices;
-using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -19,15 +18,6 @@ namespace APIRestSistemaVentas.Controllers
         {
             _clienteService = clienteService;
         }
-
-        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
-
-        /*private readonly IClienteService _clienteService;
-
-        public ClienteController(IClienteService clienteService)
-        {
-            _clienteService = clienteService;
-        }*/
 
         // GET: api/cliente
         [HttpGet]

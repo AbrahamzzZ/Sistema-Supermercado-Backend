@@ -1,6 +1,5 @@
 ﻿using Domain.Models;
 using Infrastructure.Repository.InterfacesServices;
-using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -19,15 +18,6 @@ namespace APIRestSistemaVentas.Controllers
         {
             _categoriaService = categoriaService;
         }
-
-        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
-
-        /*private readonly ICategoriaService _categoriaService;
-
-        public CategoriaController(ICategoriaService categoriaService)
-        {
-            _categoriaService = categoriaService;
-        }*/
 
         // GET: api/categoria
         [HttpGet]

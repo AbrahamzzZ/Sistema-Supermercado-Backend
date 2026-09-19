@@ -1,6 +1,5 @@
 ﻿using Domain.Models.Dto.Response.Compra;
 using Infrastructure.Repository.InterfacesServices;
-using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -18,15 +17,6 @@ namespace APIRestSistemaVentas.Controllers
         {
             _compraService = compraService;
         }
-
-        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
-
-        /*private readonly ICompraService _compraService;
-
-        public CompraController(ICompraService compraService)
-        {
-            _compraService = compraService;
-        }*/
 
         // GET: api/compra/numero-documento
         [HttpGet("numero-documento")]

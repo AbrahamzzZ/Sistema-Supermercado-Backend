@@ -19,15 +19,6 @@ namespace APIRestSistemaVentas.Controllers
             _ventaService = ventaService;
         }
 
-        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
-
-        /*private readonly IVentaService _ventaService;
-
-        public VentaController(IVentaService ventaService)
-        {
-            _ventaService = ventaService;
-        }*/
-
         // GET: api/venta/numero-documento
         [HttpGet("numero-documento")]
         [SwaggerOperation(

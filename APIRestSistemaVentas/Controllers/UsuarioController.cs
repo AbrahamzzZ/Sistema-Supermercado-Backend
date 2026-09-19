@@ -1,10 +1,8 @@
 ﻿using Domain.Models;
 using Domain.Models.Dto.Request;
 using Domain.Models.Dto.Response.Usuario;
-using Infrastructure.Helpers;
 using Infrastructure.Repository.InterfacesBusiness;
 using Infrastructure.Repository.InterfacesServices;
-using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -26,19 +24,6 @@ namespace APIRestSistemaVentas.Controllers
             _token = token;
             _menuService = menuService;
         }
-
-        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
-
-        /*private readonly IUsuarioService _usuarioService;
-        private readonly IMenuService _menuService;
-        private readonly IToken _token;
-
-        public UsuarioController(IUsuarioService ventaService, IToken token, IMenuService menuService)
-        {
-            _usuarioService = ventaService;
-            _token = token;
-            _menuService = menuService;
-        }*/
 
         // GET: api/usuario
         [Authorize]
