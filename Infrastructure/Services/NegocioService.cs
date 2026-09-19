@@ -1,11 +1,9 @@
 ﻿using Domain.Models;
 using Domain.Models.Dto.Response.Negocio;
 using FluentValidation;
-using Infrastructure.Repository;
 using Infrastructure.Repository.InterfacesBusiness;
 using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Repository.InterfacesServices;
-using Infrastructure.Services.business;
 using Utilities.IA;
 using Utilities.Shared;
 using static Utilities.IA.Reglas;
@@ -17,7 +15,6 @@ namespace Infrastructure.Services
         private readonly INegocioRepository _negocioRepository;
         private readonly IProductoRepository _productoRepository;
         private readonly ICategoriaRepository _categoriaRepository;
-
         private readonly IAuditoriaService _auditoriaService;
         private readonly ICurrentUser _currentUserService;
         private readonly IValidator<Negocio> _validator;

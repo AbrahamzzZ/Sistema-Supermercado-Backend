@@ -1,6 +1,5 @@
 ﻿using Domain.Models;
 using Infrastructure.Repository.InterfacesServices;
-using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -19,15 +18,6 @@ namespace APIRestSistemaVentas.Controllers
         {
             _sucursalService = sucursalService;
         }
-
-        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
-
-        /*private readonly ISucursalService _sucursalService;
-
-        public SucursalController(ISucursalService sucursalService)
-        {
-            _sucursalService = sucursalService;
-        }*/
 
         // GET: api/sucursal
         [HttpGet]

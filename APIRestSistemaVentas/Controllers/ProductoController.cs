@@ -1,7 +1,6 @@
 ﻿using Domain.Models;
 using Domain.Models.Dto.Response.Producto;
 using Infrastructure.Repository.InterfacesServices;
-using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -21,15 +20,6 @@ namespace APIRestSistemaVentas.Controllers
         {
             _productoService = productoService;
         }
-
-        //Para pruebas unitarias, descomenta este constructor y comenta el constructor anterior.
-
-        /*private readonly IProductoService _productoService;
-
-        public ProductoController(IProductoService productoService)
-        {
-            _productoService = productoService;
-        }*/
 
         // GET: api/producto
         [HttpGet]

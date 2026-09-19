@@ -1,6 +1,4 @@
-﻿using Domain.Models;
-using Infrastructure.Repository.InterfacesServices;
-using System.Security.Claims;
+﻿using Infrastructure.Repository.InterfacesServices;
 using System.Text.Json;
 using Utilities.Shared;
 
