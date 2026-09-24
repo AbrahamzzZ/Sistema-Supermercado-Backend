@@ -96,7 +96,6 @@ VALUES
 ('Transportista', '/transportista', 'local_shipping'),
 ('Ofertas', '/oferta', 'more'),
 ('Sucursales', '/sucursal', 'location_city'),
-('Negocio', '/negocio/1', 'store'),
 ('Log', '/log', 'insert_drive_file');
 
 --Creación de la tabla intermendia Permiso y sus inserciones
@@ -117,8 +116,7 @@ VALUES
 (1, 8), -- Administrador - Transportistas
 (1, 9), -- Administrador - Ofertas
 (1, 10), --Administrador - Sucursales
-(1, 11), --Administrador - Negocio
-(1, 12); --Administrador - Log
+(1, 11); --Administrador - Log
 
 INSERT INTO PERMISO (ID_ROL, ID_MENU)
 VALUES 
