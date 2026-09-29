@@ -1,0 +1,55 @@
+@startuml secuencia_registrar_venta
+!include _estilo.iuml
+title Diagrama de secuencia — Registrar venta
+autonumber
+actor "Frontend" as FE
+participant "VentaController" as VC
+participant "VentaService" as VS
+participant "VentaValidator" as VV
+participant "VentaRepository" as VR
+participant "AuditoriaService" as AU
+database "SQL Server\nPA_REGISTRAR_VENTA" as DB
+
+FE -> VC : POST /api/venta (Bearer JWT)\ncabecera + Detalles[]
+VC -> VS : RegistrarVentaAsync(ventaDto)
+VS -> VV : ValidateAsync(ventaDto)
+VV --> VS : resultado
+alt validación fallida
+  VS -> AU : RegistrarFalloAsync("Registrar Venta", errores)
+  VS --> VC : IsSuccess = false, Message = errores
+  VC --> FE : 400 Bad Request
+else válida
+  VS -> VR : RegistrarVentaAsync(ventaDto)
+  VR -> VR : ObtenerNumeroDocumentoAsync()\n(se calcula, pero se envía ventaDto.Numero_Documento)
+  VR -> VR : construir DataTable TI_Detalle_Venta
+  VR -> DB : EXEC PA_REGISTRAR_VENTA ..., @DETALLE_VENTA, @RESULTADO OUT
+  activate DB
+  DB -> DB : BEGIN TRANSACTION
+  DB -> DB : INSERT VENTA (cabecera)
+  alt stock insuficiente en algún producto
+    DB -> DB : RAISERROR → CATCH → ROLLBACK
+    DB --> VR : @RESULTADO = 0
+  else stock suficiente
+    DB -> DB : INSERT DETALLE_VENTA
+    DB -> DB : UPDATE PRODUCTO\nSET STOCK = STOCK - Cantidad
+    DB -> DB : COMMIT
+    DB --> VR : @RESULTADO = 1
+  end
+  deactivate DB
+  VR --> VS : bool registrado
+  alt registrado
+    VS -> AU : RegistrarExitoAsync
+    VS --> VC : IsSuccess = true
+    VC --> FE : 200 «Se registró correctamente.»
+  else no registrado
+    VS -> AU : RegistrarFalloAsync
+    VS --> VC : IsSuccess = false
+    VC --> FE : 400 «Error al registrar.»
+  end
+end
+note over DB
+  La compra sigue el mismo flujo con PA_REGISTRAR_COMPRA,
+  pero SUMA stock y actualiza precios de compra y venta
+  (lo que dispara TR_PRODUCTO_HISTORIAL_PRECIO).
+end note
+@enduml

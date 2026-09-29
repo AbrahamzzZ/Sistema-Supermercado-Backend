@@ -1,0 +1,34 @@
+@startuml secuencia_error_no_controlado
+!include _estilo.iuml
+title Diagrama de secuencia — Error no controlado
+autonumber
+actor "Frontend" as FE
+participant "ErrorHandlerMiddleware" as MW
+participant "Controller" as CT
+participant "Service" as SV
+participant "Repository" as RP
+participant "AuditoriaService" as AU
+database "SQL Server" as DB
+
+FE -> MW : petición HTTP
+MW -> CT : _next(context)
+CT -> SV : operación
+SV -> RP : acceso a datos
+RP -> DB : EXEC PA_...
+DB --> RP : excepción (conexión, SQL, etc.)
+RP --> SV : throw
+SV -> AU : RegistrarErrorAsync(operacion, ex)
+AU -> DB : EXEC PA_REGISTRAR_LOG (Nivel = ERROR)
+SV --> CT : throw (relanza)
+CT --> MW : excepción
+MW -> AU : RegistrarErrorAsync(ruta, ex)
+alt falla el registro del log
+  MW -> MW : Console.WriteLine(error)
+end
+MW --> FE : 500 { IsSuccess: false,\nMessage: "Ha ocurrido un error inesperado.",\nData: { errorCode: "ERR-yyyyMMddHHmmss" } }
+note right of SV
+  SqlException 547 al eliminar se captura
+  en el servicio y se responde con un mensaje
+  de negocio: no llega al middleware.
+end note
+@enduml

@@ -1,0 +1,96 @@
+@startuml clase_auditoria
+!include _estilo.iuml
+!pragma layout smetana
+title Diagrama de clases — Auditoría y manejo de errores
+hide empty members
+
+class ErrorHandlerMiddleware {
+  - _next : RequestDelegate
+  + Invoke(HttpContext)
+  - HandleException(HttpContext, Exception)
+}
+interface IAuditoriaService {
+  + RegistrarExitoAsync(operacion, descripcion)
+  + RegistrarFalloAsync(operacion, razon)
+  + RegistrarErrorAsync(operacion, ex)
+}
+class AuditoriaService
+interface ILogRepository {
+  + RegistrarLogAsync(Log)
+}
+class LogRepository
+interface IRequestContext {
+  + GetEndpoint() : string
+  + GetMethod() : string
+}
+class RequestContextService
+interface ICurrentUser {
+  + GetUserId() : int
+}
+class CurrentUserService {
+  - _httpContextAccessor : IHttpContextAccessor
+}
+class Log {
+  + Codigo, Mensaje, Detalle
+  + Id_Usuario, Fecha
+  + Endpoint, Metodo, Nivel
+}
+
+ErrorHandlerMiddleware .down.> IAuditoriaService : RegistrarErrorAsync
+AuditoriaService .up.|> IAuditoriaService
+AuditoriaService -down-> ILogRepository
+AuditoriaService -down-> IRequestContext
+AuditoriaService -down-> ICurrentUser
+AuditoriaService .right.> Log : crea
+LogRepository .up.|> ILogRepository
+RequestContextService .up.|> IRequestContext
+CurrentUserService .up.|> ICurrentUser
+note bottom of LogRepository : EXEC PA_REGISTRAR_LOG
+@enduml
+
+@startuml clase_seguridad_ia
+!include _estilo.iuml
+!pragma layout smetana
+title Diagrama de clases — Seguridad e inteligencia artificial
+hide empty members
+
+package "Seguridad" {
+  interface IToken {
+    + GenerarToken(UsuarioRolResponse, List<Menu>) : string
+  }
+  class Token {
+    - _configuration : IConfiguration
+  }
+  class Encriptacion <<static>> {
+    + EncriptarSHA256(input) : string
+  }
+  class UsuarioRepository
+}
+
+package "Inteligencia artificial" {
+  class NegocioService
+  class Reglas <<static>> {
+    + DetectarTipoAnalisis(prompt) : TipoAnalisis
+  }
+  enum TipoAnalisis {
+    Vendido
+    Comprado
+    Producto
+    Categoria
+    Cliente
+    Proveedor
+    Sucursal
+    Invalido
+  }
+  class OllamaClient {
+    - _http : HttpClient
+    + GenerateAsync(prompt, model = "phi3.5") : string
+  }
+}
+
+Token .up.|> IToken
+UsuarioRepository .down.> Encriptacion : cifra la clave
+NegocioService .down.> Reglas : clasifica
+NegocioService -down-> OllamaClient
+Reglas .down.> TipoAnalisis
+@enduml
