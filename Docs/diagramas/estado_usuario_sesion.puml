@@ -1,0 +1,34 @@
+@startuml estado_usuario_sesion
+!include _estilo.iuml
+!pragma layout smetana
+title Diagrama de estados — Usuario y sesión
+hide empty description
+
+state "Cuenta de usuario" as Cuenta {
+  state "Activo" as Activo
+  state "Inactivo" as InactivoU
+  [*] --> Activo : Registrar (Estado = 1)
+  [*] --> InactivoU : Registrar (Estado = 0)
+  Activo --> InactivoU : Editar (Estado = 0)\n[no es el único administrador activo]
+  InactivoU --> Activo : Editar (Estado = 1)
+}
+
+state "Sesión (token JWT)" as Sesion {
+  state "Sin sesión" as SinSesion
+  state "Autenticado" as Autenticado
+  state "Token expirado" as Expirado
+  [*] --> SinSesion
+  SinSesion --> Autenticado : login correcto\n[usuario Activo]
+  SinSesion --> SinSesion : login fallido (401)
+  Autenticado --> Autenticado : petición con token válido
+  Autenticado --> Expirado : pasan DurationInMinutes (60)
+  Expirado --> SinSesion : petición → 401
+  Autenticado --> SinSesion : el frontend descarta el token
+}
+
+Cuenta --> [*] : Eliminar\n[no es el único administrador activo]
+note bottom of Sesion
+  El token no se revoca en el servidor: si el usuario
+  se desactiva, su token sigue siendo válido hasta que expira.
+end note
+@enduml
