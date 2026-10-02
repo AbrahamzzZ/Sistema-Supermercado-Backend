@@ -1396,17 +1396,17 @@
               }
             ],
             "url": {
-              "raw": "{{BASE}}/api/Negocio/producto-mas-vendido",
+              "raw": "{{BASE}}/api/Negocio/productos-mas-vendidos",
               "host": [
                 "{{BASE}}"
               ],
               "path": [
                 "api",
                 "Negocio",
-                "producto-mas-vendido"
+                "productos-mas-vendidos"
               ]
             },
-            "description": "Generated from cURL: curl -X 'GET' \\\r\n  'http://localhost:5299/api/Negocio/producto-mas-vendido' \\\r\n  -H 'accept: text/plain' \\\r\n  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWJyYWhhbSBBbmRyZXMgRmFyZmFuIFNhbmNoZXoiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJoZXJtYW5vc2ZhcmZhbkBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhZG9yIiwiY29kaWdvIjoiMDAwMDEiLCJwZXJtaXNvIjpbIi91c3VhcmlvIiwiL2NvbXByYSIsIi92ZW50YSIsIi9wcm9kdWN0byIsIi9jYXRlZ29yaWEiLCIvY2xpZW50ZSIsIi9wcm92ZWVkb3IiLCIvdHJhbnNwb3J0aXN0YSIsIi9vZmVydGEiLCIvc3VjdXJzYWwiLCIvbmVnb2Npby8xIiwiL2xvZyJdLCJleHAiOjE3NzI5MDgxMDAsImlzcyI6IlN1cGVybWVyY2Fkb0FQSSIsImF1ZCI6IlN1cGVybWVyY2Fkb0NsaWVudCJ9.G8L2m-1UzsiEZVVqxZwGBD7P0sQAq8ZI7RS7X1fIUW0'"
+            "description": "Generated from cURL: curl -X 'GET' \\\r\n  'http://localhost:5299/api/Negocio/productos-mas-vendidos' \\\r\n  -H 'accept: text/plain' \\\r\n  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWJyYWhhbSBBbmRyZXMgRmFyZmFuIFNhbmNoZXoiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJoZXJtYW5vc2ZhcmZhbkBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhZG9yIiwiY29kaWdvIjoiMDAwMDEiLCJwZXJtaXNvIjpbIi91c3VhcmlvIiwiL2NvbXByYSIsIi92ZW50YSIsIi9wcm9kdWN0byIsIi9jYXRlZ29yaWEiLCIvY2xpZW50ZSIsIi9wcm92ZWVkb3IiLCIvdHJhbnNwb3J0aXN0YSIsIi9vZmVydGEiLCIvc3VjdXJzYWwiLCIvbmVnb2Npby8xIiwiL2xvZyJdLCJleHAiOjE3NzI5MDgxMDAsImlzcyI6IlN1cGVybWVyY2Fkb0FQSSIsImF1ZCI6IlN1cGVybWVyY2Fkb0NsaWVudCJ9.G8L2m-1UzsiEZVVqxZwGBD7P0sQAq8ZI7RS7X1fIUW0'"
           },
           "response": []
         },
@@ -1425,17 +1425,17 @@
               }
             ],
             "url": {
-              "raw": "{{BASE}}/api/Negocio/producto-mas-comprado",
+              "raw": "{{BASE}}/api/Negocio/productos-mas-comprados",
               "host": [
                 "{{BASE}}"
               ],
               "path": [
                 "api",
                 "Negocio",
-                "producto-mas-comprado"
+                "productos-mas-comprados"
               ]
             },
-            "description": "Generated from cURL: curl -X 'GET' \\\r\n  'http://localhost:5299/api/Negocio/producto-mas-comprado' \\\r\n  -H 'accept: text/plain' \\\r\n  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWJyYWhhbSBBbmRyZXMgRmFyZmFuIFNhbmNoZXoiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJoZXJtYW5vc2ZhcmZhbkBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhZG9yIiwiY29kaWdvIjoiMDAwMDEiLCJwZXJtaXNvIjpbIi91c3VhcmlvIiwiL2NvbXByYSIsIi92ZW50YSIsIi9wcm9kdWN0byIsIi9jYXRlZ29yaWEiLCIvY2xpZW50ZSIsIi9wcm92ZWVkb3IiLCIvdHJhbnNwb3J0aXN0YSIsIi9vZmVydGEiLCIvc3VjdXJzYWwiLCIvbmVnb2Npby8xIiwiL2xvZyJdLCJleHAiOjE3NzI5MDgxMDAsImlzcyI6IlN1cGVybWVyY2Fkb0FQSSIsImF1ZCI6IlN1cGVybWVyY2Fkb0NsaWVudCJ9.G8L2m-1UzsiEZVVqxZwGBD7P0sQAq8ZI7RS7X1fIUW0'"
+            "description": "Generated from cURL: curl -X 'GET' \\\r\n  'http://localhost:5299/api/Negocio/productos-mas-comprados' \\\r\n  -H 'accept: text/plain' \\\r\n  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWJyYWhhbSBBbmRyZXMgRmFyZmFuIFNhbmNoZXoiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJoZXJtYW5vc2ZhcmZhbkBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhZG9yIiwiY29kaWdvIjoiMDAwMDEiLCJwZXJtaXNvIjpbIi91c3VhcmlvIiwiL2NvbXByYSIsIi92ZW50YSIsIi9wcm9kdWN0byIsIi9jYXRlZ29yaWEiLCIvY2xpZW50ZSIsIi9wcm92ZWVkb3IiLCIvdHJhbnNwb3J0aXN0YSIsIi9vZmVydGEiLCIvc3VjdXJzYWwiLCIvbmVnb2Npby8xIiwiL2xvZyJdLCJleHAiOjE3NzI5MDgxMDAsImlzcyI6IlN1cGVybWVyY2Fkb0FQSSIsImF1ZCI6IlN1cGVybWVyY2Fkb0NsaWVudCJ9.G8L2m-1UzsiEZVVqxZwGBD7P0sQAq8ZI7RS7X1fIUW0'"
           },
           "response": []
         },

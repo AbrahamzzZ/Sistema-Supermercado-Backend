@@ -27,7 +27,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista de categorías obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Categorium>>> GetCategorias()
+        public async Task<ActionResult<ApiResponse<Categorium>>> ListarCategorias()
         {
             var categorias = await _categoriaService.ListarCategoriasAsync();
             return Ok(categorias);
@@ -41,7 +41,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista paginada obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Paginacion<Categorium>>>> GetCategoriasPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
+        public async Task<ActionResult<ApiResponse<Paginacion<Categorium>>>> ListarCategoriasPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
         {
             var result = await _categoriaService.ListarCategoriasPaginacionAsync(pageNumber, pageSize, filtro);
             return Ok(result);
@@ -56,7 +56,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Categoría encontrada")]
         [SwaggerResponse(404, "Categoría no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<Categorium>> GetCategoria(int id)
+        public async Task<ActionResult<Categorium>> ObtenerCategoria(int id)
         {
             var response = await _categoriaService.ObtenerCategoriaAsync(id);
             return response.IsSuccess ? Ok(response) : NotFound(response);

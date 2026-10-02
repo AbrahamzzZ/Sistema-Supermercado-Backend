@@ -29,7 +29,7 @@ public class TestVentaController
         _mockService.Setup(s => s.ObtenerNumeroDocumentoAsync())
                     .ReturnsAsync(response);
 
-        var actionResult = await _controller.GetObtenerNumeroDocumento();
+        var actionResult = await _controller.ObtenerNumeroDocumento();
         var okResult = actionResult as OkObjectResult;
 
         Assert.IsNotNull(okResult);
@@ -45,7 +45,7 @@ public class TestVentaController
         _mockService.Setup(s => s.ObtenerVentaAsync("VEN-0001"))
                     .ReturnsAsync(response);
 
-        var actionResult = await _controller.GetObtenerVenta("VEN-0001");
+        var actionResult = await _controller.ObtenerVenta("VEN-0001");
         var okResult = actionResult.Result as OkObjectResult;
 
         Assert.IsNotNull(okResult);
@@ -66,7 +66,7 @@ public class TestVentaController
         _mockService.Setup(s => s.ObtenerDetallesVentaAsync(1))
                     .ReturnsAsync(response);
 
-        var actionResult = await _controller.GetObtenerDetallesVenta(1);
+        var actionResult = await _controller.ObtenerDetallesVenta(1);
         var okResult = actionResult.Result as OkObjectResult;
 
         Assert.IsNotNull(okResult);
@@ -83,7 +83,7 @@ public class TestVentaController
         _mockService.Setup(s => s.RegistrarVentaAsync(ventaDto))
                     .ReturnsAsync(response);
 
-        var actionResult = await _controller.PostRegistrarVenta(ventaDto);
+        var actionResult = await _controller.RegistrarVenta(ventaDto);
         var okResult = actionResult as OkObjectResult;
 
         Assert.IsNotNull(okResult);
@@ -100,7 +100,7 @@ public class TestVentaController
         _mockService.Setup(s => s.RegistrarVentaAsync(ventaDto))
                     .ReturnsAsync(response);
 
-        var actionResult = await _controller.PostRegistrarVenta(ventaDto);
+        var actionResult = await _controller.RegistrarVenta(ventaDto);
         var badResult = actionResult as BadRequestObjectResult;
 
         Assert.IsNotNull(badResult);

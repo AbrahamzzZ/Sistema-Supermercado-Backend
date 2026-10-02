@@ -27,7 +27,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Número de documento obtenido correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult> GetObtenerNumeroDocumento()
+        public async Task<ActionResult> ObtenerNumeroDocumento()
         {
             var response = await _ventaService.ObtenerNumeroDocumentoAsync();
             return Ok(response);
@@ -42,7 +42,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Venta encontrada")]
         [SwaggerResponse(404, "Venta no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<VentaResponse>> GetObtenerVenta(string numeroDocumento)
+        public async Task<ActionResult<VentaResponse>> ObtenerVenta(string numeroDocumento)
         {
             var venta = await _ventaService.ObtenerVentaAsync(numeroDocumento);
             return Ok(venta);
@@ -57,7 +57,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Detalles de venta obtenidos correctamente")]
         [SwaggerResponse(404, "Venta no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<List<DetalleVentas>>> GetObtenerDetallesVenta(int idVenta)
+        public async Task<ActionResult<List<DetalleVentas>>> ObtenerDetallesVenta(int idVenta)
         {
             var detalles = await _ventaService.ObtenerDetallesVentaAsync(idVenta);
             return Ok(detalles);
@@ -72,7 +72,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Venta registrada correctamente")]
         [SwaggerResponse(400, "Error en los datos enviados")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<IActionResult> PostRegistrarVenta([FromBody] Ventas ventaDto)
+        public async Task<IActionResult> RegistrarVenta([FromBody] Ventas ventaDto)
         {
             var response = await _ventaService.RegistrarVentaAsync(ventaDto);
             if (!response.IsSuccess)

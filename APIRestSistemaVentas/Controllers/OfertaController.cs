@@ -28,7 +28,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista de ofertas obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<OfertaProductoResponse>>> GetOfertas()
+        public async Task<ActionResult<ApiResponse<OfertaProductoResponse>>> ListarOfertas()
         {
             var ofertas = await _ofertaService.ListarOfertasAsync();
             return Ok(ofertas);
@@ -42,7 +42,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista paginada obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Paginacion<OfertaProductoResponse>>>> GetOfertasPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
+        public async Task<ActionResult<ApiResponse<Paginacion<OfertaProductoResponse>>>> ListarOfertasPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
         {
             var result = await _ofertaService.ListarOfertasPaginacionAsync(pageNumber, pageSize, filtro);
             return Ok(result);
@@ -57,7 +57,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Oferta encontrada")]
         [SwaggerResponse(404, "Oferta no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<Ofertum>> GetOferta(int id)
+        public async Task<ActionResult<Ofertum>> ObtenerOferta(int id)
         {
             var response = await _ofertaService.ObtenerOfertaAsync(id);
             return response.IsSuccess ? Ok(response) : NotFound(response);

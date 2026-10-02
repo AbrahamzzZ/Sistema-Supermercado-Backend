@@ -27,7 +27,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista de sucursales obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Sucursal>>> GetSucursales()
+        public async Task<ActionResult<ApiResponse<Sucursal>>> ListarSucursales()
         {
             var sucursales = await _sucursalService.ListarSucursalesAsync();
             return Ok(sucursales);
@@ -41,7 +41,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista paginada obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Paginacion<Sucursal>>>> GetSucursalesPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
+        public async Task<ActionResult<ApiResponse<Paginacion<Sucursal>>>> ListarSucursalesPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
         {
             var result = await _sucursalService.ListarSucursalesPaginacionAsync(pageNumber, pageSize, filtro);
             return Ok(result);
@@ -56,7 +56,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Sucursal encontrada")]
         [SwaggerResponse(404, "Sucursal no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<Sucursal>> GetSucursal(int id)
+        public async Task<ActionResult<Sucursal>> ObtenerSucursal(int id)
         {
             var response = await _sucursalService.ObtenerSucursalAsync(id);
             return response.IsSuccess ? Ok(response) : NotFound(response);

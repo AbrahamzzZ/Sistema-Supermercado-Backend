@@ -23,13 +23,13 @@ public class TestOfertaController
     }
 
     [TestMethod]
-    public async Task GetOfertas_DeberiaRetornarOk()
+    public async Task ListarOfertas_DeberiaRetornarOk()
     {
         _mockService.Setup(s => s.ListarOfertasAsync())
             .ReturnsAsync(new ApiResponse<List<OfertaProductoResponse>>
             { IsSuccess = true,Data = new List<OfertaProductoResponse> { new OfertaProductoResponse { Id_Oferta = 1, Nombre_Oferta = "Descuento Snacks" } } });
 
-        var result = await _controller.GetOfertas();
+        var result = await _controller.ListarOfertas();
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
@@ -39,7 +39,7 @@ public class TestOfertaController
     }
 
     [TestMethod]
-    public async Task ObtenerOfertasPaginadas_DebeRetornarOk()
+    public async Task ListarOfertasPaginacion_DebeRetornarOk()
     {
         var expectedResponse = new ApiResponse<Paginacion<OfertaProductoResponse>>
         {
@@ -54,7 +54,7 @@ public class TestOfertaController
         };
         _mockService.Setup(s => s.ListarOfertasPaginacionAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(expectedResponse);
 
-        var result = await _controller.GetOfertasPaginacion(1, 10);
+        var result = await _controller.ListarOfertasPaginacion(1, 10);
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
@@ -69,7 +69,7 @@ public class TestOfertaController
         var oferta = new OfertaProductoResponse { Id_Oferta = 1, Nombre_Oferta = "Descuento 50%" };
         _mockService.Setup(s => s.ObtenerOfertaAsync(1)).ReturnsAsync(new ApiResponse<OfertaProductoResponse> { IsSuccess = true, Data = oferta });
 
-        var result = await _controller.GetOferta(1);
+        var result = await _controller.ObtenerOferta(1);
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
@@ -83,7 +83,7 @@ public class TestOfertaController
     {
         _mockService.Setup(s => s.ObtenerOfertaAsync(99)).ReturnsAsync(new ApiResponse<OfertaProductoResponse> { IsSuccess = false, Message = "No se encontr� la oferta" });
 
-        var result = await _controller.GetOferta(99);
+        var result = await _controller.ObtenerOferta(99);
 
         var notFoundResult = result.Result as NotFoundObjectResult;
         Assert.IsNotNull(notFoundResult);

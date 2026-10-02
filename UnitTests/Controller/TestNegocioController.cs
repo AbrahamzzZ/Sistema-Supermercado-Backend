@@ -29,7 +29,7 @@ public class TestNegocioController
         _mockService.Setup(s => s.ObtenerNegocioAsync(1))
                     .ReturnsAsync(response);
 
-        var result = await _controller.GetNegocio(1);
+        var result = await _controller.ObtenerNegocio(1);
         var okResult = result.Result as OkObjectResult;
 
         Assert.IsNotNull(okResult);
@@ -45,7 +45,7 @@ public class TestNegocioController
         _mockService.Setup(s => s.ObtenerNegocioAsync(99))
                     .ReturnsAsync(response);
 
-        var result = await _controller.GetNegocio(99);
+        var result = await _controller.ObtenerNegocio(99);
         var notFoundResult = result.Result as NotFoundObjectResult;
 
         Assert.IsNotNull(notFoundResult);
@@ -146,7 +146,7 @@ public class TestNegocioController
         _mockService.Setup(s => s.ObtenerTopProveedores())
                     .ReturnsAsync(response);
 
-        var result = await _controller.ObtenerProveedorPreferido();
+        var result = await _controller.ObtenerTopProveedores();
         var okResult = result.Result as OkObjectResult;
 
         Assert.IsNotNull(okResult);
@@ -162,7 +162,7 @@ public class TestNegocioController
         _mockService.Setup(s => s.ObtenerViajesTransportista())
                     .ReturnsAsync(response);
 
-        var result = await _controller.ObtenerTransportistaViajes();
+        var result = await _controller.ObtenerViajesTransportista();
         var okResult = result.Result as OkObjectResult;
 
         Assert.IsNotNull(okResult);

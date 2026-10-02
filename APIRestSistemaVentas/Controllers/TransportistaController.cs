@@ -27,7 +27,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista de transportistas obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Transportistum>>> GetTransportistas()
+        public async Task<ActionResult<ApiResponse<Transportistum>>> ListarTransportistas()
         {
             var transportistas = await _transportistaService.ListarTransportistasAsync();
             return Ok(transportistas);
@@ -41,7 +41,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista paginada obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Paginacion<Transportistum>>>> GetTransportistasPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
+        public async Task<ActionResult<ApiResponse<Paginacion<Transportistum>>>> ListarTransportistasPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
         {
             var result = await _transportistaService.ListarTransportistasPaginacionAsync(pageNumber, pageSize, filtro);
             return Ok(result);
@@ -56,7 +56,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Transportista encontrado")]
         [SwaggerResponse(404, "Transportista no encontrado")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<Transportistum>> GetTransportista(int id)
+        public async Task<ActionResult<Transportistum>> ObtenerTransportista(int id)
         {
             var response = await _transportistaService.ObtenerTransportistaAsync(id);
             return response.IsSuccess ? Ok(response) : NotFound(response);
@@ -71,7 +71,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Transportista registrado correctamente")]
         [SwaggerResponse(400, "Error en los datos enviados")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<object>>> RegistrarProveedor([FromBody] Transportistum transportista)
+        public async Task<ActionResult<ApiResponse<object>>> RegistrarTransportista([FromBody] Transportistum transportista)
         {
             var response = await _transportistaService.RegistrarTransportistaAsync(transportista);
             return response.IsSuccess ? Ok(response) : BadRequest(response);

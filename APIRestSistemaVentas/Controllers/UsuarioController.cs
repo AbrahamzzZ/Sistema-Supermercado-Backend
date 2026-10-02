@@ -34,7 +34,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista de usuarios obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
+        public async Task<ActionResult<IEnumerable<Usuario>>> ListarUsuarios()
         {
             var usuarios = await _usuarioService.ListarUsuariosAsync();
             return Ok(usuarios);
@@ -49,7 +49,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista paginada obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Paginacion<UsuarioRolResponse>>>> GetUsuariosPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
+        public async Task<ActionResult<ApiResponse<Paginacion<UsuarioRolResponse>>>> ListarUsuariosPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
         {
             var result = await _usuarioService.ListarUsuariosPaginacionAsync(pageNumber, pageSize, filtro);
             return Ok(result);
@@ -65,7 +65,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Usuario encontrado")]
         [SwaggerResponse(404, "Usuario no encontrado")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<UsuarioRolResponse>>> GetUsuario(int id)
+        public async Task<ActionResult<ApiResponse<UsuarioRolResponse>>> ObtenerUsuario(int id)
         {
             var response = await _usuarioService.ObtenerUsuarioAsync(id);
             return response.IsSuccess ? Ok(response) : NotFound(response);

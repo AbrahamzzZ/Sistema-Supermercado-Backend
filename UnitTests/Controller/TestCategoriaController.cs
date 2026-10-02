@@ -22,12 +22,12 @@ public class TestCategoriaController
     }
 
     [TestMethod]
-    public async Task GetCategorias_DeberiaRetornarOk()
+    public async Task ListarCategorias_DeberiaRetornarOk()
     {
         _mockService.Setup(s => s.ListarCategoriasAsync())
             .ReturnsAsync(new ApiResponse<List<CategoriaResponse>> { IsSuccess = true,Data = new List<CategoriaResponse> { new CategoriaResponse { Id_Categoria = 1, Nombre_Categoria = "Snacks" } }});
 
-        var result = await _controller.GetCategorias();
+        var result = await _controller.ListarCategorias();
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
@@ -37,12 +37,12 @@ public class TestCategoriaController
     }
 
     [TestMethod]
-    public async Task GetCategoria_DeberiaRetornarOk_SiExiste()
+    public async Task ObtenerCategoria_DeberiaRetornarOk_SiExiste()
     {
         _mockService.Setup(s => s.ObtenerCategoriaAsync(1))
             .ReturnsAsync(new ApiResponse<CategoriaResponse> { IsSuccess = true, Data = new CategoriaResponse { Id_Categoria = 1, Nombre_Categoria = "Snacks" } });
 
-        var result = await _controller.GetCategoria(1);
+        var result = await _controller.ObtenerCategoria(1);
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
@@ -57,7 +57,7 @@ public class TestCategoriaController
         _mockService.Setup(s => s.ObtenerCategoriaAsync(99))
             .ReturnsAsync(new ApiResponse<CategoriaResponse> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_NOT_FOUND });
 
-        var result = await _controller.GetCategoria(99);
+        var result = await _controller.ObtenerCategoria(99);
 
         Assert.IsInstanceOfType(result.Result, typeof(NotFoundObjectResult));
     }

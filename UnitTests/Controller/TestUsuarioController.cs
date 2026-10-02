@@ -33,12 +33,12 @@ public class TestUsuarioController
     }
 
     [TestMethod]
-    public async Task GetUsuarios_DeberiaRetornarOk()
+    public async Task ListarUsuarios_DeberiaRetornarOk()
     {
         _mockService.Setup(s => s.ListarUsuariosAsync())
             .ReturnsAsync(new ApiResponse<List<UsuarioRolResponse>> { IsSuccess = true,Data = new List<UsuarioRolResponse> { new UsuarioRolResponse { Id_Usuario = 1, Nombre_Completo = "Snacks" } }});
 
-        var result = await _controller.GetUsuarios();
+        var result = await _controller.ListarUsuarios();
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
@@ -53,7 +53,7 @@ public class TestUsuarioController
                 IsSuccess = false
             });
 
-        var result = await _controller.GetUsuario(99);
+        var result = await _controller.ObtenerUsuario(99);
 
         Assert.IsInstanceOfType(result.Result, typeof(NotFoundObjectResult));
     }

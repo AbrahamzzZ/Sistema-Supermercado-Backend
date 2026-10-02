@@ -22,12 +22,12 @@ public class TestSucursalController
     }
 
     [TestMethod]
-    public async Task ObtenerSucursales_DebeRetornarOk_ConSucursales()
+    public async Task ListarSucursales_DebeRetornarOk_ConSucursales()
     {
         var expectedResponse = new ApiResponse<List<SucursalResponse>> { IsSuccess = true, Data = new List<SucursalResponse>() };
         _mockService.Setup(s => s.ListarSucursalesAsync()).ReturnsAsync(expectedResponse);
 
-        var result = await _controller.GetSucursales();
+        var result = await _controller.ListarSucursales();
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
@@ -36,12 +36,12 @@ public class TestSucursalController
     }
 
     [TestMethod]
-    public async Task ObtenerSucursalesPaginadas_DebeRetornarOk_ConDatos()
+    public async Task ListarSucursalesPaginacion_DebeRetornarOk_ConDatos()
     {
         var expectedResponse = new ApiResponse<Paginacion<SucursalResponse>> { IsSuccess = true, Data = new Paginacion<SucursalResponse>() };
         _mockService.Setup(s => s.ListarSucursalesPaginacionAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(expectedResponse);
 
-        var result = await _controller.GetSucursalesPaginacion();
+        var result = await _controller.ListarSucursalesPaginacion();
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
@@ -55,7 +55,7 @@ public class TestSucursalController
         var expectedResponse = new ApiResponse<SucursalResponse> { IsSuccess = true, Data = new SucursalResponse() };
         _mockService.Setup(s => s.ObtenerSucursalAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
 
-        var result = await _controller.GetSucursal(1);
+        var result = await _controller.ObtenerSucursal(1);
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
@@ -69,7 +69,7 @@ public class TestSucursalController
         var expectedResponse = new ApiResponse<SucursalResponse> { IsSuccess = false, Message = "Not Found" };
         _mockService.Setup(s => s.ObtenerSucursalAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
 
-        var result = await _controller.GetSucursal(1);
+        var result = await _controller.ObtenerSucursal(1);
 
         var notFoundResult = result.Result as NotFoundObjectResult;
         Assert.IsNotNull(notFoundResult);

@@ -22,12 +22,12 @@ public class TestClienteController
     }
 
     [TestMethod]
-    public async Task ObtenerClientes_DebeRetornarOk_ConClientes()
+    public async Task ListarClientes_DebeRetornarOk_ConClientes()
     {
         var expectedResponse = new ApiResponse<List<ClienteResponse>> { IsSuccess = true, Data = new List<ClienteResponse>() };
         _mockService.Setup(s => s.ListarClientesAsync()).ReturnsAsync(expectedResponse);
 
-        var result = await _controller.GetClientes();
+        var result = await _controller.ListarClientes();
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
         Assert.AreEqual(200, okResult.StatusCode);
@@ -35,12 +35,12 @@ public class TestClienteController
     }
 
     [TestMethod]
-    public async Task ObtenerClientesPaginados_DebeRetornarOk_ConDatos()
+    public async Task ListarClientesPaginacion_DebeRetornarOk_ConDatos()
     {
         var expectedResponse = new ApiResponse<Paginacion<ClienteResponse>> { IsSuccess = true, Data = new Paginacion<ClienteResponse>() };
         _mockService.Setup(s => s.ListarClientesPaginacionAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(expectedResponse);
 
-        var result = await _controller.GetClientesPaginacion();
+        var result = await _controller.ListarClientesPaginacion();
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
         Assert.AreEqual(200, okResult.StatusCode);
@@ -53,7 +53,7 @@ public class TestClienteController
         var expectedResponse = new ApiResponse<ClienteResponse> { IsSuccess = true, Data = new ClienteResponse() };
         _mockService.Setup(s => s.ObtenerClienteAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
 
-        var result = await _controller.GetCliente(1);
+        var result = await _controller.ObtenerCliente(1);
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
@@ -67,7 +67,7 @@ public class TestClienteController
         var expectedResponse = new ApiResponse<ClienteResponse> { IsSuccess = false, Message = "Not Found" };
         _mockService.Setup(s => s.ObtenerClienteAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
 
-        var result = await _controller.GetCliente(1);
+        var result = await _controller.ObtenerCliente(1);
 
         var notFoundResult = result.Result as NotFoundObjectResult;
         Assert.IsNotNull(notFoundResult);

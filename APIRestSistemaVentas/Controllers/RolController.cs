@@ -27,7 +27,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista de roles obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<List<Rol>>>> GetRoles()
+        public async Task<ActionResult<ApiResponse<List<Rol>>>> ListarRoles()
         {
             var respuesta = await _rolService.ListarRolesAsync();
             return Ok(respuesta);

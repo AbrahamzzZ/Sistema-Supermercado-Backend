@@ -27,7 +27,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista paginada obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Paginacion<Log>>>> GetLogsPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
+        public async Task<ActionResult<ApiResponse<Paginacion<Log>>>> ListarLogsPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
         {
             var result = await _logService.ListarLogsPaginacionAsync(pageNumber, pageSize, filtro);
             return Ok(result);
@@ -42,7 +42,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Log encontrado")]
         [SwaggerResponse(404, "Log no encontrado")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<Log>> GetLog(int id)
+        public async Task<ActionResult<Log>> ObtenerLog(int id)
         {
             var response = await _logService.ObtenerLogAsync(id);
             return response.IsSuccess ? Ok(response) : NotFound(response);
