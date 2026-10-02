@@ -22,12 +22,12 @@ public class TestProveedorController
     }
 
     [TestMethod]
-    public async Task ObtenerProveedores_DebeRetornarOk_ConProveedores()
+    public async Task ListarProveedores_DebeRetornarOk_ConProveedores()
     {
         var expectedResponse = new ApiResponse<List<ProveedorResponse>> { IsSuccess = true, Data = new List<ProveedorResponse>() };
         _mockService.Setup(s => s.ListarProveedoresAsync()).ReturnsAsync(expectedResponse);
 
-        var result = await _controller.GetProveedores();
+        var result = await _controller.ListarProveedores();
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
@@ -41,7 +41,7 @@ public class TestProveedorController
         var expectedResponse = new ApiResponse<ProveedorResponse> { IsSuccess = true, Data = new ProveedorResponse() };
         _mockService.Setup(s => s.ObtenerProveedorAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
 
-        var result = await _controller.GetProveedor(1);
+        var result = await _controller.ObtenerProveedor(1);
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
@@ -55,7 +55,7 @@ public class TestProveedorController
         var expectedResponse = new ApiResponse<ProveedorResponse> { IsSuccess = false, Message = "Not Found" };
         _mockService.Setup(s => s.ObtenerProveedorAsync(It.IsAny<int>())).ReturnsAsync(expectedResponse);
 
-        var result = await _controller.GetProveedor(1);
+        var result = await _controller.ObtenerProveedor(1);
 
         var notFoundResult = result.Result as NotFoundObjectResult;
         Assert.IsNotNull(notFoundResult);
@@ -63,12 +63,12 @@ public class TestProveedorController
     }
 
     [TestMethod]
-    public async Task ObtenerProveedoresPaginados_DebeRetornarOk_ConDatos()
+    public async Task ListarProveedoresPaginacion_DebeRetornarOk_ConDatos()
     {
         var expectedResponse = new ApiResponse<Paginacion<ProveedorResponse>> { IsSuccess = true, Data = new Paginacion<ProveedorResponse>() };
         _mockService.Setup(s => s.ListarProveedoresPaginacionAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(expectedResponse);
 
-        var result = await _controller.GetProveedoresPaginacion();
+        var result = await _controller.ListarProveedoresPaginacion();
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);

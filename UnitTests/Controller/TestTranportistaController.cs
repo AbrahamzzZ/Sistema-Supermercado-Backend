@@ -23,14 +23,14 @@ public class TestTranportistaController
 
 
     [TestMethod]
-    public async Task ObtenerTransportistas_DebeRetornarOk_ConLista()
+    public async Task ListarTransportistas_DebeRetornarOk_ConLista()
     {
         var response = new ApiResponse<List<TransportistaResponse>>
         { IsSuccess = true, Data = new List<TransportistaResponse> { new TransportistaResponse { Id_Transportista = 1, Nombres = "Juan Perez" } }};
 
         _mockService.Setup(s => s.ListarTransportistasAsync()).ReturnsAsync(response);
 
-        var actionResult = await _controller.GetTransportistas();
+        var actionResult = await _controller.ListarTransportistas();
         var okResult = actionResult.Result as OkObjectResult;
 
         Assert.IsNotNull(okResult);
@@ -46,7 +46,7 @@ public class TestTranportistaController
 
         _mockService.Setup(s => s.ObtenerTransportistaAsync(1)).ReturnsAsync(response);
 
-        var actionResult = await _controller.GetTransportista(1);
+        var actionResult = await _controller.ObtenerTransportista(1);
         var okResult = actionResult.Result as OkObjectResult;
 
         Assert.IsNotNull(okResult);
@@ -61,7 +61,7 @@ public class TestTranportistaController
 
         _mockService.Setup(s => s.ObtenerTransportistaAsync(99)).ReturnsAsync(response);
 
-        var actionResult = await _controller.GetTransportista(99);
+        var actionResult = await _controller.ObtenerTransportista(99);
         var notFoundResult = actionResult.Result as NotFoundObjectResult;
 
         Assert.IsNotNull(notFoundResult);
@@ -78,7 +78,7 @@ public class TestTranportistaController
         _mockService.Setup(s => s.RegistrarTransportistaAsync(request))
                     .ReturnsAsync(response);
 
-        var actionResult = await _controller.RegistrarProveedor(request);
+        var actionResult = await _controller.RegistrarTransportista(request);
         var okResult = actionResult.Result as OkObjectResult;
 
         Assert.IsNotNull(okResult);
@@ -95,7 +95,7 @@ public class TestTranportistaController
         _mockService.Setup(s => s.RegistrarTransportistaAsync(request))
                     .ReturnsAsync(response);
 
-        var actionResult = await _controller.RegistrarProveedor(request);
+        var actionResult = await _controller.RegistrarTransportista(request);
         var badRequestResult = actionResult.Result as BadRequestObjectResult;
 
         Assert.IsNotNull(badRequestResult);

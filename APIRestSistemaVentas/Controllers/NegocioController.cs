@@ -30,7 +30,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Información del negocio obtenida")]
         [SwaggerResponse(404, "Negocio no encontrado")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Negocio>>> GetNegocio(int id)
+        public async Task<ActionResult<ApiResponse<Negocio>>> ObtenerNegocio(int id)
         {
             var response = await _negocioService.ObtenerNegocioAsync(id);
             return response.IsSuccess ? Ok(response) : NotFound(response);
@@ -51,8 +51,8 @@ namespace APIRestSistemaVentas.Controllers
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
-        // GET: api/negocio/producto-mas-comprado
-        [HttpGet("producto-mas-comprado")]
+        // GET: api/negocio/productos-mas-comprados
+        [HttpGet("productos-mas-comprados")]
         [SwaggerOperation(
             Summary = "Productos más comprados",
             Description = "Obtiene los productos que han sido comprados con mayor frecuencia."
@@ -66,8 +66,8 @@ namespace APIRestSistemaVentas.Controllers
             return response.IsSuccess ? Ok(response) : NotFound(response);
         }
 
-        // GET: api/negocio/producto-mas-vendido
-        [HttpGet("producto-mas-vendido")]
+        // GET: api/negocio/productos-mas-vendidos
+        [HttpGet("productos-mas-vendidos")]
         [SwaggerOperation(
             Summary = "Productos más vendidos",
             Description = "Obtiene los productos con mayor volumen de ventas."
@@ -90,7 +90,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Análisis generado correctamente")]
         [SwaggerResponse(400, "Error en la solicitud")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult> AnalisisIA([FromBody] AnalisisIARequest request)
+        public async Task<ActionResult> GenerarAnalisisIA([FromBody] AnalisisIARequest request)
         {
             var response = await _negocioService.AnalisisIA(request.Prompt);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
@@ -120,7 +120,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Listado obtenido correctamente")]
         [SwaggerResponse(404, "Información no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<List<TopProveedorResponse>>> ObtenerProveedorPreferido()
+        public async Task<ActionResult<List<TopProveedorResponse>>> ObtenerTopProveedores()
         {
             var response = await _negocioService.ObtenerTopProveedores();
             return response.IsSuccess ? Ok(response) : NotFound(response);
@@ -135,7 +135,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Listado obtenido correctamente")]
         [SwaggerResponse(404, "Información no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<List<ViajesTransportistaResponse>>> ObtenerTransportistaViajes()
+        public async Task<ActionResult<List<ViajesTransportistaResponse>>> ObtenerViajesTransportista()
         {
             var response = await _negocioService.ObtenerViajesTransportista();
             return response.IsSuccess ? Ok(response) : NotFound(response);

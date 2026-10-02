@@ -27,7 +27,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista de proveedores obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Proveedor>>> GetProveedores()
+        public async Task<ActionResult<ApiResponse<Proveedor>>> ListarProveedores()
         {
             var proveedores = await _proveedorService.ListarProveedoresAsync();
             return Ok(proveedores);
@@ -41,7 +41,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista paginada obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Paginacion<Proveedor>>>> GetProveedoresPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
+        public async Task<ActionResult<ApiResponse<Paginacion<Proveedor>>>> ListarProveedoresPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
         {
             var result = await _proveedorService.ListarProveedoresPaginacionAsync(pageNumber, pageSize, filtro);
             return Ok(result);
@@ -56,7 +56,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Proveedor encontrado")]
         [SwaggerResponse(404, "Proveedor no encontrado")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<Proveedor>> GetProveedor(int id)
+        public async Task<ActionResult<Proveedor>> ObtenerProveedor(int id)
         {
             var response = await _proveedorService.ObtenerProveedorAsync(id);
             return response.IsSuccess ? Ok(response) : NotFound(response);

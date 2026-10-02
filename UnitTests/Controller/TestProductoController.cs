@@ -23,13 +23,13 @@ public class TestProductoController
 
     // Test 1: GET all productos
     [TestMethod]
-    public async Task GetProductos_DeberiaRetornarOk()
+    public async Task ListarProductos_DeberiaRetornarOk()
     {
         var data = new List<ProductoCategoriaResponse> { new ProductoCategoriaResponse { Id_Producto = 1, Nombre_Producto = "Snacks" } };
         _mockService.Setup(s => s.ListarProductosAsync())
             .ReturnsAsync(new ApiResponse<List<ProductoCategoriaResponse>> { IsSuccess = true, Data = data });
 
-        var result = await _controller.GetProductos();
+        var result = await _controller.ListarProductos();
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
@@ -39,13 +39,13 @@ public class TestProductoController
     }
 
     [TestMethod]
-    public async Task GetProducto_CuandoExiste_DeberiaRetornarOk()
+    public async Task ObtenerProducto_CuandoExiste_DeberiaRetornarOk()
     {
         var producto = new ProductoResponse { Id_Producto = 1, Nombre_Producto = "Snacks" };
         _mockService.Setup(s => s.ObtenerProductoAsync(1))
             .ReturnsAsync(new ApiResponse<ProductoResponse> { IsSuccess = true, Data = producto });
 
-        var result = await _controller.GetProducto(1);
+        var result = await _controller.ObtenerProducto(1);
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
@@ -60,7 +60,7 @@ public class TestProductoController
         _mockService.Setup(s => s.ObtenerProductoAsync(999))
             .ReturnsAsync(new ApiResponse<ProductoResponse> { IsSuccess = false, Message = "No encontrado" });
 
-        var result = await _controller.GetProducto(999);
+        var result = await _controller.ObtenerProducto(999);
 
         var notFoundResult = result.Result as NotFoundObjectResult;
         Assert.IsNotNull(notFoundResult);
@@ -75,7 +75,7 @@ public class TestProductoController
         _mockService.Setup(s => s.RegistrarProductoAsync(nuevoProducto))
             .ReturnsAsync(new ApiResponse<object> { IsSuccess = true, Message = "Registrado" });
 
-        var result = await _controller.RegistrarUsuario(nuevoProducto);
+        var result = await _controller.RegistrarProducto(nuevoProducto);
 
         var okResult = result.Result as OkObjectResult;
         Assert.IsNotNull(okResult);
@@ -91,7 +91,7 @@ public class TestProductoController
         _mockService.Setup(s => s.RegistrarProductoAsync(nuevoProducto))
             .ReturnsAsync(new ApiResponse<object> { IsSuccess = false, Message = "Error" });
 
-        var result = await _controller.RegistrarUsuario(nuevoProducto);
+        var result = await _controller.RegistrarProducto(nuevoProducto);
 
         var badRequestResult = result.Result as BadRequestObjectResult;
         Assert.IsNotNull(badRequestResult);

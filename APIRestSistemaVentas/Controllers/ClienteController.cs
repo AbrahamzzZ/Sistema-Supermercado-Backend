@@ -27,7 +27,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista de clientes obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Cliente>>> GetClientes()
+        public async Task<ActionResult<ApiResponse<Cliente>>> ListarClientes()
         {
             var clientes = await _clienteService.ListarClientesAsync();
             return Ok(clientes);
@@ -41,7 +41,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista paginada obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Paginacion<Cliente>>>> GetClientesPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
+        public async Task<ActionResult<ApiResponse<Paginacion<Cliente>>>> ListarClientesPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
         {
             var result = await _clienteService.ListarClientesPaginacionAsync(pageNumber, pageSize, filtro);
             return Ok(result);
@@ -56,7 +56,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Cliente encontrado")]
         [SwaggerResponse(404, "Cliente no encontrado")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<Cliente>> GetCliente(int id)
+        public async Task<ActionResult<Cliente>> ObtenerCliente(int id)
         {
             var response = await _clienteService.ObtenerClienteAsync(id);
             return response.IsSuccess ? Ok(response) : NotFound(response);

@@ -28,7 +28,7 @@ public class TestCompraController
         _mockService.Setup(s => s.ObtenerNumeroDocumentoAsync())
                     .ReturnsAsync(response);
 
-        var actionResult = await _controller.GetObtenerNumeroDocumento();
+        var actionResult = await _controller.ObtenerNumeroDocumento();
         var okResult = actionResult as OkObjectResult;
 
         Assert.IsNotNull(okResult);
@@ -44,7 +44,7 @@ public class TestCompraController
         _mockService.Setup(s => s.ObtenerCompraAsync("VEN-0001"))
                     .ReturnsAsync(response);
 
-        var actionResult = await _controller.GetObtenerCompra("VEN-0001");
+        var actionResult = await _controller.ObtenerCompra("VEN-0001");
         var okResult = actionResult.Result as OkObjectResult;
 
         Assert.IsNotNull(okResult);
@@ -65,7 +65,7 @@ public class TestCompraController
         _mockService.Setup(s => s.ObtenerDetallesCompraAsync(1))
                     .ReturnsAsync(response);
 
-        var actionResult = await _controller.GetObtenerDetallesCompra(1);
+        var actionResult = await _controller.ObtenerDetallesCompra(1);
         var okResult = actionResult.Result as OkObjectResult;
 
         Assert.IsNotNull(okResult);
@@ -82,7 +82,7 @@ public class TestCompraController
         _mockService.Setup(s => s.RegistrarCompraAsync(compraDto))
                     .ReturnsAsync(response);
 
-        var actionResult = await _controller.PostRegistrarCompra(compraDto);
+        var actionResult = await _controller.RegistrarCompra(compraDto);
         var okResult = actionResult as OkObjectResult;
 
         Assert.IsNotNull(okResult);
@@ -99,7 +99,7 @@ public class TestCompraController
         _mockService.Setup(s => s.RegistrarCompraAsync(compraDto))
                     .ReturnsAsync(response);
 
-        var actionResult = await _controller.PostRegistrarCompra(compraDto);
+        var actionResult = await _controller.RegistrarCompra(compraDto);
         var badResult = actionResult as BadRequestObjectResult;
 
         Assert.IsNotNull(badResult);

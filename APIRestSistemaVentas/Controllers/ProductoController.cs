@@ -29,7 +29,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista de productos obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<ProductoCategoriaResponse>>> GetProductos()
+        public async Task<ActionResult<ApiResponse<ProductoCategoriaResponse>>> ListarProductos()
         {
             var productos = await _productoService.ListarProductosAsync();
             return Ok(productos);
@@ -43,7 +43,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Lista paginada obtenida correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<Paginacion<ProductoCategoriaResponse>>>> GetProductosPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
+        public async Task<ActionResult<ApiResponse<Paginacion<ProductoCategoriaResponse>>>> ListarProductosPaginacion(int pageNumber = 1, int pageSize = 10, string filtro = "")
         {
             var result = await _productoService.ListarProductosPaginacionAsync(pageNumber, pageSize, filtro);
             return Ok(result);
@@ -58,7 +58,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Producto encontrado")]
         [SwaggerResponse(404, "Producto no encontrado")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<Producto>> GetProducto(int id)
+        public async Task<ActionResult<Producto>> ObtenerProducto(int id)
         {
             var response = await _productoService.ObtenerProductoAsync(id);
             return response.IsSuccess ? Ok(response) : NotFound(response);
@@ -73,7 +73,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Producto registrado correctamente")]
         [SwaggerResponse(400, "Error en los datos enviados")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<ApiResponse<object>>> RegistrarUsuario([FromBody] Producto producto)
+        public async Task<ActionResult<ApiResponse<object>>> RegistrarProducto([FromBody] Producto producto)
         {
             var response = await _productoService.RegistrarProductoAsync(producto);
             return response.IsSuccess ? Ok(response) : BadRequest(response);

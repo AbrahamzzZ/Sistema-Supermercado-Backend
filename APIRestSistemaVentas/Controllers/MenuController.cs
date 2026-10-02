@@ -26,7 +26,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Menús obtenidos correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<IEnumerable<Menu>>> GetMenus(int idUsuario)
+        public async Task<ActionResult<IEnumerable<Menu>>> ObtenerMenus(int idUsuario)
         {
             var respuesta = await _menuService.ObtenerMenusAsync(idUsuario);
             return Ok(respuesta);

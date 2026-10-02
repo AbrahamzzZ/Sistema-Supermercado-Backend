@@ -26,7 +26,7 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Número de documento obtenido correctamente")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult> GetObtenerNumeroDocumento()
+        public async Task<ActionResult> ObtenerNumeroDocumento()
         {
             var response = await _compraService.ObtenerNumeroDocumentoAsync();
             return Ok(response);
@@ -41,7 +41,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Compra encontrada")]
         [SwaggerResponse(404, "Compra no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<CompraResponse>> GetObtenerCompra(string numeroDocumento)
+        public async Task<ActionResult<CompraResponse>> ObtenerCompra(string numeroDocumento)
         {
             var compra = await _compraService.ObtenerCompraAsync(numeroDocumento);
             return Ok(compra);
@@ -56,7 +56,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Detalles de compra obtenidos correctamente")]
         [SwaggerResponse(404, "Compra no encontrada")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<ActionResult<List<DetalleCompras>>> GetObtenerDetallesCompra(int idCompra)
+        public async Task<ActionResult<List<DetalleCompras>>> ObtenerDetallesCompra(int idCompra)
         {
             var detalles = await _compraService.ObtenerDetallesCompraAsync(idCompra);
             return Ok(detalles);
@@ -71,7 +71,7 @@ namespace APIRestSistemaVentas.Controllers
         [SwaggerResponse(200, "Compra registrada correctamente")]
         [SwaggerResponse(400, "Error en los datos enviados")]
         [SwaggerResponse(401, "No autorizado")]
-        public async Task<IActionResult> PostRegistrarCompra([FromBody] Compras compraDto)
+        public async Task<IActionResult> RegistrarCompra([FromBody] Compras compraDto)
         {
             var response = await _compraService.RegistrarCompraAsync(compraDto);
             if (!response.IsSuccess)
