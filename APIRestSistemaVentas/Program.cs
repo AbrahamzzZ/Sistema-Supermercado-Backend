@@ -9,36 +9,35 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Utilities.IA;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuraci�n de clave JWT
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-var claveSecreta = jwtSettings.GetValue<string>("Key") ?? throw new InvalidOperationException("JWT Key no configurada");
+// La configuración se lee siempre igual; solo cambia de dónde viene el valor:
+//   Local  -> appsettings.json + appsettings.Development.json + User Secrets
+//   Docker -> variables de entorno (ConnectionStrings__CadenaSQL, Jwt__Key, Ollama__*)
 
-// Configuraci�n del docker para la base de datos
-string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("CadenaSQL") ?? "";
+// Clave JWT
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var claveSecreta = jwtSettings.GetValue<string>("Key");
+if (string.IsNullOrWhiteSpace(claveSecreta))
+    throw new InvalidOperationException("Falta la configuración 'Jwt:Key'. En local: dotnet user-secrets set \"Jwt:Key\" \"<clave>\". En Docker: variable JWT_KEY en el archivo .env.");
+
+// Base de datos
+var connectionString = builder.Configuration.GetConnectionString("CadenaSQL");
+if (string.IsNullOrWhiteSpace(connectionString))
+    throw new InvalidOperationException("Falta la cadena de conexión 'ConnectionStrings:CadenaSQL'. En local: appsettings.Development.json. En Docker: variable DB_CONNECTION_STRING en el archivo .env.");
+
 builder.Services.AddDbContext<SistemaSupermercadoContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
 
-// Agregar DbContext con la cadena de conexi�n del appsettings.json
-/*builder.Services.AddDbContext<SistemaSupermercadoContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CadenaSQL"))
-);*/
-
-// Inyecci�n de dependencias separada en m�todos de extensi�n
+// Inyección de dependencias separada en métodos de extensión
 builder.Services.AddRepositories();
 builder.Services.AddServices();
 builder.Services.AddValidators();
 builder.Services.AddSingleton<IToken, Token>();
-builder.Services.AddHttpClient<OllamaClient>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:11434");
-    client.Timeout = Timeout.InfiniteTimeSpan; 
-});
+builder.Services.AddOllamaClient(builder.Configuration);
 
 // JWT Auth
 builder.Services.AddAuthentication(options =>
@@ -62,7 +61,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Configuraci�n de Rate Limiting
+// Configuración de Rate Limiting
 builder.Services.AddRateLimiter(option =>
 {
     option.RejectionStatusCode = 
@@ -79,7 +78,6 @@ builder.Services.AddRateLimiter(option =>
 
 // Agregar servicios para controladores
 builder.Services.AddControllers();
-builder.Services.AddOllamaClient(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 
 // Creacion de una nueva politica
@@ -91,14 +89,14 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Agregar Swagger para documentaci�n API  https://aka.ms/aspnetcore/swashbuckle
+// Agregar Swagger para documentación API  https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new() { Title = "API Supermercado", Version = "v1" });
     options.EnableAnnotations();
 
-    // Configuraci�n de seguridad JWT
+    // Configuración de seguridad JWT
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Name = "Authorization",

@@ -92,15 +92,28 @@ El sistema incluye integración con IA local usando **Ollama**.
 1. Instalar Ollama desde:
 https://ollama.com
 
-2. Descargar el modelo usado en el proyecto o cualquier otro modelo:
+2. Descargar el modelo (por defecto `phi3.5`):
 
-ollama pull qwen3:8b
+ollama pull phi3.5
 
-3. Editar OllamaClient.cs
+3. Si usa otro modelo, cambie solo la configuración (no el código):
+   - En local: `Ollama:Model` en `appsettings.Development.json`.
+   - En Docker: `OLLAMA_MODEL` en el archivo `.env`.
 
-cd Backend\Utilities\IA
+---
 
-string model = "TU_MODELO"
+## Configuración
+
+La API lee siempre las mismas claves; solo cambia de dónde salen los valores:
+
+| Clave | Local (`dotnet run`) | Docker (`docker compose up`) |
+|-------|----------------------|------------------------------|
+| `ConnectionStrings:CadenaSQL` | `appsettings.Development.json` | `DB_CONNECTION_STRING` en `.env` |
+| `Jwt:Key` | User Secrets | `JWT_KEY` en `.env` |
+| `Ollama:BaseUrl` | `http://localhost:11434` | `http://ollama:11434` (fijo en `docker-compose.yml`) |
+| `Ollama:Model` | `appsettings.Development.json` | `OLLAMA_MODEL` en `.env` |
+
+`appsettings.json` contiene solo valores por defecto y no lleva secretos. Si falta la cadena de conexión o la clave JWT, la API no arranca y el mensaje indica dónde configurarla.
 
 ---
 
@@ -109,25 +122,36 @@ string model = "TU_MODELO"
 **Clonar repositorio**
 git clone <https://github.com/AbrahamzzZ/Sistema-Supermercado-Backend.git>
 
-**Entrar a la carpeta del backend**
-cd backend
-
 **Ejecutar el script de la DB**
-cd backend/Db
+Ejecutar `Db/DB_Sistema_Supermercado.sql` en SQL Server.
 
-Importante si va a usar la autenticacion de Windows en vez de un usuario de la base de datos especificar eso en la cadena de conexión.
+### Opción 1: local
 
-**Editar appsettings.json**
+1. Revisar la cadena de conexión en `APIRestSistemaVentas/appsettings.Development.json` (por defecto usa LocalDB con autenticación de Windows).
+2. Guardar la clave JWT en User Secrets (una sola vez por equipo, mínimo 32 caracteres):
 
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=TU_SERVIDOR;Database=TU_BASE;User Id=USUARIO;Password=CLAVE;Integrated Security=True;TrustServerCertificate=True;"
-  }
+```bash
+cd APIRestSistemaVentas
+dotnet user-secrets set "Jwt:Key" "<clave-de-al-menos-32-caracteres>"
+```
 
-**Restaurar dependencias**
+3. Restaurar y ejecutar:
+
+```bash
 dotnet restore
+dotnet run --project APIRestSistemaVentas
+```
 
-**Ejecutar**
-dotnet run
+### Opción 2: Docker
+
+1. Copiar `.env.example` como `.env` y completar `DB_CONNECTION_STRING`, `JWT_KEY` y `OLLAMA_MODEL`. La base de datos debe ser accesible desde el contenedor (IP o nombre del servidor, no `localhost`).
+2. Levantar la API y Ollama:
+
+```bash
+docker compose up -d --build
+```
+
+La API queda en `http://localhost:8081/swagger` y el contenedor de Ollama descarga el modelo indicado en `OLLAMA_MODEL`.
 
 ---
 

@@ -39,7 +39,7 @@ public class TestNegocioService
             _mockCategoriaRepository.Object,
             _mockCurrentUser.Object,
             _mockValidator.Object,
-            new OllamaClient(new HttpClient()),
+            new OllamaClient(new HttpClient(), new OllamaOptions()),
             _mockAuditoria.Object);
     }
 

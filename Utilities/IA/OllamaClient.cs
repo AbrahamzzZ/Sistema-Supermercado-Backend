@@ -5,17 +5,19 @@ namespace Utilities.IA
     public class OllamaClient
     {
         private readonly HttpClient _http;
+        private readonly OllamaOptions _options;
 
-        public OllamaClient(HttpClient http)
+        public OllamaClient(HttpClient http, OllamaOptions options)
         {
             _http = http;
+            _options = options;
         }
 
-        public async Task<string> GenerateAsync(string prompt, string model = "phi3.5")
+        public async Task<string> GenerateAsync(string prompt)
         {
             var body = new
             {
-                model,
+                model = _options.Model,
                 prompt,
                 stream = false,
                 temperature = 0.3,

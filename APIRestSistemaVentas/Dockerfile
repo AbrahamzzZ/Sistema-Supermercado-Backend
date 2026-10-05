@@ -6,7 +6,7 @@ WORKDIR /app
 EXPOSE 8080
 
 ENV ASPNETCORE_URLS=http://0.0.0.0:8080
-ENV CONNECTION_STRING="Data Source=192.168.100.133,1433;Initial Catalog=Sistema_Supermercado;User Id=user_sistema_venta;Password=ApiSistemaVenta;TrustServerCertificate=True;"
+# La cadena de conexión, la clave JWT y Ollama se pasan como variables de entorno (docker-compose + .env)
 
 # BUILD
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
