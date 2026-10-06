@@ -10,12 +10,15 @@ namespace Infrastructure.Extensions
             this IServiceCollection services,
             IConfiguration config)
         {
+            // Sección "Ollama": appsettings en local, variables Ollama__* en Docker
+            var options = config.GetSection(OllamaOptions.Seccion).Get<OllamaOptions>() ?? new OllamaOptions();
+            services.AddSingleton(options);
+
             services.AddHttpClient<OllamaClient>()
                 .ConfigureHttpClient(client =>
                 {
-                    var baseUrl = config["OLLAMA_BASE_URL"] ?? "http://localhost:11434";
-                    client.BaseAddress = new Uri(baseUrl);
-                    client.Timeout = TimeSpan.FromMinutes(5);
+                    client.BaseAddress = new Uri(options.BaseUrl);
+                    client.Timeout = TimeSpan.FromMinutes(options.TimeoutMinutes);
                 });
 
             return services;

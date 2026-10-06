@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Modelo a descargar (lo define docker-compose con OLLAMA_MODEL)
+MODEL="${OLLAMA_MODEL:-phi3.5}"
+
 # Iniciar Ollama en background
 /bin/ollama serve &
 OLLAMA_PID=$!
@@ -9,8 +12,8 @@ echo "Esperando que Ollama inicie..."
 sleep 10
 
 # Descargar modelo
-echo "Descargando phi3.5..."
-/bin/ollama pull phi3.5
+echo "Descargando $MODEL..."
+/bin/ollama pull "$MODEL"
 
 # Mantener contenedor corriendo
 wait $OLLAMA_PID

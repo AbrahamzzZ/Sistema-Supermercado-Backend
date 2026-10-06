@@ -92,15 +92,32 @@ El sistema incluye integración con IA local usando **Ollama**.
 1. Instalar Ollama desde:
 https://ollama.com
 
-2. Descargar el modelo usado en el proyecto o cualquier otro modelo:
+2. Asegurarse de que Ollama esté iniciado y descargar el modelo (por defecto `phi3.5`):
 
-ollama pull qwen3:8b
+```bash
+ollama pull phi3.5
+```
 
-3. Editar OllamaClient.cs
+En Windows, Ollama normalmente queda ejecutándose en segundo plano después de abrir la aplicación. Si no está iniciado, ejecutar `ollama serve` en otra terminal y dejarla abierta mientras se usa la API.
 
-cd Backend\Utilities\IA
+3. Si usa otro modelo, cambie solo la configuración (no el código):
+   - En local: `Ollama:Model` en `appsettings.Development.json`.
+   - En Docker: `OLLAMA_MODEL` en el archivo `.env`.
 
-string model = "TU_MODELO"
+---
+
+## Configuración
+
+La API lee siempre las mismas claves; solo cambia de dónde salen los valores:
+
+| Clave | Local (`dotnet run`) | Docker (`docker compose up`) |
+|-------|----------------------|------------------------------|
+| `ConnectionStrings:CadenaSQL` | `appsettings.Development.json` | `DB_CONNECTION_STRING` en `.env` |
+| `Jwt:Key` | User Secrets | `JWT_KEY` en `.env` |
+| `Ollama:BaseUrl` | `http://localhost:11434` | `http://ollama:11434` (fijo en `docker-compose.yml`) |
+| `Ollama:Model` | `appsettings.Development.json` | `OLLAMA_MODEL` en `.env` |
+
+`appsettings.json` contiene solo valores por defecto y no lleva secretos. Si falta la cadena de conexión o la clave JWT, la API no arranca y el mensaje indica dónde configurarla.
 
 ---
 
@@ -109,25 +126,47 @@ string model = "TU_MODELO"
 **Clonar repositorio**
 git clone <https://github.com/AbrahamzzZ/Sistema-Supermercado-Backend.git>
 
-**Entrar a la carpeta del backend**
-cd backend
-
 **Ejecutar el script de la DB**
-cd backend/Db
+Ejecutar `Db/DB_Sistema_Supermercado.sql` en SQL Server.
 
-Importante si va a usar la autenticacion de Windows en vez de un usuario de la base de datos especificar eso en la cadena de conexión.
+### Opción 1: local
 
-**Editar appsettings.json**
+Los comandos siguientes se ejecutan desde la raíz del repositorio. Se necesita tener instalado el SDK de .NET 8, SQL Server con la base de datos creada y Ollama iniciado con el modelo configurado.
 
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=TU_SERVIDOR;Database=TU_BASE;User Id=USUARIO;Password=CLAVE;Integrated Security=True;TrustServerCertificate=True;"
-  }
+1. Revisar `APIRestSistemaVentas/appsettings.Development.json` y ajustar `ConnectionStrings:CadenaSQL` para que apunte a la instancia de SQL Server donde se ejecutó el script de la base de datos.
+2. Guardar una clave JWT propia de al menos 32 caracteres en User Secrets. Se hace una vez por usuario/proyecto; reemplazar el texto de ejemplo por una clave aleatoria:
 
-**Restaurar dependencias**
-dotnet restore
+```powershell
+dotnet user-secrets set "Jwt:Key" "<clave-aleatoria-de-al-menos-32-caracteres>" --project .\APIRestSistemaVentas\APIRestSistemaVentas.csproj
+```
 
-**Ejecutar**
-dotnet run
+El proyecto ya tiene configurado su `UserSecretsId`; ese identificador permite guardar y recuperar secretos, pero no crea la clave automáticamente. Para comprobar si quedó guardada, se puede ejecutar:
+
+```powershell
+dotnet user-secrets list --project .\APIRestSistemaVentas\APIRestSistemaVentas.csproj
+```
+
+Este comando muestra los valores de los secretos; no se debe compartir su salida.
+
+3. Restaurar dependencias e iniciar la API con el perfil local `http`:
+
+```powershell
+dotnet restore .\APIRestSistemaVentas\APIRestSistemaVentas.csproj
+dotnet run --project .\APIRestSistemaVentas\APIRestSistemaVentas.csproj --launch-profile http
+```
+
+La API local queda disponible en `http://localhost:5299/swagger`. Para detenerla, presionar `Ctrl+C` en la terminal.
+
+### Opción 2: Docker
+
+1. Copiar `.env.example` como `.env` y completar `DB_CONNECTION_STRING`, `JWT_KEY` y `OLLAMA_MODEL`. La base de datos debe ser accesible desde el contenedor (IP o nombre del servidor, no `localhost`).
+2. Levantar la API y Ollama:
+
+```bash
+docker compose up -d --build
+```
+
+La API queda en `http://localhost:8081/swagger` y el contenedor de Ollama descarga el modelo indicado en `OLLAMA_MODEL`.
 
 ---
 
