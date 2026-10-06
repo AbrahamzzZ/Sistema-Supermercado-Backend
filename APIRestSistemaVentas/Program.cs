@@ -12,10 +12,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// La configuración se lee siempre igual; solo cambia de dónde viene el valor:
-//   Local  -> appsettings.json + appsettings.Development.json + User Secrets
-//   Docker -> variables de entorno (ConnectionStrings__CadenaSQL, Jwt__Key, Ollama__*)
-
 // Clave JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var claveSecreta = jwtSettings.GetValue<string>("Key");

@@ -92,9 +92,13 @@ El sistema incluye integración con IA local usando **Ollama**.
 1. Instalar Ollama desde:
 https://ollama.com
 
-2. Descargar el modelo (por defecto `phi3.5`):
+2. Asegurarse de que Ollama esté iniciado y descargar el modelo (por defecto `phi3.5`):
 
+```bash
 ollama pull phi3.5
+```
+
+En Windows, Ollama normalmente queda ejecutándose en segundo plano después de abrir la aplicación. Si no está iniciado, ejecutar `ollama serve` en otra terminal y dejarla abierta mientras se usa la API.
 
 3. Si usa otro modelo, cambie solo la configuración (no el código):
    - En local: `Ollama:Model` en `appsettings.Development.json`.
@@ -127,20 +131,31 @@ Ejecutar `Db/DB_Sistema_Supermercado.sql` en SQL Server.
 
 ### Opción 1: local
 
-1. Revisar la cadena de conexión en `APIRestSistemaVentas/appsettings.Development.json` (por defecto usa LocalDB con autenticación de Windows).
-2. Guardar la clave JWT en User Secrets (una sola vez por equipo, mínimo 32 caracteres):
+Los comandos siguientes se ejecutan desde la raíz del repositorio. Se necesita tener instalado el SDK de .NET 8, SQL Server con la base de datos creada y Ollama iniciado con el modelo configurado.
 
-```bash
-cd APIRestSistemaVentas
-dotnet user-secrets set "Jwt:Key" "<clave-de-al-menos-32-caracteres>"
+1. Revisar `APIRestSistemaVentas/appsettings.Development.json` y ajustar `ConnectionStrings:CadenaSQL` para que apunte a la instancia de SQL Server donde se ejecutó el script de la base de datos.
+2. Guardar una clave JWT propia de al menos 32 caracteres en User Secrets. Se hace una vez por usuario/proyecto; reemplazar el texto de ejemplo por una clave aleatoria:
+
+```powershell
+dotnet user-secrets set "Jwt:Key" "<clave-aleatoria-de-al-menos-32-caracteres>" --project .\APIRestSistemaVentas\APIRestSistemaVentas.csproj
 ```
 
-3. Restaurar y ejecutar:
+El proyecto ya tiene configurado su `UserSecretsId`; ese identificador permite guardar y recuperar secretos, pero no crea la clave automáticamente. Para comprobar si quedó guardada, se puede ejecutar:
 
-```bash
-dotnet restore
-dotnet run --project APIRestSistemaVentas
+```powershell
+dotnet user-secrets list --project .\APIRestSistemaVentas\APIRestSistemaVentas.csproj
 ```
+
+Este comando muestra los valores de los secretos; no se debe compartir su salida.
+
+3. Restaurar dependencias e iniciar la API con el perfil local `http`:
+
+```powershell
+dotnet restore .\APIRestSistemaVentas\APIRestSistemaVentas.csproj
+dotnet run --project .\APIRestSistemaVentas\APIRestSistemaVentas.csproj --launch-profile http
+```
+
+La API local queda disponible en `http://localhost:5299/swagger`. Para detenerla, presionar `Ctrl+C` en la terminal.
 
 ### Opción 2: Docker
 
