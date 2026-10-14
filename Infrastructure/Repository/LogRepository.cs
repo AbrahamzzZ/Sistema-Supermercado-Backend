@@ -1,5 +1,6 @@
 ﻿using Domain.Contexts;
 using Domain.Models;
+using Infrastructure.Helpers;
 using Infrastructure.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ namespace Infrastructure.Repository
 
         public async Task<Paginacion<Log>> ListarLogsPaginacionAsync(int pageNumber, int pageSize, string filtro)
         {
+            await using var connectionScope = await DbConnectionHelper.OpenConnectionScopeAsync(_context);
             using var command = _context.Database.GetDbConnection().CreateCommand();
             command.CommandText = "PA_LISTA_LOG_PAGINACION";
             command.CommandType = CommandType.StoredProcedure;
@@ -26,7 +28,6 @@ namespace Infrastructure.Repository
             command.Parameters.Add(new SqlParameter("@PageSize", pageSize));
             command.Parameters.Add(new SqlParameter("@Filtro", filtro ?? ""));
 
-            await _context.Database.OpenConnectionAsync();
             var logs = new List<Log>();
             int totalCount = 0;
 
