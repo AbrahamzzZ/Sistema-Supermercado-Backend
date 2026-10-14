@@ -1,5 +1,6 @@
 ﻿using Domain.Contexts;
 using Domain.Models;
+using Infrastructure.Helpers;
 using Infrastructure.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -27,14 +28,13 @@ namespace Infrastructure.Repository
 
         public async Task<Paginacion<CategoriaResponse>> ListarCategoriasPaginacionAsync(int pageNumber, int pageSize, string filtro)
         {
+            await using var connectionScope = await DbConnectionHelper.OpenConnectionScopeAsync(_context);
             using var command = _context.Database.GetDbConnection().CreateCommand();
             command.CommandText = "PA_LISTA_CATEGORIA_PAGINACION";
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.Add(new SqlParameter("@PageNumber", pageNumber));
             command.Parameters.Add(new SqlParameter("@PageSize", pageSize));
             command.Parameters.Add(new SqlParameter("@Filtro", filtro ?? ""));
-
-            await _context.Database.OpenConnectionAsync();
 
             var categorias = new List<CategoriaResponse>();
             int totalCount = 0;
