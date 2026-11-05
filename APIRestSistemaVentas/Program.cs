@@ -1,13 +1,13 @@
 using APIRestSistemaVentas.Middleware;
+using APIRestSistemaVentas.Security;
 using Domain.Contexts;
 using Infrastructure.Extensions;
 using Infrastructure.Helpers;
 using Infrastructure.Repository.InterfacesBusiness;
-using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,22 +55,27 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(claveSecreta))
     };
-});
 
-// Configuración de Rate Limiting
-builder.Services.AddRateLimiter(option =>
-{
-    option.RejectionStatusCode = 
-    StatusCodes.Status429TooManyRequests;
-
-    option.AddFixedWindowLimiter("fijo", opt =>
+    // Un token válido no basta: el usuario debe seguir activo y con el mismo rol (efecto en ~1 minuto)
+    options.Events = new JwtBearerEvents
     {
-        opt.PermitLimit = 15;
-        opt.Window = TimeSpan.FromSeconds(30);
-        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
-        opt.QueueLimit = 2;
-    });
+        OnTokenValidated = async context =>
+        {
+            var principal = context.Principal;
+            int.TryParse(principal?.FindFirstValue(ClaimTypes.NameIdentifier), out var idUsuario);
+            var rol = principal?.FindFirstValue(ClaimTypes.Role);
+
+            var verificacion = context.HttpContext.RequestServices.GetRequiredService<IVerificacionUsuario>();
+            if (!await verificacion.EsSesionValidaAsync(idUsuario, rol))
+                context.Fail("El usuario está inactivo o sus permisos cambiaron. Inicie sesión nuevamente.");
+        }
+    };
 });
+
+builder.Services.AddMemoryCache();
+
+// Límite de peticiones por usuario / IP (ver Seguridad/LimitePeticiones.cs)
+builder.Services.AddLimitePeticiones(builder.Configuration);
 
 // Agregar servicios para controladores
 builder.Services.AddControllers();
@@ -139,6 +144,6 @@ app.UseAuthorization();
 
 app.UseRateLimiter();
 
-app.MapControllers().RequireRateLimiting("fijo");
+app.MapControllers().RequireRateLimiting(LimitePeticiones.Politica);
 
 app.Run();
