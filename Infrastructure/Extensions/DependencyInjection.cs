@@ -46,6 +46,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<ICurrentUser, CurrentUserService>();
             services.AddScoped<IAuditoriaService, AuditoriaService>();
             services.AddScoped<IRequestContext, RequestContextService>();
+            services.AddScoped<IVerificacionUsuario, VerificacionUsuarioService>();
             services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<INegocioService, NegocioService>();
             services.AddScoped<IProductoService, ProductoService>();
