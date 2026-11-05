@@ -4,7 +4,7 @@ using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 using Utilities.Shared;
 
-namespace APIRestSistemaVentas.Seguridad
+namespace APIRestSistemaVentas.Security
 {
     public static class LimitePeticiones
     {
