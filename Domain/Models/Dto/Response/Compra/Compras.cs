@@ -1,7 +1,10 @@
-﻿namespace Domain.Models.Dto.Response.Compra
+﻿using System.Text.Json.Serialization;
+
+namespace Domain.Models.Dto.Response.Compra
 {
     public class Compras
     {
+        [JsonIgnore]
         public int Id_Usuario { get; set; }
         public int Id_Sucursal { get; set; }
         public int Id_Proveedor { get; set; }
