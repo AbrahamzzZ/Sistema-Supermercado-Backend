@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Utilities.Shared;
+using Utilities.Security;
 
 namespace APIRestSistemaVentas.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = Roles.Administrador)]
     [Route("api/[controller]")]
     [ApiController]
     public class LogController : ControllerBase

@@ -1,7 +1,7 @@
 using Domain.Models.Dto.Response.Venta;
 using Infrastructure.Services.Validators;
 
-namespace UnitTests.Services;
+namespace UnitTests.Validator;
 
 [TestClass]
 public class TestVentaValidator

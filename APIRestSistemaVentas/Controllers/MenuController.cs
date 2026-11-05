@@ -3,6 +3,8 @@ using Infrastructure.Repository.InterfacesServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Security.Claims;
+using Utilities.Security;
 
 namespace APIRestSistemaVentas.Controllers
 {
@@ -26,8 +28,13 @@ namespace APIRestSistemaVentas.Controllers
         )]
         [SwaggerResponse(200, "Menús obtenidos correctamente")]
         [SwaggerResponse(401, "No autorizado")]
+        [SwaggerResponse(403, "Solo el administrador puede consultar los menús de otro usuario")]
         public async Task<ActionResult<IEnumerable<Menu>>> ObtenerMenus(int idUsuario)
         {
+            var esPropio = User.FindFirstValue(ClaimTypes.NameIdentifier) == idUsuario.ToString();
+            if (!esPropio && !User.IsInRole(Roles.Administrador))
+                return Forbid();
+
             var respuesta = await _menuService.ObtenerMenusAsync(idUsuario);
             return Ok(respuesta);
         }

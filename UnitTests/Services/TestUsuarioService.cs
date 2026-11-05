@@ -19,6 +19,7 @@ public class TestUsuarioService
     private Mock<IValidator<Usuario>> _mockValidator;
     private Mock<ICurrentUser> _mockCurrentUser;
     private Mock<IAuditoriaService> _mockAuditoria;
+    private Mock<IVerificacionUsuario> _mockVerificacion;
     private UsuarioService _service;
 
     [TestInitialize]
@@ -29,11 +30,13 @@ public class TestUsuarioService
         _mockCurrentUser = new Mock<ICurrentUser>();
         _mockCurrentUser.Setup(user => user.GetUserId()).Returns(1);
         _mockAuditoria = new Mock<IAuditoriaService>();
+        _mockVerificacion = new Mock<IVerificacionUsuario>();
         _service = new UsuarioService(
             _mockRepository.Object,
             _mockValidator.Object,
             _mockCurrentUser.Object,
-            _mockAuditoria.Object);
+            _mockAuditoria.Object,
+            _mockVerificacion.Object);
     }
 
     [TestMethod]
@@ -170,6 +173,18 @@ public class TestUsuarioService
 
         Assert.IsFalse(result.IsSuccess);
         Assert.AreEqual("No se puede eliminar al único administrador activo.", result.Message);
+    }
+
+    [TestMethod]
+    public async Task EliminarUsuario_DebeInvalidarSuVerificacionDeSesion()
+    {
+        _mockRepository.Setup(r => r.ObtenerUsuarioAsync(5)).ReturnsAsync(new UsuarioRolResponse { Id_Usuario = 5, Nombre_Rol = "Empleado", Estado = true });
+        _mockRepository.Setup(r => r.EliminarUsuarioAsync(5)).ReturnsAsync(1);
+
+        var result = await _service.EliminarUsuarioAsync(5);
+
+        Assert.IsTrue(result.IsSuccess);
+        _mockVerificacion.Verify(v => v.Invalidar(5), Times.Once);
     }
 
 

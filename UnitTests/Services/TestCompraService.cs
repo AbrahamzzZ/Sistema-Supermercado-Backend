@@ -2,6 +2,7 @@ using Domain.Models;
 using Domain.Models.Dto.Response.Compra;
 using FluentValidation;
 using FluentValidation.Results;
+using Infrastructure.Repository.InterfacesBusiness;
 using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
@@ -16,6 +17,7 @@ public class TestCompraService
     private Mock<ICompraRepository> _mockRepository;
     private Mock<IValidator<Compras>> _mockValidator;
     private Mock<IAuditoriaService> _mockAuditoria;
+    private Mock<ICurrentUser> _mockCurrentUser;
     private CompraService _service;
 
     [TestInitialize]
@@ -24,10 +26,25 @@ public class TestCompraService
         _mockRepository = new Mock<ICompraRepository>();
         _mockValidator = new Mock<IValidator<Compras>>();
         _mockAuditoria = new Mock<IAuditoriaService>();
+        _mockCurrentUser = new Mock<ICurrentUser>();
+        _mockCurrentUser.Setup(u => u.GetUserId()).Returns(7);
         _service = new CompraService(
             _mockRepository.Object,
             _mockValidator.Object,
-            _mockAuditoria.Object);
+            _mockAuditoria.Object,
+            _mockCurrentUser.Object);
+    }
+
+    [TestMethod]
+    public async Task RegistrarCompraAsync_DebeUsarElUsuarioDelTokenYNoElDelCuerpo()
+    {
+        var compra = new Compras { Id_Usuario = 99, Id_Sucursal = 1, Id_Proveedor = 1, Id_Transportista = 1, Tipo_Documento = "Factura", Numero_Documento = "00001", Monto_Total = 10 };
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Compras>(), default)).ReturnsAsync(new ValidationResult());
+        _mockRepository.Setup(r => r.RegistrarCompraAsync(It.IsAny<Compras>())).ReturnsAsync(true);
+
+        await _service.RegistrarCompraAsync(compra);
+
+        _mockRepository.Verify(r => r.RegistrarCompraAsync(It.Is<Compras>(c => c.Id_Usuario == 7)), Times.Once);
     }
 
     [TestMethod]

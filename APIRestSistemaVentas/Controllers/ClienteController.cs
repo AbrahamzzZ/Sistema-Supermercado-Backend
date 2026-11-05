@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Utilities.Shared;
+using Utilities.Security;
 
 namespace APIRestSistemaVentas.Controllers
 {
@@ -63,6 +64,7 @@ namespace APIRestSistemaVentas.Controllers
         }
 
         // POST: api/cliente
+        [Authorize(Roles = Roles.Administrador)]
         [HttpPost]
         [SwaggerOperation(
             Summary = "Registrar cliente",
@@ -78,6 +80,7 @@ namespace APIRestSistemaVentas.Controllers
         }
 
         // PUT: api/cliente/5
+        [Authorize(Roles = Roles.Administrador)]
         [HttpPut("{id}")]
         [SwaggerOperation(
             Summary = "Actualizar cliente",
@@ -93,6 +96,7 @@ namespace APIRestSistemaVentas.Controllers
         }
 
         // DELETE: api/cliente/5
+        [Authorize(Roles = Roles.Administrador)]
         [HttpDelete("{id}")]
         [SwaggerOperation(
             Summary = "Eliminar cliente",

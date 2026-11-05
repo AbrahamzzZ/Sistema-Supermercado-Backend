@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Utilities.Shared;
+using Utilities.Security;
 
 namespace APIRestSistemaVentas.Controllers
 {
@@ -26,7 +27,7 @@ namespace APIRestSistemaVentas.Controllers
         }
 
         // GET: api/usuario
-        [Authorize]
+        [Authorize(Roles = Roles.Administrador)]
         [HttpGet]
         [SwaggerOperation(
             Summary = "Listar usuarios",
@@ -41,7 +42,7 @@ namespace APIRestSistemaVentas.Controllers
         }
 
         // GET: api/usuario/paginacion
-        [Authorize]
+        [Authorize(Roles = Roles.Administrador)]
         [HttpGet("paginacion")]
         [SwaggerOperation(
             Summary = "Listar usuarios con paginación",
@@ -56,7 +57,7 @@ namespace APIRestSistemaVentas.Controllers
         }
 
         // GET: api/usuario/5
-        [Authorize]
+        [Authorize(Roles = Roles.Administrador)]
         [HttpGet("{id}")]
         [SwaggerOperation(
             Summary = "Obtener usuario por ID",
@@ -98,7 +99,7 @@ namespace APIRestSistemaVentas.Controllers
         }
 
         // POST: api/usuario
-        [Authorize]
+        [Authorize(Roles = Roles.Administrador)]
         [HttpPost]
         [SwaggerOperation(
             Summary = "Registrar usuario",
@@ -114,7 +115,7 @@ namespace APIRestSistemaVentas.Controllers
         }
 
         // PUT: api/usuario/5
-        [Authorize]
+        [Authorize(Roles = Roles.Administrador)]
         [HttpPut("{id}")]
         [SwaggerOperation(
             Summary = "Actualizar usuario",
@@ -130,7 +131,7 @@ namespace APIRestSistemaVentas.Controllers
         }
 
         // DELETE: api/usuario/5
-        [Authorize]
+        [Authorize(Roles = Roles.Administrador)]
         [HttpDelete("{id}")]
         [SwaggerOperation(
             Summary = "Eliminar usuario",
