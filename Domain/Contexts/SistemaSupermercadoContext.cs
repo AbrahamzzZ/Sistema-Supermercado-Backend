@@ -190,16 +190,6 @@ public partial class SistemaSupermercadoContext : DbContext
         {
             entity.HasNoKey()
             .ToView(null);
-
-            entity.Property(c => c.Descuento)
-                  .HasPrecision(18, 2);
-
-            entity.Property(e => e.Precio_Venta)
-                  .HasPrecision(18, 2);
-
-            entity.Property(e => e.SubTotal)
-                  .HasPrecision(18, 2);
-
         });
 
         modelBuilder.Entity<DetalleVentaReponse>(entity =>

@@ -2258,7 +2258,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"id_Usuario\": 1,\r\n  \"id_Sucursal\": 2,\r\n  \"id_Cliente\": 2,\r\n  \"tipo_Documento\": \"Boleta\",\r\n  \"numero_Documento\": \"00005\",\r\n  \"monto_Pago\": 20,\r\n  \"monto_Cambio\": 3.58,\r\n  \"monto_Total\": 17,\r\n  \"descuento\": 16.42,\r\n  \"detalles\": [\r\n    {\r\n      \"id_Producto\": 7,\r\n      \"precio_Venta\": 2,\r\n      \"cantidad\": 4,\r\n      \"descuento\": 0,\r\n      \"subTotal\": 8\r\n    },\r\n    {\r\n      \"id_Producto\": 6,\r\n      \"precio_Venta\": 3.5,\r\n      \"cantidad\": 2,\r\n      \"descuento\": 12,\r\n      \"subTotal\": 6.42\r\n    },\r\n    {\r\n      \"id_Producto\": 1,\r\n      \"precio_Venta\": 1,\r\n      \"cantidad\": 2,\r\n      \"descuento\": 0,\r\n      \"subTotal\": 2\r\n    }\r\n  ]\r\n}",
+              "raw": "{\r\n  \"id_Sucursal\": 2,\r\n  \"id_Cliente\": 2,\r\n  \"tipo_Documento\": \"Boleta\",\r\n  \"monto_Pago\": 20,\r\n  \"detalles\": [\r\n    {\r\n      \"id_Producto\": 7,\r\n      \"cantidad\": 4\r\n    },\r\n    {\r\n      \"id_Producto\": 6,\r\n      \"cantidad\": 2\r\n    },\r\n    {\r\n      \"id_Producto\": 1,\r\n      \"cantidad\": 2\r\n    }\r\n  ]\r\n}",
               "options": {
                 "raw": {
                   "language": "json"

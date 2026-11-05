@@ -1307,11 +1307,8 @@ FECHA_REGISTRO datetime default getdate()
 );
 
 CREATE TYPE [dbo].[TI_Detalle_Venta] AS TABLE (
-    [Id_Producto] INT NULL,
-    [Precio_Venta] DECIMAL(10,2) NULL,
-    [Cantidad] INT NULL,
-    [SubTotal] DECIMAL(10,2) NULL,
-    [Descuento] DECIMAL(10,2) NULL
+    [Id_Producto] INT NOT NULL,
+    [Cantidad] INT NOT NULL
 );
 GO
 
@@ -1377,53 +1374,120 @@ CREATE PROCEDURE PA_REGISTRAR_VENTA(
     @ID_SUCURSAL INT,
     @ID_CLIENTE INT,
     @TIPO_DOCUMENTO VARCHAR(50),
-    @NUMERO_DOCUMENTO VARCHAR(50),
     @MONTO_PAGO DECIMAL(10,2),
-    @MONTO_CAMBIO DECIMAL(10,2),
-    @MONTO_TOTAL DECIMAL(10,2),
-    @DESCUENTO DECIMAL(10,2),
     @DETALLE_VENTA dbo.TI_Detalle_Venta READONLY,
-    @RESULTADO BIT OUTPUT
+    @NUMERO_DOCUMENTO VARCHAR(50) OUTPUT,
+    @MONTO_TOTAL DECIMAL(10,2) OUTPUT,
+    @DESCUENTO DECIMAL(10,2) OUTPUT,
+    @MONTO_CAMBIO DECIMAL(10,2) OUTPUT
 )
 AS
 BEGIN
     SET NOCOUNT ON;
-    SET @RESULTADO = 0;
+    SET XACT_ABORT ON;
+
+    DECLARE @MENSAJE NVARCHAR(2048);
+
+    -- Validaciones
+    IF NOT EXISTS (SELECT 1 FROM @DETALLE_VENTA)
+        THROW 50001, 'La venta debe tener al menos un producto.', 1;
+
+    IF EXISTS (SELECT 1 FROM @DETALLE_VENTA WHERE Cantidad <= 0)
+        THROW 50002, 'La cantidad de cada producto debe ser mayor que 0.', 1;
+
+    IF NOT EXISTS (SELECT 1 FROM USUARIO WHERE ID_USUARIO = @ID_USUARIO AND ESTADO = 1)
+        THROW 50003, 'El usuario que registra la venta no existe o está inactivo.', 1;
+
+    IF NOT EXISTS (SELECT 1 FROM SUCURSAL WHERE ID_SUCURSAL = @ID_SUCURSAL AND ESTADO = 1)
+        THROW 50004, 'La sucursal no existe o está inactiva.', 1;
+
+    IF NOT EXISTS (SELECT 1 FROM CLIENTE WHERE ID_CLIENTE = @ID_CLIENTE)
+        THROW 50005, 'El cliente no existe.', 1;
+
+    -- Un producto repetido en varias líneas se suma en una sola
+    DECLARE @ITEMS TABLE (
+        ID_PRODUCTO INT PRIMARY KEY,
+        NOMBRE NVARCHAR(30),
+        CANTIDAD INT,
+        STOCK INT,
+        PRECIO DECIMAL(10,2),
+        PORCENTAJE DECIMAL(5,2),
+        SUBTOTAL DECIMAL(10,2)
+    );
+
+    INSERT INTO @ITEMS (ID_PRODUCTO, CANTIDAD)
+    SELECT Id_Producto, SUM(Cantidad) FROM @DETALLE_VENTA GROUP BY Id_Producto;
 
     BEGIN TRY
         BEGIN TRANSACTION;
 
-        -- Insertar cabecera
-        INSERT INTO VENTA (ID_USUARIO,  ID_SUCURSAL, ID_CLIENTE, TIPO_DOCUMENTO, NUMERO_DOCUMENTO, MONTO_PAGO, MONTO_CAMBIO, MONTO_TOTAL, DESCUENTO)
+        -- Bloquea las filas de los productos ya que dos cajas no pueden vender la misma unidad
+        UPDATE I
+        SET I.NOMBRE = P.NOMBRE_PRODUCTO, I.STOCK = P.STOCK, I.PRECIO = P.PRECIO_VENTA
+        FROM @ITEMS I
+        INNER JOIN PRODUCTO P WITH (UPDLOCK, HOLDLOCK) ON P.ID_PRODUCTO = I.ID_PRODUCTO;
+
+        IF EXISTS (SELECT 1 FROM @ITEMS WHERE PRECIO IS NULL)
+            THROW 50006, 'Uno o más productos no existen.', 1;
+
+        IF EXISTS (SELECT 1 FROM @ITEMS WHERE STOCK < CANTIDAD)
+        BEGIN
+            SELECT @MENSAJE = N'Stock insuficiente: ' + STRING_AGG(
+                CONCAT(NOMBRE, N' (disponible ', STOCK, N', solicitado ', CANTIDAD, N')'), N'; ')
+            FROM @ITEMS WHERE STOCK < CANTIDAD;
+            THROW 50007, @MENSAJE, 1;
+        END
+
+        -- Oferta vigente de cada producto (la de mayor descuento si hay varias)
+        UPDATE I
+        SET I.PORCENTAJE = ISNULL((
+                SELECT MAX(O.DESCUENTO) FROM OFERTA O
+                WHERE O.ID_PRODUCTO = I.ID_PRODUCTO
+                  AND O.ESTADO = 1
+                  AND CAST(GETDATE() AS DATE) BETWEEN O.FECHA_INICIO AND O.FECHA_FIN), 0)
+        FROM @ITEMS I;
+
+        UPDATE @ITEMS
+        SET SUBTOTAL = ROUND(PRECIO * CANTIDAD * (1 - PORCENTAJE / 100), 2);
+
+        SELECT
+            @MONTO_TOTAL = SUM(SUBTOTAL),
+            @DESCUENTO = SUM(PRECIO * CANTIDAD) - SUM(SUBTOTAL)
+        FROM @ITEMS;
+
+        IF @MONTO_PAGO < @MONTO_TOTAL
+        BEGIN
+            SET @MENSAJE = CONCAT(N'El pago ($', FORMAT(@MONTO_PAGO, 'N2'), N') es menor que el total a pagar ($', FORMAT(@MONTO_TOTAL, 'N2'), N').');
+            THROW 50008, @MENSAJE, 1;
+        END
+
+        SET @MONTO_CAMBIO = @MONTO_PAGO - @MONTO_TOTAL;
+
+        -- Número de documento: siguiente número, con bloqueo para que no se repita entre cajas
+        DECLARE @SIGUIENTE INT = ISNULL((SELECT MAX(TRY_CAST(NUMERO_DOCUMENTO AS INT)) FROM VENTA WITH (UPDLOCK, HOLDLOCK)), 0) + 1;
+        SET @NUMERO_DOCUMENTO = CASE WHEN @SIGUIENTE < 100000
+        THEN RIGHT('0000' + CAST(@SIGUIENTE AS VARCHAR(10)), 5)
+        ELSE CAST(@SIGUIENTE AS VARCHAR(10)) END;
+
+        INSERT INTO VENTA (ID_USUARIO, ID_SUCURSAL, ID_CLIENTE, TIPO_DOCUMENTO, NUMERO_DOCUMENTO, MONTO_PAGO, MONTO_CAMBIO, MONTO_TOTAL, DESCUENTO)
         VALUES (@ID_USUARIO, @ID_SUCURSAL, @ID_CLIENTE, @TIPO_DOCUMENTO, @NUMERO_DOCUMENTO, @MONTO_PAGO, @MONTO_CAMBIO, @MONTO_TOTAL, @DESCUENTO);
 
         DECLARE @ID_VENTA INT = SCOPE_IDENTITY();
 
-        -- Validar stock disponible
-        IF EXISTS (SELECT 1 FROM PRODUCTO P INNER JOIN @DETALLE_VENTA D ON P.ID_PRODUCTO = D.Id_Producto WHERE P.STOCK < D.Cantidad)
-        BEGIN
-            RAISERROR('Stock insuficiente para uno o más productos.', 16, 1);
-            ROLLBACK TRANSACTION;
-            RETURN;
-        END
-
-        -- Insertar detalles
         INSERT INTO DETALLE_VENTA (ID_VENTA, ID_PRODUCTO, PRECIO_VENTA, CANTIDAD, SUBTOTAL, DESCUENTO)
-		SELECT @ID_VENTA, Id_Producto, Precio_Venta, Cantidad, SubTotal, Descuento FROM @DETALLE_VENTA;
+        SELECT @ID_VENTA, ID_PRODUCTO, PRECIO, CANTIDAD, SUBTOTAL, PORCENTAJE FROM @ITEMS;
 
-        -- Actualizar stock
         UPDATE P
-        SET P.STOCK = P.STOCK - D.Cantidad
+        SET P.STOCK = P.STOCK - I.CANTIDAD
         FROM PRODUCTO P
-        INNER JOIN @DETALLE_VENTA D ON P.ID_PRODUCTO = D.Id_Producto;
+        INNER JOIN @ITEMS I ON P.ID_PRODUCTO = I.ID_PRODUCTO;
 
         COMMIT TRANSACTION;
-
-        SET @RESULTADO = 1;
     END TRY
     BEGIN CATCH
-        ROLLBACK TRANSACTION;
-        SET @RESULTADO = 0;
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
     END CATCH
 END;
 GO

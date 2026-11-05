@@ -1,5 +1,6 @@
 ﻿using Domain.Models.Dto.Response.Venta;
 using FluentValidation;
+using Infrastructure.Repository.InterfacesBusiness;
 using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Repository.InterfacesServices;
 using Utilities.Shared;
@@ -11,12 +12,14 @@ namespace Infrastructure.Services
         private readonly IVentaRepository _ventaRepository;
         private readonly IValidator<Ventas> _validator;
         private readonly IAuditoriaService _auditoriaService;
+        private readonly ICurrentUser _currentUser;
 
-        public VentaService(IVentaRepository ventaRepository, IValidator<Ventas> validator, IAuditoriaService auditoriaService)
+        public VentaService(IVentaRepository ventaRepository, IValidator<Ventas> validator, IAuditoriaService auditoriaService, ICurrentUser currentUser)
         {
             _ventaRepository = ventaRepository;
             _validator = validator;
             _auditoriaService = auditoriaService;
+            _currentUser = currentUser;
         }
 
         public async Task<ApiResponse<string>> ObtenerNumeroDocumentoAsync()
@@ -84,7 +87,7 @@ namespace Infrastructure.Services
             }
         }
 
-        public async Task<ApiResponse<object>> RegistrarVentaAsync(Ventas ventaDto)
+        public async Task<ApiResponse<VentaRegistradaResponse>> RegistrarVentaAsync(Ventas ventaDto)
         {
             try
             {
@@ -92,7 +95,7 @@ namespace Infrastructure.Services
                 {
                     await _auditoriaService.RegistrarFalloAsync("Registrar Venta","Venta nula" );
 
-                    return new ApiResponse<object>{ IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
+                    return new ApiResponse<VentaRegistradaResponse>{ IsSuccess = false, Message = Mensajes.MESSAGE_NULL };
                 }
 
                 var validationResult = await _validator.ValidateAsync(ventaDto);
@@ -102,21 +105,28 @@ namespace Infrastructure.Services
                     var errores = string.Join(" | ", validationResult.Errors.Select(e => e.ErrorMessage));
                     await _auditoriaService.RegistrarFalloAsync( "Registrar Venta", $"Validación fallida: {errores}");
 
-                    return new ApiResponse<object> { IsSuccess = false, Message = errores };
+                    return new ApiResponse<VentaRegistradaResponse> { IsSuccess = false, Message = errores };
                 }
 
-                var registrado = await _ventaRepository.RegistrarVentaAsync(ventaDto);
-
-                if (registrado)
+                var idUsuario = _currentUser.GetUserId();
+                if (idUsuario <= 0)
                 {
-                    await _auditoriaService.RegistrarExitoAsync("Registrar Venta", $"Venta registrada exitosamente. Número documento: {ventaDto.Numero_Documento}");
-                   
-                    return new ApiResponse<object>{ IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
+                    await _auditoriaService.RegistrarFalloAsync("Registrar Venta", "No se pudo identificar al usuario del token");
+
+                    return new ApiResponse<VentaRegistradaResponse>{ IsSuccess = false, Message = "No se pudo identificar al usuario que registra la venta." };
                 }
 
-                await _auditoriaService.RegistrarFalloAsync("Registrar Venta", $"No se pudo guardar la venta {ventaDto.Numero_Documento}");
+                var venta = await _ventaRepository.RegistrarVentaAsync(ventaDto, idUsuario);
 
-                return new ApiResponse<object>{ IsSuccess = false, Message = Mensajes.MESSAGE_REGISTER_FAILLED };
+                await _auditoriaService.RegistrarExitoAsync("Registrar Venta", $"Venta {venta.Numero_Documento} registrada. Total: {venta.Monto_Total:0.00}, descuento: {venta.Descuento:0.00}");
+
+                return new ApiResponse<VentaRegistradaResponse>{ IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER, Data = venta };
+            }
+            catch (ReglaNegocioException ex)
+            {
+                await _auditoriaService.RegistrarFalloAsync("Registrar Venta", ex.Message);
+
+                return new ApiResponse<VentaRegistradaResponse>{ IsSuccess = false, Message = ex.Message };
             }
             catch (Exception ex)
             {
