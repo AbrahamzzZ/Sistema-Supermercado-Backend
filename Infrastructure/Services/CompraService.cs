@@ -1,5 +1,6 @@
 ﻿using Domain.Models.Dto.Response.Compra;
 using FluentValidation;
+using Infrastructure.Repository.InterfacesBusiness;
 using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Repository.InterfacesServices;
 using Utilities.Shared;
@@ -12,12 +13,14 @@ namespace Infrastructure.Services
         private readonly ICompraRepository _compraRepository;
         private readonly IValidator<Compras> _validator;
         private readonly IAuditoriaService _auditoriaService;
+        private readonly ICurrentUser _currentUser;
 
-        public CompraService(ICompraRepository compraRepository, IValidator<Compras> validator, IAuditoriaService auditoriaService)
+        public CompraService(ICompraRepository compraRepository, IValidator<Compras> validator, IAuditoriaService auditoriaService, ICurrentUser currentUser)
         {
             _compraRepository = compraRepository;
             _validator = validator;
             _auditoriaService = auditoriaService;
+            _currentUser = currentUser;
         }
 
         public async Task<ApiResponse<string>> ObtenerNumeroDocumentoAsync()
@@ -103,6 +106,15 @@ namespace Infrastructure.Services
                     await _auditoriaService.RegistrarFalloAsync("Registrar Compra", $"Validación fallida: {errores}");
 
                     return new ApiResponse<object>{ IsSuccess = false, Message = errores };
+                }
+
+                // Quien registra la compra es el usuario del token, no un dato que envía el cliente
+                compraDto.Id_Usuario = _currentUser.GetUserId();
+                if (compraDto.Id_Usuario <= 0)
+                {
+                    await _auditoriaService.RegistrarFalloAsync("Registrar Compra", "No se pudo identificar al usuario del token");
+
+                    return new ApiResponse<object>{ IsSuccess = false, Message = "No se pudo identificar al usuario que registra la compra." };
                 }
 
                 var registrado = await _compraRepository.RegistrarCompraAsync(compraDto);

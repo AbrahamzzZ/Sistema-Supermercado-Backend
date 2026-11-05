@@ -16,13 +16,15 @@ namespace Infrastructure.Services
         private readonly IValidator<Usuario> _validator;
         private readonly ICurrentUser _currentUserService;
         private readonly IAuditoriaService _auditoriaService;
+        private readonly IVerificacionUsuario _verificacionUsuario;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository, IValidator<Usuario> validator, ICurrentUser currentUserService, IAuditoriaService auditoriaService)
+        public UsuarioService(IUsuarioRepository usuarioRepository, IValidator<Usuario> validator, ICurrentUser currentUserService, IAuditoriaService auditoriaService, IVerificacionUsuario verificacionUsuario)
         {
             _usuarioRepository = usuarioRepository;
             _validator = validator;
             _currentUserService = currentUserService;
             _auditoriaService = auditoriaService;
+            _verificacionUsuario = verificacionUsuario;
         }
 
         public async Task<ApiResponse<List<UsuarioRolResponse>>> ListarUsuariosAsync()
@@ -246,6 +248,8 @@ namespace Infrastructure.Services
 
                 if (result > 0)
                 {
+                    // Un cambio de estado o de rol se aplica desde la siguiente petición del usuario editado
+                    _verificacionUsuario.Invalidar(usuario.Id_Usuario);
                     await _auditoriaService.RegistrarExitoAsync("Editar Usuario", $"Usuario {usuario.Codigo} actualizado exitosamente");
                     
                     return new ApiResponse<object>{ IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE };
@@ -290,6 +294,7 @@ namespace Infrastructure.Services
 
                 if (result > 0)
                 {
+                    _verificacionUsuario.Invalidar(id);
                     await _auditoriaService.RegistrarExitoAsync("Eliminar Usuario", $"Usuario {existe.Codigo} eliminado exitosamente");
 
                     return new ApiResponse<int>{ IsSuccess = true, Message = Mensajes.MESSAGE_DELETE };
