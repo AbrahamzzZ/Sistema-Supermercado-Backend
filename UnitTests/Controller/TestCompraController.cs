@@ -53,6 +53,31 @@ public class TestCompraController
     }
 
     [TestMethod]
+    public async Task ObtenerCompra_DebeRetornarNoEncontrado_SiNoExiste()
+    {
+        var response = new ApiResponse<CompraResponse> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
+        _mockService.Setup(s => s.ObtenerCompraAsync("99999")).ReturnsAsync(response);
+
+        var actionResult = await _controller.ObtenerCompra("99999");
+        var notFound = actionResult.Result as NotFoundObjectResult;
+
+        Assert.IsNotNull(notFound);
+        Assert.AreEqual(404, notFound.StatusCode);
+        Assert.AreEqual(response, notFound.Value);
+    }
+
+    [TestMethod]
+    public async Task ObtenerDetallesCompra_DebeRetornarNoEncontrado_SiNoHayDetalles()
+    {
+        _mockService.Setup(s => s.ObtenerDetallesCompraAsync(99))
+                    .ReturnsAsync(new ApiResponse<List<DetalleCompraReponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY });
+
+        var actionResult = await _controller.ObtenerDetallesCompra(99);
+
+        Assert.IsInstanceOfType(actionResult.Result, typeof(NotFoundObjectResult));
+    }
+
+    [TestMethod]
     public async Task ObtenerDetallesCompra_DebeRetornarOk_ConDetalles()
     {
         var response = new ApiResponse<List<DetalleCompraReponse>>
