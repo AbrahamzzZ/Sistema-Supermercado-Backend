@@ -7,6 +7,6 @@ namespace Infrastructure.Repository.InterfacesRepository
         Task<string> ObtenerNumeroDocumentoAsync();
         Task<VentaResponse?> ObtenerVentaAsync(string numeroDocumento);
         Task<List<DetalleVentaReponse>> ObtenerDetallesVentaAsync(int idCompra);
-        Task<bool> RegistrarVentaAsync(Ventas ventaDto);
+        Task<VentaRegistradaResponse> RegistrarVentaAsync(Ventas ventaDto, int idUsuario);
     }
 }

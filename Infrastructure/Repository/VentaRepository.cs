@@ -4,6 +4,7 @@ using Infrastructure.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using Utilities.Shared;
 
 namespace Infrastructure.Repository
 {
@@ -16,24 +17,15 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
+        // Número referencial para mostrar en pantalla; el definitivo lo asigna PA_REGISTRAR_VENTA al guardar
         public async Task<string> ObtenerNumeroDocumentoAsync()
         {
-            string nuevoNumero = "00001";
+            var ultimo = await _context.Database
+                .SqlQueryRaw<int?>("SELECT MAX(TRY_CAST(NUMERO_DOCUMENTO AS INT)) AS [Value] FROM VENTA")
+                .SingleAsync();
 
-            var ultimaCompra = await _context.Venta
-                .OrderByDescending(c => c.IdVenta)
-                .FirstOrDefaultAsync();
-
-            if (ultimaCompra != null && !string.IsNullOrEmpty(ultimaCompra.NumeroDocumento))
-            {
-                if (int.TryParse(ultimaCompra.NumeroDocumento, out int numero))
-                {
-                    numero++;
-                    nuevoNumero = numero.ToString("D5"); // 5 dígitos con ceros a la izquierda
-                }
-            }
-
-            return nuevoNumero;
+            var siguiente = (ultimo ?? 0) + 1;
+            return siguiente < 100000 ? siguiente.ToString("D5") : siguiente.ToString();
         }
 
         public async Task<VentaResponse?> ObtenerVentaAsync(string numeroDocumento)
@@ -54,50 +46,61 @@ namespace Infrastructure.Repository
                 .ToListAsync();
         }
 
-        public async Task<bool> RegistrarVentaAsync(Ventas ventaDto)
+        // El procedimiento calcula precios, ofertas, totales, cambio y número de documento.
+        // Sus errores de negocio llegan como THROW 50001..50099 y se convierten en ReglaNegocioException.
+        public async Task<VentaRegistradaResponse> RegistrarVentaAsync(Ventas ventaDto, int idUsuario)
         {
-            string nuevoNumeroDocumento = await ObtenerNumeroDocumentoAsync();
-
             var tablaDetalle = new DataTable();
             tablaDetalle.Columns.Add("Id_Producto", typeof(int));
-            tablaDetalle.Columns.Add("Precio_Venta", typeof(decimal));
             tablaDetalle.Columns.Add("Cantidad", typeof(int));
-            tablaDetalle.Columns.Add("SubTotal", typeof(decimal));
-            tablaDetalle.Columns.Add("Descuento", typeof(decimal));
 
             foreach (var item in ventaDto.Detalles ?? Enumerable.Empty<DetalleVentas>())
             {
-                tablaDetalle.Rows.Add(item.Id_Producto, item.Precio_Venta, item.Cantidad, item.SubTotal, item.Descuento);
+                tablaDetalle.Rows.Add(item.Id_Producto, item.Cantidad);
             }
 
-            var resultadoParam = new SqlParameter("@RESULTADO", SqlDbType.Bit)
-            {
-                Direction = ParameterDirection.Output
-            };
+            var numeroParam = new SqlParameter("@NUMERO_DOCUMENTO", SqlDbType.VarChar, 50) { Direction = ParameterDirection.Output };
+            var totalParam = new SqlParameter("@MONTO_TOTAL", SqlDbType.Decimal) { Precision = 10, Scale = 2, Direction = ParameterDirection.Output };
+            var descuentoParam = new SqlParameter("@DESCUENTO", SqlDbType.Decimal) { Precision = 10, Scale = 2, Direction = ParameterDirection.Output };
+            var cambioParam = new SqlParameter("@MONTO_CAMBIO", SqlDbType.Decimal) { Precision = 10, Scale = 2, Direction = ParameterDirection.Output };
 
             var parametros = new[]
             {
-                new SqlParameter("@ID_USUARIO", ventaDto.Id_Usuario),
+                new SqlParameter("@ID_USUARIO", idUsuario),
                 new SqlParameter("@ID_SUCURSAL", ventaDto.Id_Sucursal),
                 new SqlParameter("@ID_CLIENTE", ventaDto.Id_Cliente),
                 new SqlParameter("@TIPO_DOCUMENTO", ventaDto.Tipo_Documento),
-                new SqlParameter("@NUMERO_DOCUMENTO", ventaDto.Numero_Documento),
-                //new SqlParameter("@NUMERO_DOCUMENTO",nuevoNumeroDocumento),
-                new SqlParameter("@MONTO_PAGO", ventaDto.Monto_Pago),
-                new SqlParameter("@MONTO_CAMBIO", ventaDto.Monto_Cambio),
-                new SqlParameter("@MONTO_TOTAL", ventaDto.Monto_Total),
-                new SqlParameter("@DESCUENTO", ventaDto.Descuento),
+                new SqlParameter("@MONTO_PAGO", SqlDbType.Decimal) { Precision = 10, Scale = 2, Value = ventaDto.Monto_Pago },
                 new SqlParameter("@DETALLE_VENTA", SqlDbType.Structured)
                 {
                     TypeName = "TI_Detalle_Venta",
                     Value = tablaDetalle
                 },
-                resultadoParam
+                numeroParam,
+                totalParam,
+                descuentoParam,
+                cambioParam
             };
 
-            await _context.Database.ExecuteSqlRawAsync("EXEC PA_REGISTRAR_VENTA @ID_USUARIO, @ID_SUCURSAL, @ID_CLIENTE, @TIPO_DOCUMENTO, @NUMERO_DOCUMENTO, @MONTO_PAGO, @MONTO_CAMBIO, @MONTO_TOTAL, @DESCUENTO, @DETALLE_VENTA, @RESULTADO OUT", parametros);
+            try
+            {
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC PA_REGISTRAR_VENTA @ID_USUARIO, @ID_SUCURSAL, @ID_CLIENTE, @TIPO_DOCUMENTO, @MONTO_PAGO, @DETALLE_VENTA, " +
+                    "@NUMERO_DOCUMENTO OUT, @MONTO_TOTAL OUT, @DESCUENTO OUT, @MONTO_CAMBIO OUT", parametros);
+            }
+            catch (SqlException ex) when (ex.Number >= 50001 && ex.Number <= 50099)
+            {
+                throw new ReglaNegocioException(ex.Message, ex);
+            }
 
-            return (bool)resultadoParam.Value;
+            return new VentaRegistradaResponse
+            {
+                Numero_Documento = (string)numeroParam.Value,
+                Monto_Total = (decimal)totalParam.Value,
+                Descuento = (decimal)descuentoParam.Value,
+                Monto_Pago = ventaDto.Monto_Pago,
+                Monto_Cambio = (decimal)cambioParam.Value
+            };
         }
     }
 }
