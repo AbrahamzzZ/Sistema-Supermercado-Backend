@@ -77,8 +77,13 @@ public class TestVentaController
     [TestMethod]
     public async Task RegistrarVenta_DebeRetornarOk_CuandoTieneExito()
     {
-        var ventaDto = new Ventas { Numero_Documento = "VEN-0002", Monto_Total = 200 };
-        var response = new ApiResponse<object> { IsSuccess = true, Message = "Venta registrada correctamente" };
+        var ventaDto = new Ventas { Id_Sucursal = 1, Id_Cliente = 1, Tipo_Documento = "Boleta", Monto_Pago = 200 };
+        var response = new ApiResponse<VentaRegistradaResponse>
+        {
+            IsSuccess = true,
+            Message = "Venta registrada correctamente",
+            Data = new VentaRegistradaResponse { Numero_Documento = "00002", Monto_Total = 180, Descuento = 20, Monto_Pago = 200, Monto_Cambio = 20 }
+        };
 
         _mockService.Setup(s => s.RegistrarVentaAsync(ventaDto))
                     .ReturnsAsync(response);
@@ -94,8 +99,8 @@ public class TestVentaController
     [TestMethod]
     public async Task RegistrarVenta_DebeRetornarSolicitudIncorrecta_CuandoFalla()
     {
-        var ventaDto = new Ventas { Numero_Documento = "VEN-0003", Monto_Total = 300 };
-        var response = new ApiResponse<object> { IsSuccess = false, Message = "Error al registrar venta" };
+        var ventaDto = new Ventas { Id_Sucursal = 1, Id_Cliente = 1, Tipo_Documento = "Boleta", Monto_Pago = 300 };
+        var response = new ApiResponse<VentaRegistradaResponse> { IsSuccess = false, Message = "Stock insuficiente: Leche (disponible 1, solicitado 3)" };
 
         _mockService.Setup(s => s.RegistrarVentaAsync(ventaDto))
                     .ReturnsAsync(response);

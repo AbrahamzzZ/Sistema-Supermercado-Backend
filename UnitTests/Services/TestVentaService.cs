@@ -1,6 +1,7 @@
 using Domain.Models.Dto.Response.Venta;
 using FluentValidation;
 using FluentValidation.Results;
+using Infrastructure.Repository.InterfacesBusiness;
 using Infrastructure.Repository.InterfacesRepository;
 using Infrastructure.Repository.InterfacesServices;
 using Infrastructure.Services;
@@ -15,6 +16,7 @@ public class TestVentaService
     private Mock<IVentaRepository> _mockRepository;
     private Mock<IValidator<Ventas>> _mockValidator;
     private Mock<IAuditoriaService> _mockAuditoria;
+    private Mock<ICurrentUser> _mockCurrentUser;
     private VentaService _service;
 
     [TestInitialize]
@@ -23,11 +25,23 @@ public class TestVentaService
         _mockRepository = new Mock<IVentaRepository>();
         _mockValidator = new Mock<IValidator<Ventas>>();
         _mockAuditoria = new Mock<IAuditoriaService>();
+        _mockCurrentUser = new Mock<ICurrentUser>();
+        _mockCurrentUser.Setup(u => u.GetUserId()).Returns(7);
         _service = new VentaService(
             _mockRepository.Object,
             _mockValidator.Object,
-            _mockAuditoria.Object);
+            _mockAuditoria.Object,
+            _mockCurrentUser.Object);
     }
+
+    private static Ventas VentaValida() => new()
+    {
+        Id_Sucursal = 1,
+        Id_Cliente = 1,
+        Tipo_Documento = "Factura",
+        Monto_Pago = 150,
+        Detalles = new List<DetalleVentas> { new DetalleVentas { Id_Producto = 3, Cantidad = 2 } }
+    };
 
     [TestMethod]
     public async Task ObtenerNumeroDocumentoAsync_DebeRetornarNumero()
@@ -74,7 +88,7 @@ public class TestVentaService
     [TestMethod]
     public async Task RegistrarVentaAsync_SiCamposInvalidosDebeRetornarError()
     {
-        var venta = new Ventas { Id_Usuario = 0,  Id_Cliente = 0, Tipo_Documento = "", Numero_Documento = "",  Monto_Total = 0, Monto_Pago = 0, Detalles = null };
+        var venta = new Ventas { Id_Sucursal = 0, Id_Cliente = 0, Tipo_Documento = "", Monto_Pago = 0, Detalles = null };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Ventas>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Tipo Documento", Mensajes.MESSAGE_EMPTY) }));
         var result = await _service.RegistrarVentaAsync(venta);
 
@@ -85,7 +99,8 @@ public class TestVentaService
     [TestMethod]
     public async Task RegistrarVentaAsync_SiTipoDocumentoInvalidoDebeRetornarError()
     {
-        var venta = new Ventas { Id_Usuario = 1, Id_Cliente = 1, Tipo_Documento = "DOC123", Numero_Documento = "001", Monto_Total = 100, Monto_Pago = 100, Monto_Cambio = 0, Detalles = new List<DetalleVentas> { new DetalleVentas() } };
+        var venta = VentaValida();
+        venta.Tipo_Documento = "DOC123";
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Ventas>(), default)).ReturnsAsync(new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Tipo Documento", "El tipo de documento solo pueden contener letras.") }));
         var result = await _service.RegistrarVentaAsync(venta);
 
@@ -96,13 +111,54 @@ public class TestVentaService
     [TestMethod]
     public async Task RegistrarVentaAsync_SiVentaValidaDebeRegistrar()
     {
-        var venta = new Ventas { Id_Usuario = 1, Id_Cliente = 1, Tipo_Documento = "Factura", Numero_Documento = "001", Monto_Total = 100, Monto_Pago = 150, Monto_Cambio = 50, Detalles = new List<DetalleVentas> { new DetalleVentas() } };
+        var venta = VentaValida();
+        var calculada = new VentaRegistradaResponse { Numero_Documento = "00001", Monto_Total = 36, Descuento = 4, Monto_Pago = 150, Monto_Cambio = 114 };
         _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Ventas>(), default)).ReturnsAsync(new ValidationResult());
-        _mockRepository.Setup(r => r.RegistrarVentaAsync(venta)).ReturnsAsync(true);
+        _mockRepository.Setup(r => r.RegistrarVentaAsync(venta, 7)).ReturnsAsync(calculada);
         var result = await _service.RegistrarVentaAsync(venta);
 
         Assert.IsTrue(result.IsSuccess);
         Assert.AreEqual(Mensajes.MESSAGE_REGISTER, result.Message);
+        Assert.AreEqual(calculada, result.Data);
+    }
+
+    [TestMethod]
+    public async Task RegistrarVentaAsync_DebeUsarElUsuarioDelToken()
+    {
+        var venta = VentaValida();
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Ventas>(), default)).ReturnsAsync(new ValidationResult());
+        _mockRepository.Setup(r => r.RegistrarVentaAsync(It.IsAny<Ventas>(), It.IsAny<int>())).ReturnsAsync(new VentaRegistradaResponse());
+
+        await _service.RegistrarVentaAsync(venta);
+
+        _mockRepository.Verify(r => r.RegistrarVentaAsync(venta, 7), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task RegistrarVentaAsync_SiNoHayUsuarioEnTokenDebeRetornarError()
+    {
+        _mockCurrentUser.Setup(u => u.GetUserId()).Returns(0);
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Ventas>(), default)).ReturnsAsync(new ValidationResult());
+
+        var result = await _service.RegistrarVentaAsync(VentaValida());
+
+        Assert.IsFalse(result.IsSuccess);
+        _mockRepository.Verify(r => r.RegistrarVentaAsync(It.IsAny<Ventas>(), It.IsAny<int>()), Times.Never);
+    }
+
+    [TestMethod]
+    public async Task RegistrarVentaAsync_SiIncumpleReglaDeNegocioDebeRetornarSuMensaje()
+    {
+        const string mensaje = "Stock insuficiente: Leche (disponible 1, solicitado 3)";
+        _mockValidator.Setup(v => v.ValidateAsync(It.IsAny<Ventas>(), default)).ReturnsAsync(new ValidationResult());
+        _mockRepository.Setup(r => r.RegistrarVentaAsync(It.IsAny<Ventas>(), 7)).ThrowsAsync(new ReglaNegocioException(mensaje));
+
+        var result = await _service.RegistrarVentaAsync(VentaValida());
+
+        Assert.IsFalse(result.IsSuccess);
+        Assert.AreEqual(mensaje, result.Message);
+        _mockAuditoria.Verify(a => a.RegistrarFalloAsync("Registrar Venta", mensaje), Times.Once);
+        _mockAuditoria.Verify(a => a.RegistrarErrorAsync(It.IsAny<string>(), It.IsAny<Exception>()), Times.Never);
     }
 
     [TestMethod]
