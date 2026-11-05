@@ -14,9 +14,14 @@ namespace Infrastructure.Services
             _logRepository = logRepository;
         }
 
-        public async Task<ApiResponse<Paginacion<Log>>> ListarLogsPaginacionAsync(int pageNumber, int pageSize, string filtro = "")
+        public async Task<ApiResponse<Paginacion<Log>>> ListarLogsPaginacionAsync(int pageNumber, int pageSize, string filtro = "", DateOnly? desde = null, DateOnly? hasta = null)
         {
-            var pagedResult = await _logRepository.ListarLogsPaginacionAsync(pageNumber, pageSize, filtro);
+            if (desde.HasValue && hasta.HasValue && desde.Value > hasta.Value)
+            {
+                return new ApiResponse<Paginacion<Log>> { IsSuccess = false, Message = "La fecha 'desde' no puede ser posterior a la fecha 'hasta'." };
+            }
+
+            var pagedResult = await _logRepository.ListarLogsPaginacionAsync(pageNumber, pageSize, filtro, desde, hasta);
 
             if (pagedResult.Items == null || pagedResult.Items.Count == 0)
             {
