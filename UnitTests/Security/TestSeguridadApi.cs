@@ -2,7 +2,7 @@ using System.Net;
 using System.Reflection;
 using System.Security.Claims;
 using APIRestSistemaVentas.Controllers;
-using APIRestSistemaVentas.Seguridad;
+using APIRestSistemaVentas.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Utilities.Security;
