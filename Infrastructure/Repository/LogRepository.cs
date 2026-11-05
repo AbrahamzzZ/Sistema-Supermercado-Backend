@@ -18,7 +18,7 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<Paginacion<Log>> ListarLogsPaginacionAsync(int pageNumber, int pageSize, string filtro)
+        public async Task<Paginacion<Log>> ListarLogsPaginacionAsync(int pageNumber, int pageSize, string filtro, DateOnly? desde = null, DateOnly? hasta = null)
         {
             await using var connectionScope = await DbConnectionHelper.OpenConnectionScopeAsync(_context);
             using var command = _context.Database.GetDbConnection().CreateCommand();
@@ -27,6 +27,8 @@ namespace Infrastructure.Repository
             command.Parameters.Add(new SqlParameter("@PageNumber", pageNumber));
             command.Parameters.Add(new SqlParameter("@PageSize", pageSize));
             command.Parameters.Add(new SqlParameter("@Filtro", filtro ?? ""));
+            command.Parameters.Add(new SqlParameter("@Desde", SqlDbType.Date) { Value = desde.HasValue ? desde.Value.ToDateTime(TimeOnly.MinValue) : DBNull.Value });
+            command.Parameters.Add(new SqlParameter("@Hasta", SqlDbType.Date) { Value = hasta.HasValue ? hasta.Value.ToDateTime(TimeOnly.MinValue) : DBNull.Value });
 
             var logs = new List<Log>();
             int totalCount = 0;

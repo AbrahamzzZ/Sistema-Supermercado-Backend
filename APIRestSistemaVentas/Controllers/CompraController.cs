@@ -44,7 +44,7 @@ namespace APIRestSistemaVentas.Controllers
         public async Task<ActionResult<CompraResponse>> ObtenerCompra(string numeroDocumento)
         {
             var compra = await _compraService.ObtenerCompraAsync(numeroDocumento);
-            return Ok(compra);
+            return compra.IsSuccess ? Ok(compra) : NotFound(compra);
         }
 
         // GET: api/compra/detalles/{idCompra}
@@ -59,7 +59,7 @@ namespace APIRestSistemaVentas.Controllers
         public async Task<ActionResult<List<DetalleCompras>>> ObtenerDetallesCompra(int idCompra)
         {
             var detalles = await _compraService.ObtenerDetallesCompraAsync(idCompra);
-            return Ok(detalles);
+            return detalles.IsSuccess ? Ok(detalles) : NotFound(detalles);
         }
 
         // POST: api/compra

@@ -54,6 +54,31 @@ public class TestVentaController
     }
 
     [TestMethod]
+    public async Task ObtenerVenta_DebeRetornarNoEncontrado_SiNoExiste()
+    {
+        var response = new ApiResponse<VentaResponse> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY };
+        _mockService.Setup(s => s.ObtenerVentaAsync("99999")).ReturnsAsync(response);
+
+        var actionResult = await _controller.ObtenerVenta("99999");
+        var notFound = actionResult.Result as NotFoundObjectResult;
+
+        Assert.IsNotNull(notFound);
+        Assert.AreEqual(404, notFound.StatusCode);
+        Assert.AreEqual(response, notFound.Value);
+    }
+
+    [TestMethod]
+    public async Task ObtenerDetallesVenta_DebeRetornarNoEncontrado_SiNoHayDetalles()
+    {
+        _mockService.Setup(s => s.ObtenerDetallesVentaAsync(99))
+                    .ReturnsAsync(new ApiResponse<List<DetalleVentaReponse>> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY });
+
+        var actionResult = await _controller.ObtenerDetallesVenta(99);
+
+        Assert.IsInstanceOfType(actionResult.Result, typeof(NotFoundObjectResult));
+    }
+
+    [TestMethod]
     public async Task ObtenerDetallesVenta_DebeRetornarOk_ConDetalles()
     {
         var response = new ApiResponse<List<DetalleVentaReponse>>
