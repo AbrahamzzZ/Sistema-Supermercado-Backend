@@ -1510,19 +1510,44 @@ CREATE NONCLUSTERED INDEX IX_LOG_FECHA ON LOG (FECHA DESC);
 GO
 
 CREATE PROCEDURE PA_LISTA_LOG_PAGINACION(
-    @PageNumber INT = 1,
-    @PageSize INT = 10,
-    @Filtro NVARCHAR(100) = '',
-    @Desde DATE = NULL,
-    @Hasta DATE = NULL
+@PageNumber INT = 1,
+@PageSize INT = 10, 
+@Filtro NVARCHAR(100) = '',
+@Desde DATE = NULL,
+@Hasta DATE = NULL
 )
 AS
 BEGIN
     SET NOCOUNT ON;
 
     DECLARE @TotalCount INT;
+
     DECLARE @SearchTerm NVARCHAR(102) = '%' + @Filtro + '%';
-    DECLARE @HastaExclusivo DATETIME = CASE WHEN @Hasta IS NULL THEN NULL ELSE DATEADD(DAY, 1, CAST(@Hasta AS DATETIME)) END;
+
+    DECLARE @HastaExclusivo DATETIME =
+        CASE
+            WHEN @Hasta IS NULL THEN NULL
+            ELSE DATEADD(DAY, 1, CAST(@Hasta AS DATETIME))
+        END;
+
+    SELECT @TotalCount = COUNT(*)
+    FROM LOG
+    WHERE (@Filtro = '' OR CODIGO LIKE @SearchTerm OR MENSAJE LIKE @SearchTerm OR DETALLE LIKE @SearchTerm OR NIVEL LIKE @SearchTerm
+            OR ENDPOINT LIKE @SearchTerm OR METODO LIKE @SearchTerm)
+        AND (@Desde IS NULL OR FECHA >= @Desde)
+        AND (@HastaExclusivo IS NULL OR FECHA < @HastaExclusivo);
+
+    -- Obtener registros paginados
+    SELECT ID_LOG, CODIGO, MENSAJE, DETALLE, ID_USUARIO, FECHA, ENDPOINT, METODO, NIVEL, @TotalCount AS TotalCount FROM LOG
+    WHERE (@Filtro = '' OR CODIGO LIKE @SearchTerm OR MENSAJE LIKE @SearchTerm OR DETALLE LIKE @SearchTerm OR NIVEL LIKE @SearchTerm
+            OR ENDPOINT LIKE @SearchTerm OR METODO LIKE @SearchTerm)
+        AND (@Desde IS NULL OR FECHA >= @Desde)
+        AND (@HastaExclusivo IS NULL OR FECHA < @HastaExclusivo)
+    ORDER BY FECHA DESC
+    OFFSET (@PageNumber - 1) * @PageSize ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+
+END;
 GO
 
 CREATE PROCEDURE PA_OBTENER_LOG(
